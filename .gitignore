@@ -1,0 +1,36 @@
+# Node.js dependencies
+node_modules/
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# PHP dependencies
+/server/vendor/
+composer.lock
+
+# Build directories
+/client/dist/
+/client/build/
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development files
+*.local
+
+# Database files
+*.sql.gz
+*.dump
