@@ -1,0 +1,112 @@
+<?php
+
+use Slim\App;
+use Slim\Routing\RouteCollectorProxy;
+use App\Middleware\AuthMiddleware;
+use App\Controllers\AuthController;
+use App\Controllers\BusinessController;
+use App\Controllers\ProductController;
+use App\Controllers\ReviewController;
+use App\Controllers\AdvertController;
+use App\Controllers\PaymentController;
+use App\Controllers\StatisticsController;
+
+return function (App $app) {
+    // API version 1 group
+    $app->group('/api', function (RouteCollectorProxy $group) {
+        // Auth routes (public)
+        $group->group('/auth', function (RouteCollectorProxy $group) {
+            $group->post('/register', [AuthController::class, 'register']);
+            $group->post('/login', [AuthController::class, 'login']);
+            $group->post('/logout', [AuthController::class, 'logout'])->add(new AuthMiddleware());
+            $group->post('/refresh-token', [AuthController::class, 'refreshToken']);
+            $group->post('/forgot-password', [AuthController::class, 'forgotPassword']);
+            $group->post('/reset-password', [AuthController::class, 'resetPassword']);
+        });
+        
+        // Business routes (public)
+        $group->group('/businesses', function (RouteCollectorProxy $group) {
+            // Public routes
+            $group->get('', [BusinessController::class, 'getAllBusinesses']);
+            $group->get('/{id}', [BusinessController::class, 'getBusinessById']);
+            $group->get('/{id}/products', [BusinessController::class, 'getBusinessProducts']);
+            $group->get('/{id}/reviews', [BusinessController::class, 'getBusinessReviews']);
+            
+            // Protected routes - require authentication
+            $group->group('', function (RouteCollectorProxy $group) {
+                $group->get('/my-business', [BusinessController::class, 'getMyBusiness']);
+                $group->put('/my-business', [BusinessController::class, 'updateMyBusiness']);
+                $group->post('/my-business/logo', [BusinessController::class, 'uploadLogo']);
+                $group->post('/my-business/cover', [BusinessController::class, 'uploadCover']);
+            })->add(new AuthMiddleware());
+        });
+        
+        // Product routes (protected)
+        $group->group('/products', function (RouteCollectorProxy $group) {
+            $group->get('', [ProductController::class, 'getMyProducts']);
+            $group->post('', [ProductController::class, 'createProduct']);
+            $group->get('/{id}', [ProductController::class, 'getProduct']);
+            $group->put('/{id}', [ProductController::class, 'updateProduct']);
+            $group->delete('/{id}', [ProductController::class, 'deleteProduct']);
+            $group->post('/{id}/image', [ProductController::class, 'uploadProductImage']);
+        })->add(new AuthMiddleware());
+        
+        // Review routes
+        $group->group('/reviews', function (RouteCollectorProxy $group) {
+            // Public route to create review (requires auth but not business ownership)
+            $group->post('/business/{id}', [ReviewController::class, 'createReview'])->add(new AuthMiddleware());
+            
+            // Protected routes
+            $group->group('', function (RouteCollectorProxy $group) {
+                $group->get('/my-reviews', [ReviewController::class, 'getMyReviews']);
+                $group->put('/{id}', [ReviewController::class, 'updateReview']);
+                $group->delete('/{id}', [ReviewController::class, 'deleteReview']);
+                
+                // Admin route for moderation - in a real app we'd have proper admin middleware
+                $group->put('/{id}/moderate', [ReviewController::class, 'moderateReview']);
+            })->add(new AuthMiddleware());
+        });
+        
+        // Advert routes (protected)
+        $group->group('/adverts', function (RouteCollectorProxy $group) {
+            $group->get('', [AdvertController::class, 'getMyAdverts']);
+            $group->post('', [AdvertController::class, 'createAdvert']);
+            $group->get('/{id}', [AdvertController::class, 'getAdvert']);
+            $group->put('/{id}', [AdvertController::class, 'updateAdvert']);
+            $group->delete('/{id}', [AdvertController::class, 'deleteAdvert']);
+            $group->post('/{id}/image', [AdvertController::class, 'uploadImage']);
+            
+            // Public route for getting active adverts
+            $group->group('/public', function (RouteCollectorProxy $group) {
+                $group->get('/{placement}', [AdvertController::class, 'getActiveAdverts']);
+            });
+        })->add(new AuthMiddleware());
+        
+        // Payment routes (protected)
+        $group->group('/payments', function (RouteCollectorProxy $group) {
+            $group->get('/history', [PaymentController::class, 'getPaymentHistory']);
+            $group->post('/initiate', [PaymentController::class, 'initiatePayment']);
+            $group->get('/packages', [PaymentController::class, 'getPackages']);
+            
+            // Public route for payment webhook callbacks
+            $group->post('/webhook', [PaymentController::class, 'processWebhook']);
+        })->add(new AuthMiddleware());
+        
+        // Statistics routes (protected)
+        $group->group('/statistics', function (RouteCollectorProxy $group) {
+            $group->get('/dashboard', [StatisticsController::class, 'getDashboardStats']);
+            $group->get('/location', [StatisticsController::class, 'getTrafficByLocation']);
+            $group->get('/referral', [StatisticsController::class, 'getTrafficByReferral']);
+            
+            // Public route for logging interactions
+            $group->post('/log/{id}', [StatisticsController::class, 'logInteraction']);
+        })->add(new AuthMiddleware());
+    });
+    
+    // Redirect root to API documentation or frontend
+    $app->get('/', function ($request, $response) {
+        return $response
+            ->withHeader('Location', $_ENV['FRONTEND_URL'])
+            ->withStatus(302);
+    });
+};
