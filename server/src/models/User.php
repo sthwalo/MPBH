@@ -19,6 +19,7 @@ class User
     public ?string $reset_token_expires = null;
     public string $created_at;
     public ?string $updated_at = null;
+    public ?string $last_password_change = null;
     
     /**
      * Constructor with database dependency
@@ -85,6 +86,7 @@ class User
         $this->reset_token_expires = $row['reset_token_expires'];
         $this->created_at = $row['created_at'];
         $this->updated_at = $row['updated_at'];
+        $this->last_password_change = $row['last_password_change'] ?? null;
         
         return true;
     }
@@ -116,6 +118,7 @@ class User
         $this->reset_token_expires = $row['reset_token_expires'];
         $this->created_at = $row['created_at'];
         $this->updated_at = $row['updated_at'];
+        $this->last_password_change = $row['last_password_change'] ?? null;
         
         return true;
     }
@@ -230,6 +233,7 @@ class User
         $this->reset_token_expires = $row['reset_token_expires'];
         $this->created_at = $row['created_at'];
         $this->updated_at = $row['updated_at'];
+        $this->last_password_change = $row['last_password_change'] ?? null;
         
         return true;
     }
@@ -274,5 +278,34 @@ class User
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
+    }
+    
+    /**
+     * Check if user needs to reset their password (older than 90 days)
+     * 
+     * @return bool True if password reset is needed
+     */
+    public function needsPasswordReset(): bool {
+        // Check if last_password_change field exists
+        if (!property_exists($this, 'last_password_change') || !$this->last_password_change) {
+            return false; // Cannot determine if no date is set
+        }
+        
+        // Get the date 90 days ago
+        $ninetyDaysAgo = date('Y-m-d H:i:s', strtotime('-90 days'));
+        
+        // Compare with last password change date
+        return $this->last_password_change < $ninetyDaysAgo;
+    }
+    
+    /**
+     * Update last password change timestamp
+     * 
+     * @return bool Success status
+     */
+    public function updatePasswordTimestamp(): bool {
+        $query = "UPDATE {$this->table} SET last_password_change = NOW() WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([$this->id]);
     }
 }

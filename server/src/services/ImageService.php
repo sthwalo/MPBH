@@ -182,4 +182,40 @@ class ImageService {
         
         return true;
     }
+    
+    /**
+     * Compress an image using Imagick for better optimization
+     * 
+     * @param string $path Path to the image file
+     * @return void
+     */
+    public function compressImage(string $path): void {
+        // Check if Imagick extension is available
+        if (!extension_loaded('imagick')) {
+            error_log('Imagick extension not available for image compression');
+            return;
+        }
+        
+        try {
+            $image = new \Imagick($path);
+            
+            // Strip metadata to reduce file size
+            $image->stripImage();
+            
+            // Set compression quality (80% offers good balance)
+            $image->setImageCompressionQuality(80);
+            
+            // Optimize for web
+            $image->setInterlaceScheme(\Imagick::INTERLACE_PLANE);
+            
+            // Write optimized image back to file
+            $image->writeImage($path);
+            
+            // Free resources
+            $image->clear();
+            $image->destroy();
+        } catch (\Exception $e) {
+            error_log('Error compressing image: ' . $e->getMessage());
+        }
+    }
 }

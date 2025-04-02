@@ -907,6 +907,40 @@ Checks if a business has reached the limit for a specific feature type based on 
 }
 ```
 
+## Sample Requests
+
+### Get all businesses
+```bash
+curl -X GET "https://api.mpbusinesshub.co.za/api/businesses?category=Tourism"
+```
+
+### Authentication
+```bash
+curl -X POST "https://api.mpbusinesshub.co.za/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"your_password"}'
+```
+
+### Creating a business listing
+```bash
+curl -X POST "https://api.mpbusinesshub.co.za/api/businesses" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "X-CSRF-Token: YOUR_CSRF_TOKEN" \
+  -d '{
+    "name": "Example Business",
+    "description": "A description of the business",
+    "category": "Tourism",
+    "district": "Ehlanzeni",
+    "contact_person": "John Doe",
+    "email": "contact@example.com",
+    "phone": "+27123456789",
+    "website": "https://example.com",
+    "address": "123 Main St, Nelspruit",
+    "package_type": "Silver"
+  }'
+```
+
 ## Cache Control
 
 The API uses Redis caching for improved performance. Cached responses will have the following header:

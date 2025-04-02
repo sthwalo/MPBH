@@ -1,0 +1,131 @@
+direction: right
+
+# Define the main components
+Client: React Frontend {
+  UI: {
+    shape: rectangle
+    style.fill: "#61DAFB"
+    style.stroke: "#61DAFB"
+    
+    Pages: {
+      Home
+      BusinessDirectory
+      BusinessDetails
+      Login
+      Register
+      Dashboard
+    }
+    
+    Components: {
+      BusinessCard
+      SearchBar
+      ApprovalQueue
+      LazyLoadImage
+      BusinessForm
+    }
+    
+    State: {
+      Context: "Authentication, Business Data"
+      Hooks: "Custom Hooks"
+    }
+  }
+  
+  Utils: {
+    shape: rectangle
+    style.fill: "#B8E0F9"
+    
+    API: "Axios Client"
+    Auth: "Token Management"
+    Validation: "Form Validation"
+    FeatureCheck: "Tier-based Access"
+  }
+}
+
+Server: PHP Backend {
+  style.fill: "#8892BF"
+  style.stroke: "#8892BF"
+  
+  API: {
+    Controllers: {
+      AuthController
+      BusinessController
+      ProductController
+      AdminController
+      SystemController
+    }
+    
+    Routes: "Slim Router"
+    
+    Middleware: {
+      Authentication
+      RateLimit
+      CSRF
+      SecurityHeaders
+    }
+  }
+  
+  Services: {
+    BusinessService
+    AuthService
+    EmailService
+    PaymentService
+    ImageService
+  }
+  
+  Data: {
+    Models: {
+      User
+      Business
+      Product
+      Review
+    }
+    
+    Cache: "Redis"
+  }
+}
+
+Database: MySQL {
+  shape: cylinder
+  style.fill: "#F29111"
+  style.stroke: "#F29111"
+  
+  Tables: {
+    users
+    businesses
+    products
+    reviews
+    payments
+    statistics
+  }
+}
+
+# Define relationships
+Client.UI -> Client.Utils: "Uses"
+Client.Utils.API -> Server.API: "HTTP Requests"
+Server.API -> Server.Services: "Invokes"
+Server.Services -> Server.Data: "Uses"
+Server.Data.Models -> Database: "CRUD Operations"
+
+# External services
+ExternalServices: {
+  shape: cloud
+  style.fill: "#DDDDDD"
+  
+  PayFast: "Payment Gateway"
+  Email: "SMTP Server"
+  S3: "Backup Storage"
+  Sentry: "Error Tracking"
+}
+
+Server.Services -> ExternalServices: "Integrates with"
+
+# Mobile clients
+MobileApp: Future Mobile App {
+  shape: rectangle
+  style.stroke-dash: 5
+  style.fill: "#A3D977"
+  
+  React Native: "Uses same API"
+}
+
+MobileApp -> Server.API: "Same API Interface"

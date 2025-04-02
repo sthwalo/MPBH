@@ -76,8 +76,13 @@ class BusinessController
             'data' => $result
         ];
         
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json');
+        // Add cache headers for improved performance
+        // Cache for 1 hour (3600 seconds) for public consumption
+        // Use stale-while-revalidate for 600 seconds to reduce backend load
+        return $response
+            ->withHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600')
+            ->withHeader('Vary', 'Accept, Accept-Encoding') // Vary header for proper caching
+            ->withJson($responseData);
     }
     
     /**

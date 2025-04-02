@@ -3,6 +3,7 @@
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\RateLimitMiddleware;
 use App\Controllers\AuthController;
 use App\Controllers\BusinessController;
 use App\Controllers\ProductController;
@@ -12,8 +13,12 @@ use App\Controllers\PaymentController;
 use App\Controllers\StatisticsController;
 use App\Controllers\SearchController;
 use App\Controllers\AdminController;
+use App\Controllers\SystemController;
 
 return function (App $app) {
+    // Apply rate limiting middleware to all API routes
+    $app->add(new RateLimitMiddleware(100)); // 100 requests/minute
+    
     // API version 1 group
     $app->group('/api', function (RouteCollectorProxy $group) {
         // Auth routes (public)
@@ -117,6 +122,10 @@ return function (App $app) {
     // Exclude webhook endpoints from authentication
     $app->post('/api/payments/notify', [PaymentController::class, 'processWebhook']);
     $app->post('/api/statistics/log/{id}', [StatisticsController::class, 'logInteraction']);
+    
+    // System endpoints for monitoring and health checks
+    $app->get('/health', [SystemController::class, 'healthCheck']);
+    $app->get('/metrics', [SystemController::class, 'metrics'])->add(new AuthMiddleware()); // Protected metrics endpoint
     
     // Redirect root to API documentation or frontend
     $app->get('/', function ($request, $response) {
