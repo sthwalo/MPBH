@@ -40,13 +40,11 @@ return function (App $app) {
         
         // Business routes (public)
         $group->group('/businesses', function (RouteCollectorProxy $group) {
-            // Public routes
+            // Public routes - list all businesses
             $group->get('', [BusinessController::class, 'getAllBusinesses']);
-            $group->get('/{id}', [BusinessController::class, 'getBusinessById']);
-            $group->get('/{id}/products', [BusinessController::class, 'getBusinessProducts']);
-            $group->get('/{id}/reviews', [BusinessController::class, 'getBusinessReviews']);
             
             // Protected routes - require authentication
+            // IMPORTANT: Specific static routes come BEFORE variable routes
             $group->group('', function (RouteCollectorProxy $group) {
                 $group->post('', [BusinessController::class, 'createBusiness']);
                 $group->get('/my-business', [BusinessController::class, 'getMyBusiness']);
@@ -54,6 +52,11 @@ return function (App $app) {
                 $group->post('/my-business/logo', [BusinessController::class, 'uploadLogo']);
                 $group->post('/my-business/cover', [BusinessController::class, 'uploadCover']);
             })->add(new AuthMiddleware());
+            
+            // Variable routes AFTER specific static routes
+            $group->get('/{id}', [BusinessController::class, 'getBusinessById']);
+            $group->get('/{id}/products', [BusinessController::class, 'getBusinessProducts']);
+            $group->get('/{id}/reviews', [BusinessController::class, 'getBusinessReviews']);
         });
         
         // Product routes (protected)
@@ -90,11 +93,7 @@ return function (App $app) {
             $group->put('/{id}', [AdvertController::class, 'updateAdvert']);
             $group->delete('/{id}', [AdvertController::class, 'deleteAdvert']);
             $group->post('/{id}/image', [AdvertController::class, 'uploadImage']);
-            
-            // Public route for getting active adverts
-            $group->group('/public', function (RouteCollectorProxy $group) {
-                $group->get('/{placement}', [AdvertController::class, 'getActiveAdverts']);
-            });
+            $group->get('/public/{placement}', [AdvertController::class, 'getActiveAdverts']);
         })->add(new AuthMiddleware());
         
         // Payment routes (protected)

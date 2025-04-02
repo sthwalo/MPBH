@@ -6,14 +6,15 @@ use App\Exceptions\AuthorizationException;
 use App\Exceptions\BadRequestException;
 use App\Exceptions\NotFoundException;
 use App\Exceptions\ValidationException;
+use App\Helpers\ResponseHelper;
 use App\Models\Business;
 use App\Models\Product;
 use App\Models\Review;
+use Monolog\Logger;
+use PDO;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface;
-use Monolog\Logger;
-use PDO;
 
 class BusinessController
 {
@@ -79,10 +80,12 @@ class BusinessController
         // Add cache headers for improved performance
         // Cache for 1 hour (3600 seconds) for public consumption
         // Use stale-while-revalidate for 600 seconds to reduce backend load
-        return $response
-            ->withHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600')
-            ->withHeader('Vary', 'Accept, Accept-Encoding') // Vary header for proper caching
-            ->withJson($responseData);
+        $headers = [
+            'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=600',
+            'Vary' => 'Accept, Accept-Encoding' // Vary header for proper caching
+        ];
+        
+        return ResponseHelper::success($response, $responseData, 200, $headers);
     }
     
     /**
@@ -128,8 +131,7 @@ class BusinessController
             'data' => $businessData
         ];
         
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json');
+        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -158,8 +160,7 @@ class BusinessController
                 'data' => []
             ];
             
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json');
+            return ResponseHelper::success($response, $responseData, 200);
         }
         
         // Get products
@@ -171,8 +172,7 @@ class BusinessController
             'data' => $products
         ];
         
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json');
+        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -202,8 +202,7 @@ class BusinessController
             'data' => $reviews
         ];
         
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json');
+        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -250,8 +249,7 @@ class BusinessController
             'data' => $businessData
         ];
         
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json');
+        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -313,8 +311,7 @@ class BusinessController
             'data' => $business->toArray(true)
         ];
         
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json');
+        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -413,8 +410,7 @@ class BusinessController
             ]
         ];
         
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json');
+        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**

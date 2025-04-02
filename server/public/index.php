@@ -33,8 +33,11 @@ $errorMiddleware($app);
 // Register middleware
 require $rootPath . '/src/middleware/middleware.php';
 
-// Register routes
-require $rootPath . '/src/routes.php';
+// Register routes - FIXED: Execute the returned function with $app
+$routes = require $rootPath . '/src/routes.php';
+if (is_callable($routes)) {
+    $routes($app);
+}
 
 // Run the application
 $app->run();

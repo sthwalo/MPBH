@@ -1,13 +1,25 @@
 <?php
 /**
- * Router for PHP's built-in server
- * This provides URL rewriting similar to .htaccess for development
+ * This router is only for development with PHP's built-in webserver
  */
 
-// Serve the requested resource as-is if it exists
-if (file_exists(__DIR__ . $_SERVER['REQUEST_URI']) && !is_dir(__DIR__ . $_SERVER['REQUEST_URI'])) {
-    return false; // Let the server handle existing files
+// Set working directory to document root
+chdir(__DIR__);
+
+// The route requested by the browser (minus query parameters)
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Route static file requests correctly
+if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js|ico)$/', $uri)) {
+    if (file_exists(__DIR__ . $uri)) {
+        return false; // Let the webserver handle this directly
+    }
 }
 
-// Otherwise, route all requests to index.php
+// Special handling for direct PHP files
+if (preg_match('/\.php$/', $uri) && file_exists(__DIR__ . $uri)) {
+    return false; // Let the webserver handle this directly
+}
+
+// Everything else goes to index.php
 require_once __DIR__ . '/index.php';
