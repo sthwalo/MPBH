@@ -41,27 +41,35 @@ API endpoints implement rate limiting to prevent abuse. The limits vary by endpo
 
 When rate limits are exceeded, a 429 Too Many Requests response will be returned.
 
-## Error Responses
+## Security
 
-All error responses follow a standard format:
+### CSRF Protection
 
-```json
-{
-  "status": "error",
-  "message": "Description of the error",
-  "error": "Optional detailed error information"
-}
+All POST, PUT, DELETE, and PATCH requests require a valid CSRF token to be included either as a request header or in the request body. The token is generated automatically for GET requests and stored in the session.
+
+**Header method:**
+```
+X-CSRF-Token: abc123token
 ```
 
-Error codes follow standard HTTP status codes:
+**Form field method:**
+```
+csrf_token: abc123token
+```
 
-- `400` - Bad Request (invalid input)
-- `401` - Unauthorized (invalid or missing token)
-- `403` - Forbidden (insufficient permissions)
-- `404` - Not Found (resource does not exist)
-- `422` - Unprocessable Entity (validation error)
-- `429` - Too Many Requests (rate limit exceeded)
-- `500` - Internal Server Error
+Failure to include a valid CSRF token will result in a 403 Forbidden response.
+
+### Rate Limiting
+
+API endpoints are subject to rate limiting to prevent abuse. The default limit is 60 requests per minute per IP address. Rate limit information is included in the response headers:
+
+```
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 58
+X-RateLimit-Reset: 1617278093
+```
+
+Exceeding the rate limit will result in a 429 Too Many Requests response.
 
 ## API Endpoints
 
@@ -838,6 +846,80 @@ Authorization: Bearer <token>
   }
 }
 ```
+
+### Business Feature Access
+
+#### Check Feature Access
+
+```
+GET /businesses/{id}/features/{feature}
+```
+
+Checks if a business has access to a specific feature based on its package tier.
+
+**URL Parameters:**
+
+| Parameter | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| id        | integer | Yes      | Business ID |
+| feature   | string  | Yes      | Feature name to check (e.g., "websiteLink", "products") |
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "has_access": true,
+    "feature": "websiteLink",
+    "tier": "Silver"
+  }
+}
+```
+
+#### Check Tier Limits
+
+```
+GET /businesses/{id}/tier-limits/{limitType}
+```
+
+Checks if a business has reached the limit for a specific feature type based on its package tier.
+
+**URL Parameters:**
+
+| Parameter | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| id        | integer | Yes      | Business ID |
+| limitType | string  | Yes      | Limit type to check (e.g., "products", "adverts", "images") |
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "at_limit": false,
+    "current_count": 5,
+    "max_allowed": 10,
+    "limit_type": "products",
+    "tier": "Silver"
+  }
+}
+```
+
+## Cache Control
+
+The API uses Redis caching for improved performance. Cached responses will have the following header:
+
+```
+Cache-Control: max-age=60, public
+```
+
+Cached items include:
+- Business listings
+- Search results
+- Category and district lists
+- Dashboard statistics
 
 ## Cross-Origin Resource Sharing (CORS)
 

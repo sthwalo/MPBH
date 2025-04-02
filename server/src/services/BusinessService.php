@@ -7,6 +7,8 @@ use App\Models\Business;
 use App\Models\Review;
 use App\Models\Product;
 use App\Models\Advert;
+use App\Models\ImageService;
+use InvalidArgumentException;
 
 class BusinessService {
     private $db;
@@ -253,6 +255,102 @@ class BusinessService {
     }
     
     /**
+     * Check if a business has access to a specific feature based on their package tier
+     * 
+     * @param int $businessId Business ID
+     * @param string $feature Feature to check
+     * @return bool Whether the business has access to the feature
+     * @throws InvalidArgumentException If the feature is invalid
+     */
+    public function checkFeatureAccess(int $businessId, string $feature): bool {
+        $business = $this->business->getBusinessById($businessId);
+        
+        if (!$business) {
+            throw new Exception('Business not found');
+        }
+        
+        $featureMatrix = [
+            'website' => ['Bronze', 'Silver', 'Gold'],
+            'whatsapp' => ['Bronze', 'Silver', 'Gold'],
+            'products' => ['Silver', 'Gold'],
+            'adverts' => ['Silver', 'Gold'],
+            'social_boost' => ['Gold']
+        ];
+
+        if (!isset($featureMatrix[$feature])) {
+            throw new InvalidArgumentException("Invalid feature: $feature");
+        }
+
+        return in_array($business['package_type'], $featureMatrix[$feature]);
+    }
+
+    /**
+     * Get tier badge data for a package tier
+     * 
+     * @param string $tier Package tier
+     * @return array Badge data with color and label
+     */
+    public function getTierBadgeData(string $tier): array {
+        return match($tier) {
+            'Gold' => ['color' => 'bg-amber-400', 'label' => 'Gold Member'],
+            'Silver' => ['color' => 'bg-gray-300', 'label' => 'Silver Member'],
+            'Bronze' => ['color' => 'bg-orange-600', 'label' => 'Bronze Member'],
+            default => ['color' => 'bg-gray-100', 'label' => 'Basic Listing']
+        };
+    }
+    
+    /**
+     * Check if a business is at or exceeding their tier limit for a feature
+     *
+     * @param int $businessId Business ID
+     * @param string $feature Feature to check (products, adverts)
+     * @return bool Whether the business is at their tier limit
+     */
+    public function isAtTierLimit(int $businessId, string $feature): bool {
+        $business = $this->business->getBusinessById($businessId);
+        
+        if (!$business) {
+            throw new Exception('Business not found');
+        }
+        
+        // Define limits for each tier
+        $limits = [
+            'products' => [
+                'Basic' => 0,
+                'Bronze' => 0,
+                'Silver' => 10,
+                'Gold' => 30
+            ],
+            'adverts' => [
+                'Basic' => 0,
+                'Bronze' => 0,
+                'Silver' => 3,
+                'Gold' => 10
+            ]
+        ];
+        
+        if (!isset($limits[$feature])) {
+            throw new InvalidArgumentException("Invalid feature: $feature");
+        }
+        
+        $tier = $business['package_type'];
+        $limit = $limits[$feature][$tier] ?? 0;
+        
+        // Count current usage
+        $count = 0;
+        switch ($feature) {
+            case 'products':
+                $count = count($this->product->getProductsByBusinessId($businessId));
+                break;
+            case 'adverts':
+                $count = count($this->advert->getAllAdvertsByBusinessId($businessId));
+                break;
+        }
+        
+        return $count >= $limit;
+    }
+    
+    /**
      * Check if a business has access to a specific feature based on their package
      * 
      * @param int $businessId Business ID
@@ -260,7 +358,7 @@ class BusinessService {
      * @return bool|int Whether the business has access (or count for limited features)
      * @throws NotFoundException If business not found
      */
-    public function checkFeatureAccess(int $businessId, string $feature) {
+    public function checkFeatureAccessOld(int $businessId, string $feature) {
         // Get the business tier
         $stmt = $this->db->prepare("SELECT package_type FROM businesses WHERE id = ?");
         $stmt->execute([$businessId]);

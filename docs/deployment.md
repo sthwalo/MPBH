@@ -12,6 +12,7 @@ Before deployment, ensure you have the following:
    - PHP 8.1+
    - MySQL 8.0 database
    - SSH access (if available)
+   - Redis support (optional, for enhanced performance)
 2. Domain name registered and configured
 3. FTP client (such as FileZilla) for file transfers
 4. Git for version control
@@ -64,6 +65,12 @@ ADMIN_NOTIFICATION_EMAIL=admin@mpbusinesshub.co.za
 # Search configuration
 SEARCH_RESULTS_PER_PAGE=20
 SEARCH_LOG_ENABLED=true
+
+# Redis Cache Configuration
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=your_redis_password
+REDIS_DB=0
 ```
 
 ## Frontend Deployment
@@ -178,6 +185,18 @@ Create a subdomain for the API (e.g., `api.mpbusinesshub.co.za`) and set up the 
   RewriteCond %{HTTP:X-Forwarded-For} !^$
   RewriteCond %{REQUEST_URI} ^/api/
   RewriteRule .* - [E=RATE_LIMIT:1]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Protect against XSS attacks
+    Header set X-XSS-Protection "1; mode=block"
+    # Prevent MIME-type sniffing
+    Header set X-Content-Type-Options "nosniff"
+    # Protect against clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    # Enable strict HTTPS
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 ```
 
@@ -363,3 +382,13 @@ If you encounter issues not covered in this guide:
 1. Check the application logs for specific error messages
 2. Consult the Afrihost knowledge base for hosting-specific issues
 3. Contact the development team for application-specific problems
+
+## Redis Installation on Afrihost
+
+Redis is optional but recommended for improved performance. If your Afrihost hosting plan supports Redis:
+
+1. Contact Afrihost support to enable Redis on your hosting account
+2. Once enabled, you'll receive the Redis host, port, and credentials
+3. Update your `.env` file with these credentials
+
+If Redis is not available, the application will function normally without caching, though performance may be affected under high load.

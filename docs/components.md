@@ -323,6 +323,154 @@ The Mpumalanga Business Hub frontend is built using a component-based architectu
 - Dismiss button when applicable
 - Auto-dismiss timer option
 
+### LazyLoadImage
+
+**File:** `/client/src/components/ui/LazyLoadImage.jsx`
+
+**Purpose:** Performance-optimized image component that only loads images when they enter the viewport.
+
+**Features:**
+- Lazy loading of images for improved page performance
+- Placeholder images while loading
+- Smooth loading transitions
+- Error handling for failed image loads
+
+**Props:**
+- `src`: String (required) - The source URL of the image
+- `alt`: String (required) - Alt text for the image
+- `placeholderSrc`: String - URL for placeholder image while loading
+- `width`: String/Number - Width of the image
+- `height`: String/Number - Height of the image
+- `className`: String - CSS classes to apply
+- `effect`: String - Loading effect ("blur", "fade", "none")
+
+**Implementation Details:**
+- Uses Intersection Observer API to detect when images enter the viewport
+- Only loads full images when they are about to become visible
+- Smooth transition effects when images load
+- Error handling that falls back to placeholder if image fails to load
+
+### TierBadge
+
+**File:** `/client/src/components/ui/TierBadge.jsx`
+
+**Purpose:** Visual representation of business membership tiers.
+
+**Features:**
+- Color-coded badge showing membership tier
+- Tooltip with tier benefits information
+
+**Props:**
+- `tier`: String (required) - The tier name (Basic, Bronze, Silver, Gold)
+- `size`: String - Size of the badge (small, medium, large)
+- `showTooltip`: Boolean - Whether to display tooltip with benefits
+
+**Implementation Details:**
+- Uses the tierConfig.js file for tier colors and descriptions
+- Displays tooltip on hover with tier benefits
+- Consistent styling across the application
+
+## Admin Components
+
+### ApprovalQueue
+
+**File:** `/client/src/components/admin/ApprovalQueue.jsx`
+
+**Purpose:** Interface for reviewing and approving pending business listings.
+
+**Features:**
+- List of pending business listings awaiting approval
+- Detailed view of business information
+- Filtering by category and district
+- Approval/rejection workflow with feedback
+
+**Props:** None (fetches data directly from API)
+
+**Implementation Details:**
+- Grid layout of business cards with approval/rejection buttons
+- Modal for rejection feedback to send to business owners
+- Sorting options (oldest/newest first)
+- Loading and error states
+- Uses LazyLoadImage for business logos
+
+## Search Components
+
+### BusinessSearch
+
+**File:** `/client/src/components/search/BusinessSearch.jsx`
+
+**Purpose:** Advanced search component using Fuse.js for fuzzy search functionality.
+
+**Features:**
+- Client-side fuzzy searching with Fuse.js
+- Filtering by category, district, and package type
+- Instant results as user types
+- Search analytics logging
+
+**Props:** None (fetches data directly from API)
+
+**Implementation Details:**
+- Uses Fuse.js for fuzzy matching and relevance scoring
+- Debounced search input to prevent excessive API calls
+- Combines search query with filters
+- Logs searches for analytics purposes
+- Uses LazyLoadImage for business logos in results
+
+## Server Middleware
+
+### CsrfMiddleware
+
+**File:** `/server/src/middleware/CsrfMiddleware.php`
+
+**Purpose:** Protects against Cross-Site Request Forgery (CSRF) attacks.
+
+**Features:**
+- Generates and validates CSRF tokens
+- Enforces token validation for state-changing requests
+- Token regeneration for GET requests
+
+**Implementation Details:**
+- Implements PSR-15 middleware interface
+- Validates tokens from X-CSRF-Token header or csrf_token field
+- Uses PHP's hash_equals for secure comparison
+- Session-based token storage
+
+### RateLimitMiddleware
+
+**File:** `/server/src/middleware/RateLimitMiddleware.php`
+
+**Purpose:** Prevents abuse by limiting the number of requests from a single IP.
+
+**Features:**
+- Configurable request limits per time window
+- Response headers with rate limit information
+- IP-based tracking with proxy awareness
+
+**Implementation Details:**
+- Uses Redis for rate limit tracking
+- Falls back gracefully if Redis is unavailable
+- Sets X-RateLimit headers on responses
+- Handles various proxy headers for accurate client IP detection
+
+## Cache Components
+
+### RedisCache
+
+**File:** `/server/src/cache/RedisCache.php`
+
+**Purpose:** Caching utility to improve API performance.
+
+**Features:**
+- Memory-based caching of expensive operations
+- Configurable TTL (time-to-live) for cached items
+- Graceful fallback if Redis is unavailable
+
+**Implementation Details:**
+- Wraps the Redis PHP extension
+- Provides simple remember/forget/flush methods
+- JSON serialization for complex data structures
+- Environment-based configuration
+
 ## Component Integration
 
 Components are integrated into the application using a hierarchical structure:

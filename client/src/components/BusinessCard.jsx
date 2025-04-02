@@ -1,7 +1,16 @@
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 function BusinessCard({ business }) {
   const { id, name, category, district, package_type, rating, description, contact, image } = business
+
+  // Define tier badge styles
+  const tierBadgeStyles = {
+    Gold: 'bg-amber-400 text-amber-900',
+    Silver: 'bg-gray-300 text-gray-900',
+    Bronze: 'bg-orange-600 text-white',
+    Basic: 'bg-gray-100 text-gray-600'
+  };
 
   // Function to determine what contact information is visible based on package tier
   const getVisibleContact = () => {
@@ -44,18 +53,47 @@ function BusinessCard({ business }) {
     )
   }
 
-  // Get the appropriate badge styling based on package type
-  const getBadgeStyle = () => {
-    switch (package_type) {
-      case 'Gold':
-        return 'badge-gold'
-      case 'Silver':
-        return 'badge-silver'
-      case 'Bronze':
-        return 'badge-bronze'
-      default:
-        return 'badge-basic'
+  // Render premium features based on tier
+  const renderPremiumFeatures = () => {
+    if (package_type === 'Basic') {
+      return null;
     }
+    
+    return (
+      <div className="premium-features mt-3">
+        {/* Website link - available for Bronze, Silver, Gold */}
+        {contact?.website && (
+          <a 
+            href={contact.website} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-flex items-center mr-3 text-sm text-blue-600 hover:text-blue-800"
+          >
+            <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+            </svg>
+            Website
+          </a>
+        )}
+        
+        {/* WhatsApp button - available for Bronze, Silver, Gold */}
+        {contact?.whatsapp && (
+          <a 
+            href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-flex items-center text-sm text-green-600 hover:text-green-800"
+          >
+            <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+              <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-18.5c-4.694 0-8.5 3.806-8.5 8.5s3.806 8.5 8.5 8.5 8.5-3.806 8.5-8.5S16.694 3.5 12 3.5z" />
+            </svg>
+            WhatsApp
+          </a>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -73,7 +111,7 @@ function BusinessCard({ business }) {
         )}
         
         {/* Package badge */}
-        <div className={`absolute top-2 right-2 badge ${getBadgeStyle()}`}>
+        <div className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-medium ${tierBadgeStyles[package_type] || tierBadgeStyles.Basic}`}>
           {package_type}
         </div>
         
@@ -101,25 +139,43 @@ function BusinessCard({ business }) {
           {district}
         </div>
         
-        <p className="text-gray-700">
-          {description?.substring(0, 120)}{description?.length > 120 ? '...' : ''}
-        </p>
+        <p className="text-gray-700 line-clamp-2 mb-2">{description}</p>
         
-        {/* Contact info (only for Bronze tier and above) */}
-        {getVisibleContact()}
+        {/* Premium features */}
+        {renderPremiumFeatures()}
         
-        {/* View Details button */}
-        <div className="mt-4">
-          <Link 
-            to={`/business/${id}`} 
-            className="w-full block text-center py-2 px-4 border border-blue-600 rounded text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition-colors"
-          >
+        <div className="mt-4 flex justify-between items-center">
+          <Link to={`/business/${id}`} className="text-blue-600 hover:text-blue-800 font-medium">
             View Details
           </Link>
+          
+          {/* Special badge for Gold tier */}
+          {package_type === 'Gold' && (
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+              Featured
+            </span>
+          )}
         </div>
+        
+        {/* Contact information */}
+        {getVisibleContact()}
       </div>
     </div>
   )
+}
+
+BusinessCard.propTypes = {
+  business: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    category: PropTypes.string.isRequired,
+    district: PropTypes.string,
+    package_type: PropTypes.string.isRequired,
+    rating: PropTypes.number,
+    description: PropTypes.string,
+    contact: PropTypes.object,
+    image: PropTypes.string
+  }).isRequired
 }
 
 export default BusinessCard
