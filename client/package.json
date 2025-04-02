@@ -14,11 +14,14 @@
     "@googlemaps/js-api-loader": "^1.16.2",
     "@sentry/react": "^9.10.1",
     "axios": "^1.5.0",
+    "bootstrap": "^5.3.3",
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
-    "react-router-dom": "^6.16.0"
+    "react-router-dom": "^6.16.0",
+    "styled-components": "^6.1.16",
+    "tailwindcss": "^4.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.21",
