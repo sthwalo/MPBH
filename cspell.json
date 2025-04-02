@@ -1,0 +1,39 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "Mpumalanga",
+    "Mbombela",
+    "Ehlanzeni",
+    "Bushbuckridge",
+    "Emalahleni",
+    "Nelspruit",
+    "Hazyview",
+    "Lowveld",
+    "Gert",
+    "Sibande",
+    "Nkangala",
+    "Blyde",
+    "MPBH",
+    "mpbh",
+    "mpbusinesshub",
+    "krugersafari",
+    "Afrihost",
+    "PAYFAST",
+    "SAMEORIGIN",
+    "nosniff",
+    "clickjacking",
+    "mysqldump",
+    "LOGFILE",
+    "ERRMODE",
+    "VARCHAR",
+    "Axios"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "public/uploads/**",
+    "dist/**",
+    "vendor/**",
+    "build/**"
+  ]
+}

@@ -1,12 +1,19 @@
+/* Import design tokens */
+@import './styles/tokens.css';
+
+/* Main container */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xlarge);
 }
 
 .main-content {
   flex: 1;
-  padding: 2rem 0;
+  padding: var(--spacing-large) 0;
 }
 
 /* Button Styles */
@@ -14,42 +21,46 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.625rem 1.25rem;
+  padding: 0.75rem 1.5rem;
   border-radius: var(--border-radius);
-  font-weight: 500;
+  font-weight: 600;
   transition: var(--transition);
   text-align: center;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .btn-primary {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--color-neutral-100);
+  border: var(--border-width-thin) solid var(--primary-color);
 }
 
 .btn-primary:hover {
   background-color: #1d4ed8;
-  color: white;
+  color: var(--color-neutral-100);
 }
 
 .btn-secondary {
-  background-color: var(--secondary-color);
-  color: white;
+  background-color: transparent;
+  color: var(--primary-color);
+  border: var(--border-width-thin) solid var(--primary-color);
 }
 
 .btn-secondary:hover {
   background-color: #047857;
-  color: white;
+  color: var(--color-neutral-100);
 }
 
 .btn-outline {
-  border: 1px solid var(--primary-color);
+  border: var(--border-width-thin) solid var(--primary-color);
   color: var(--primary-color);
   background-color: transparent;
 }
 
 .btn-outline:hover {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--color-neutral-100);
 }
 
 /* Card Styles */
@@ -57,8 +68,8 @@
   background-color: var(--card-background);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
   transition: var(--transition);
 }
 
@@ -69,7 +80,7 @@
 
 /* Form Styles */
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-medium);
 }
 
 .form-label {
@@ -80,15 +91,13 @@
 }
 
 .form-control {
+  display: block;
   width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-primary);
-  background-color: var(--card-background);
-  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  font-size: var(--font-size-5);
+  border: var(--border-width-thin) solid var(--border-color);
   border-radius: var(--border-radius);
-  transition: var(--transition);
+  background-color: var(--color-neutral-100);
 }
 
 .form-control:focus {
