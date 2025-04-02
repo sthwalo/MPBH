@@ -11,7 +11,7 @@ fi
 # Set variables
 BACKUP_DIR="../backups"
 DATETIME=$(date +"%Y-%m-%d_%H-%M-%S")
-BACKUP_FILE="${BACKUP_DIR}/mpbh_backup_${DATETIME}.sql"
+PG_BACKUP_FILE="${BACKUP_DIR}/mpbh_pg_backup_${DATETIME}.sql"
 LOGFILE="${BACKUP_DIR}/backup_log.txt"
 S3_BUCKET="${S3_BUCKET:-mpbh-backups}"
 
@@ -24,19 +24,19 @@ log_message() {
 }
 
 # Start backup process
-log_message "Starting database backup"
+log_message "Starting PostgreSQL database backup"
 
-# Create MySQL dump
-log_message "Creating MySQL dump..."
-mysqldump -h "${DB_HOST}" -u "${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" > "$BACKUP_FILE"
+# Create PostgreSQL dump
+log_message "Creating PostgreSQL dump..."
+PGPASSWORD="${DB_PASSWORD}" pg_dump -h "${DB_HOST}" -U "${DB_USER}" "${DB_NAME}" > "$PG_BACKUP_FILE"
 
 if [ $? -eq 0 ]; then
-  log_message "MySQL dump created successfully: $BACKUP_FILE"
+  log_message "PostgreSQL dump created successfully: $PG_BACKUP_FILE"
   
   # Compress the backup file
   log_message "Compressing backup file..."
-  gzip -f "$BACKUP_FILE"
-  COMPRESSED_FILE="${BACKUP_FILE}.gz"
+  gzip -f "$PG_BACKUP_FILE"
+  COMPRESSED_FILE="${PG_BACKUP_FILE}.gz"
   
   # Upload to S3 if AWS CLI is available
   if command -v aws >/dev/null 2>&1 && [ -n "${AWS_ACCESS_KEY_ID}" ] && [ -n "${AWS_SECRET_ACCESS_KEY}" ]; then
@@ -54,13 +54,13 @@ if [ $? -eq 0 ]; then
   
   # Clean up old backups (keep last 7 days)
   log_message "Cleaning up old backups..."
-  find "$BACKUP_DIR" -name "mpbh_backup_*.sql.gz" -type f -mtime +7 -delete
+  find "$BACKUP_DIR" -name "mpbh_pg_backup_*.sql.gz" -type f -mtime +7 -delete
   
   log_message "Backup process completed successfully"
   
   # Print backup summary
   BACKUP_SIZE=$(du -h "$COMPRESSED_FILE" | cut -f1)
-  echo "\nBackup Summary:"
+  echo -e "\nBackup Summary:"
   echo "  File: $(basename "$COMPRESSED_FILE")"
   echo "  Size: $BACKUP_SIZE"
   echo "  Location: $BACKUP_DIR"
@@ -68,7 +68,7 @@ if [ $? -eq 0 ]; then
     echo "  S3 Bucket: $S3_BUCKET"
   fi
 else
-  log_message "Error: MySQL dump failed"
+  log_message "Error: PostgreSQL dump failed"
   exit 1
 fi
 

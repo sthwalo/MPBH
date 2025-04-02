@@ -18,7 +18,22 @@ class Database {
         $this->username = $_ENV['DB_USER'];
         $this->password = $_ENV['DB_PASSWORD'];
     }
+<?php
 
+namespace App\Config;
+
+use PDO;
+
+class PostgresDatabase {
+    public static function connect() {
+        $dsn = "pgsql:host=" . $_ENV['DB_HOST'] . ";dbname=" . $_ENV['DB_NAME'];
+        return new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false // Critical for PostgreSQL
+        ]);
+    }
+}
     /**
      * Get the database connection
      * @return PDO|null
