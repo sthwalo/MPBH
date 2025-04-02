@@ -297,3 +297,48 @@ Stores search queries and results for analytics.
 - `payments.status` must be one of: 'pending', 'completed', 'failed'
 - `adverts.status` must be one of: 'pending', 'active', 'expired'
 - `users.role` must be one of: 'user', 'admin'
+
+# PostgreSQL Database Schema
+
+## Database Migration
+The Mpumalanga Business Hub has migrated from MySQL to PostgreSQL for improved performance and compatibility with Afrihost hosting. This document outlines the PostgreSQL-specific schema implementation.
+
+## Key PostgreSQL Features Utilized
+
+### Custom Enumerated Types
+PostgreSQL uses custom types instead of MySQL ENUMs:
+
+```sql
+CREATE TYPE package_type_enum AS ENUM ('Basic', 'Silver', 'Gold');
+CREATE TYPE verification_status_enum AS ENUM ('pending', 'verified', 'rejected');
+CREATE TYPE product_status_enum AS ENUM ('active', 'inactive');
+CREATE TYPE review_status_enum AS ENUM ('pending', 'approved', 'rejected');
+CREATE TYPE advert_status_enum AS ENUM ('pending', 'active', 'rejected', 'expired');
+CREATE TYPE advert_placement_enum AS ENUM ('sidebar', 'banner', 'featured');
+CREATE TYPE payment_type_enum AS ENUM ('upgrade', 'advert');
+CREATE TYPE payment_status_enum AS ENUM ('pending', 'completed', 'failed');
+
+
+### 2. Update for deployment.md
+
+```markdown
+# PostgreSQL Deployment on Afrihost
+
+## Migration to PostgreSQL
+The Mpumalanga Business Hub now uses PostgreSQL for database management. This guide covers deploying to Afrihost's PostgreSQL environment.
+
+## PostgreSQL Setup in Afrihost
+
+### Database Creation
+1. Log in to Afrihost cPanel
+2. Navigate to **PostgreSQL Databases**
+3. Create a new database: `mpbusis6k1d8_sthwalo`
+4. Create a database user with a strong password
+5. Assign the user to the database with full privileges
+
+### Schema Import
+Upload the PostgreSQL schema to your Afrihost account:
+1. Upload `schema_pg.sql` to your server
+2. Import via phpPgAdmin or command line:
+   ```bash
+   psql -U mpbusis6k1d8_sthwalo -h localhost -d mpbusis6k1d8_sthwalo -f schema_pg.sql

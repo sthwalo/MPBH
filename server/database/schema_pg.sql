@@ -1,20 +1,44 @@
+-- First, create a function for updating timestamps
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Mpumalanga Business Hub Database Schema
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
-    id INT  PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     reset_token VARCHAR(255) DEFAULT NULL,
-    reset_token_expires DATETIME DEFAULT NULL,
+    reset_token_expires TIMESTAMP DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add trigger for users
+CREATE TRIGGER update_users_timestamp
+BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+-- Create ENUM replacements as custom types
+CREATE TYPE package_type_enum AS ENUM ('Basic', 'Silver', 'Gold');
+CREATE TYPE verification_status_enum AS ENUM ('pending', 'verified', 'rejected');
+CREATE TYPE product_status_enum AS ENUM ('active', 'inactive');
+CREATE TYPE review_status_enum AS ENUM ('pending', 'approved', 'rejected');
+CREATE TYPE advert_status_enum AS ENUM ('pending', 'active', 'rejected', 'expired');
+CREATE TYPE advert_placement_enum AS ENUM ('sidebar', 'banner', 'featured');
+CREATE TYPE payment_type_enum AS ENUM ('upgrade', 'advert');
+CREATE TYPE payment_status_enum AS ENUM ('pending', 'completed', 'failed');
 
 -- Businesses table
 CREATE TABLE IF NOT EXISTS businesses (
-    id INT  PRIMARY KEY,
-    user_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     category VARCHAR(100) NOT NULL,
@@ -25,85 +49,110 @@ CREATE TABLE IF NOT EXISTS businesses (
     website VARCHAR(255),
     logo VARCHAR(255),
     cover_image VARCHAR(255),
-    package_type ENUM('Basic', 'Silver', 'Gold') DEFAULT 'Basic',
+    package_type package_type_enum DEFAULT 'Basic',
     subscription_id VARCHAR(100),
-    verification_status ENUM('pending', 'verified', 'rejected') DEFAULT 'pending',
+    verification_status verification_status_enum DEFAULT 'pending',
     social_media JSONB,
     business_hours JSONB,
     longitude DECIMAL(10, 8),
     latitude DECIMAL(11, 8),
-    adverts_remaining INT DEFAULT 0,
+    adverts_remaining INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Add trigger for businesses
+CREATE TRIGGER update_businesses_timestamp
+BEFORE UPDATE ON businesses
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
 -- Products table
 CREATE TABLE IF NOT EXISTS products (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2),
     image VARCHAR(255),
-    status ENUM('active', 'inactive') DEFAULT 'active',
+    status product_status_enum DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE
 );
 
+-- Add trigger for products
+CREATE TRIGGER update_products_timestamp
+BEFORE UPDATE ON products
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
 -- Reviews table
 CREATE TABLE IF NOT EXISTS reviews (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
-    user_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
     reviewer_name VARCHAR(255) NOT NULL,
     rating DECIMAL(2, 1) NOT NULL,
     comment TEXT NOT NULL,
-    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    status review_status_enum DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Add trigger for reviews
+CREATE TRIGGER update_reviews_timestamp
+BEFORE UPDATE ON reviews
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
 -- Adverts table
 CREATE TABLE IF NOT EXISTS adverts (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     image VARCHAR(255),
     url VARCHAR(255),
-    status ENUM('pending', 'active', 'rejected', 'expired') DEFAULT 'pending',
-    placement ENUM('sidebar', 'banner', 'featured') DEFAULT 'sidebar',
+    status advert_status_enum DEFAULT 'pending',
+    placement advert_placement_enum DEFAULT 'sidebar',
     start_date DATE,
     end_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE
 );
+
+-- Add trigger for adverts
+CREATE TRIGGER update_adverts_timestamp
+BEFORE UPDATE ON adverts
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
 -- Payments table
 CREATE TABLE IF NOT EXISTS payments (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
     reference VARCHAR(100) NOT NULL UNIQUE,
     amount DECIMAL(10, 2) NOT NULL,
-    payment_type ENUM('upgrade', 'advert') NOT NULL,
-    package_type ENUM('Basic', 'Silver', 'Gold') DEFAULT 'Basic',
-    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    payment_type payment_type_enum NOT NULL,
+    package_type package_type_enum DEFAULT 'Basic',
+    status payment_status_enum DEFAULT 'pending',
     transaction_id VARCHAR(100),
     processor_response JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE
 );
 
+-- Add trigger for payments
+CREATE TRIGGER update_payments_timestamp
+BEFORE UPDATE ON payments
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
 -- Analytics - Page Views
 CREATE TABLE IF NOT EXISTS analytics_page_views (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
     ip_address VARCHAR(45),
     user_agent TEXT,
     referrer VARCHAR(255),
@@ -113,9 +162,9 @@ CREATE TABLE IF NOT EXISTS analytics_page_views (
 
 -- Analytics - Product Views
 CREATE TABLE IF NOT EXISTS analytics_product_views (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
-    product_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
     ip_address VARCHAR(45),
     viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
@@ -124,9 +173,9 @@ CREATE TABLE IF NOT EXISTS analytics_product_views (
 
 -- Analytics - Advert Clicks
 CREATE TABLE IF NOT EXISTS analytics_advert_clicks (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
-    advert_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
+    advert_id INTEGER NOT NULL,
     ip_address VARCHAR(45),
     clicked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
@@ -135,8 +184,8 @@ CREATE TABLE IF NOT EXISTS analytics_advert_clicks (
 
 -- Analytics - Inquiries
 CREATE TABLE IF NOT EXISTS analytics_inquiries (
-    id INT  PRIMARY KEY,
-    business_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL,
     inquiry_type VARCHAR(50) NOT NULL,
     ip_address VARCHAR(45),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -152,4 +201,5 @@ CREATE INDEX idx_reviews_business_id ON reviews(business_id);
 CREATE INDEX idx_adverts_business_id ON adverts(business_id);
 CREATE INDEX idx_adverts_placement ON adverts(placement);
 CREATE INDEX idx_payments_business_id ON payments(business_id);
-CREATE INDEX idx_payments_reference ON payments(reference);
+CREATE INDEX idx_payments_reference ON payments(reference);cd /Users/sthwalonyoni/MPBH/client
+npm run dev
