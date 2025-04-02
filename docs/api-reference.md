@@ -963,3 +963,30 @@ CORS is enabled for all API endpoints. The following origins are allowed:
 - `https://www.mpbusinesshub.co.za`
 
 During development, `localhost` origins are also allowed.
+
+
+### 3. Update for api-reference.md
+
+```markdown
+## PostgreSQL Migration Notes
+
+The API now uses PostgreSQL instead of MySQL. This generally requires no changes to API usage, but note these PostgreSQL-specific details:
+
+### Query Syntax Differences
+- **JSON queries**: When filtering by JSON fields, use PostgreSQL-specific JSON operators 
+  (`->` for JSON keys, `->>` for JSON values as text)
+- **Case sensitivity**: PostgreSQL is case-sensitive for string comparisons by default
+- **Regex searches**: Use `~` for regex matching instead of MySQL's REGEXP
+
+### Performance Considerations
+- Queries using PostgreSQL's GIN indexes (for JSONB fields) may show improved performance
+- Full-text search now uses PostgreSQL's built-in text search capabilities
+
+### Example PostgreSQL-Specific Query
+
+```sql
+-- Find businesses with specific social media links
+SELECT * FROM businesses 
+WHERE social_media->>'facebook' IS NOT NULL 
+ORDER BY created_at DESC
+LIMIT 10;
