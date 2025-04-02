@@ -7,13 +7,13 @@
   flex-direction: column;
   min-height: 100vh;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: var(--lwc-spacingNone, 0) auto;
   padding: var(--spacing-xlarge);
 }
 
 .main-content {
   flex: 1;
-  padding: var(--spacing-large) 0;
+  padding: var(--spacing-large) var(--lwc-spacingNone, 0);
 }
 
 /* Button Styles */
@@ -75,7 +75,7 @@
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--lwc-spacingNone, 0) 10px 15px -3px rgba(0, 0, 0, 0.1), var(--lwc-spacingNone, 0) 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Form Styles */
@@ -103,7 +103,7 @@
 .form-control:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  box-shadow: var(--lwc-spacingNone, 0) var(--lwc-spacingNone, 0) var(--lwc-spacingNone, 0) 3px rgba(37, 99, 235, 0.2);
 }
 
 /* Grid Layout */
@@ -141,13 +141,13 @@
 }
 
 .badge-basic {
-  background-color: #e5e7eb;
+  background-color: var(--lwc-brandLightActive, var(--lwc-brandLightActive, var(--lwc-brandLightActive, var(--lwc-brandLightActive, var(--lwc-brandLightActive, #e5e7eb)))));
   color: #374151;
 }
 
 .badge-bronze {
   background-color: #92400e;
-  color: white;
+  color: var(--lwc-paletteNeutral100, var(--lwc-colorGray1, var(--lwc-colorGray1, var(--lwc-colorGray1, white))));
 }
 
 .badge-silver {

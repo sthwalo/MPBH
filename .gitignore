@@ -34,3 +34,28 @@ yarn-error.log*
 # Database files
 *.sql.gz
 *.dump
+
+# Ignore specific words
+*.md linguist-vendored
+*.css linguist-vendored
+
+# Ignore specific files
+**/*.css
+**/*.md
+**/*.json
+**/*.yaml
+**/*.yml
+**/*.sql
+**/*.sh
+**/*.htaccess
+
+# Ignore places with South African place names
+client/src/pages/BusinessDirectory.jsx
+client/index.html
+docs/**/*
+
+# Ignore specific technical terms
+server/src/middleware/SecurityHeadersMiddleware.php
+server/public/.htaccess
+server/scripts/backup-db.sh
+server/src/config/Database.php

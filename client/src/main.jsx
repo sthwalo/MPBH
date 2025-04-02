@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 import * as Sentry from '@sentry/react'
+// Add this line near the top of your main.jsx
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Initialize Sentry for error tracking
 // Only enable in production environment

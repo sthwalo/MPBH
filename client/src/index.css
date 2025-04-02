@@ -47,7 +47,7 @@ button {
   border: none;
   background: none;
   border-radius: var(--radius-medium);
-  border: 1px solid transparent;
+  border: var(--lwc-borderWidthThin, 1px) solid transparent;
   padding: var(--spacing-medium) 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -62,8 +62,8 @@ img {
 .container {
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  margin: var(--lwc-spacingNone, 0) auto;
+  padding: var(--lwc-spacingNone, 0) var(--lwc-varSpacingMedium, 1rem);
 }
 
 /* Typography */
@@ -91,7 +91,7 @@ h4 {
 }
 
 p {
-  margin-bottom: 1rem;
+  margin-bottom: var(--lwc-varSpacingMedium, 1rem);
 }
 
 /* Responsive */
