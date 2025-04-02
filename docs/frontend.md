@@ -13,6 +13,9 @@ The Mpumalanga Business Hub frontend is built using React with Vite as the build
 - **State Management**: React Context API
 - **Search Functionality**: Fuse.js for client-side searching
 - **Form Handling**: Custom form hooks
+- **Admin Panel**: Custom admin dashboard for moderators
+- **Error Handling**: API error boundaries for robust error handling
+- **Tier-Based UI Rendering**: Conditional rendering based on subscription tier
 
 ## Project Structure
 
@@ -27,11 +30,15 @@ client/
 │   ├── assets/         # Static assets like images and icons
 │   ├── components/      # Reusable UI components
 │   │   ├── dashboard/   # Dashboard-specific components
+│   │   ├── admin/       # Admin components
+│   │   │   └── AdminPanel.jsx        # Admin dashboard panel
 │   │   └── ui/          # Generic UI components
 │   ├── context/        # State management using Context API
 │   ├── hooks/          # Custom React hooks
 │   ├── pages/          # Page components
 │   ├── utils/          # Utility functions
+│   ├── errors/         # Error handling components
+│   │   └── ApiErrorBoundary.jsx     # API error boundary
 │   ├── App.jsx         # Main application component
 │   ├── App.css         # Global styles
 │   ├── index.css       # Tailwind imports and base styles
@@ -59,6 +66,11 @@ client/
 - **AdvertsManagement**: Tools for creating and managing promotional adverts
 - **PaymentHistory**: Display of subscription payment history
 - **UpgradePlan**: Interface for upgrading membership tier
+
+### Admin Components
+
+- **AdminPanel**: Custom admin dashboard for moderators
+- **AdminBusinessDetails**: Detailed view of a specific business for moderators
 
 ## Pages
 
@@ -95,6 +107,7 @@ React Router is used for client-side routing:
   <Route path="/login" element={<Login />} />
   <Route path="/register" element={<Register />} />
   <Route path="/dashboard/*" element={<Dashboard />} />
+  <Route path="/admin/*" element={<AdminPanel />} />
   <Route path="*" element={<NotFound />} />
 </Routes>
 ```
@@ -202,3 +215,145 @@ const validateForm = () => {
 - **Lazy Loading**: Images are lazy-loaded to improve initial page load time
 - **Memoization**: React.memo is used for expensive renders
 - **Throttling/Debouncing**: Applied to search inputs and resize handlers
+
+## Tier-Based UI Rendering
+
+The application conditionally renders UI elements based on the business's subscription tier:
+
+```jsx
+const BusinessFeatures = ({ business }) => {
+  const { package_type } = business;
+  
+  const canAddProducts = ['Silver', 'Gold'].includes(package_type);
+  const canCreateAdverts = ['Silver', 'Gold'].includes(package_type);
+  const hasFeaturedPlacement = package_type === 'Gold';
+  
+  return (
+    <div className="business-features">
+      {canAddProducts && (
+        <div className="feature">
+          <h3>Product Management</h3>
+          <p>Add and manage your products or services</p>
+          <Link to="/dashboard/products">Manage Products</Link>
+        </div>
+      )}
+      
+      {canCreateAdverts && (
+        <div className="feature">
+          <h3>Advertising</h3>
+          <p>Create promotional advertisements</p>
+          <Link to="/dashboard/adverts">Manage Adverts</Link>
+        </div>
+      )}
+      
+      {hasFeaturedPlacement && (
+        <div className="feature premium">
+          <h3>Featured Placement</h3>
+          <p>Your business is featured on the homepage</p>
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+## Error Handling
+
+The application implements robust error handling with API error boundaries:
+
+```jsx
+// Example usage of ApiErrorBoundary
+import ApiErrorBoundary, { DefaultErrorMessage } from '../errors/ApiErrorBoundary';
+
+const BusinessPage = () => {
+  return (
+    <ApiErrorBoundary
+      fallback={(error, retry) => (
+        <div className="error-container">
+          <h2>Error loading business data</h2>
+          <p>{error.message}</p>
+          <button onClick={retry}>Try Again</button>
+        </div>
+      )}
+    >
+      <BusinessContent />
+    </ApiErrorBoundary>
+  );
+};
+```
+
+## Responsive Design
+
+The application is fully responsive, adapting to various screen sizes and devices using media queries and flexible layouts:
+
+```css
+/* Example responsive styling */
+.business-card {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .business-card {
+    width: calc(50% - 1rem);
+    margin-right: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .business-card {
+    width: calc(33.333% - 1rem);
+  }
+}
+```
+
+## Performance Optimizations
+
+The frontend implements several optimizations for better performance:
+
+1. **Code Splitting**: Component-based code splitting with React.lazy
+2. **Lazy Loading**: Images and components are loaded on demand
+3. **Debounced Search**: Search queries are debounced to reduce API calls
+4. **Pagination**: Data is paginated to reduce initial load times
+5. **Memoization**: React.memo and useMemo for expensive computations
+
+## API Integration
+
+API calls are centralized using Axios with a custom instance:
+
+```jsx
+// API client setup
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Add authorization token to requests
+apiClient.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle response errors
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      // Handle authentication errors
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default apiClient;

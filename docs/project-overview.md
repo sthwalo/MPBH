@@ -18,107 +18,107 @@ The vision for Mpumalanga Business Hub is to create a digital ecosystem that fos
 ### For Businesses
 
 - **Business Listings**: Register and create detailed profiles with contact information, business hours, and service descriptions
-- **Tiered Memberships**: Access different levels of features based on subscription level (Basic, Bronze, Silver, Gold)
+- **Tiered Memberships**: Access different levels of features based on subscription level (Basic, Silver, Gold)
 - **Dashboard**: Manage business information, track statistics, and handle subscriptions
 - **Product Management**: Add and manage products/services (Silver and Gold tiers)
 - **Advertising**: Create promotional advertisements to reach more potential customers (Silver and Gold tiers)
 - **Analytics**: Track profile views, inquiries, and customer engagement
+- **Payment Processing**: Secure payment processing for membership subscriptions via PayFast
+- **Admin Approval**: Business listings go through an approval process before being published
 
-### For Users/Customers
+### For Users
 
-- **Business Discovery**: Search and browse businesses by category, location, or specific criteria
-- **Advanced Filtering**: Filter businesses based on various parameters
-- **Business Details**: View comprehensive information about businesses including location, contact details, and offerings
+- **Business Directory**: Browse and search for businesses by category, district, or keyword
+- **Advanced Search**: Fuzzy search capabilities for finding businesses even with inexact terms
+- **Business Profiles**: View detailed information about businesses, including products and services
 - **Reviews and Ratings**: Read and submit reviews for businesses
+- **Contact Forms**: Contact businesses directly through the platform
+- **Location-Based Search**: Find businesses near a specific location
+- **Interactive Map**: View businesses on a map interface
 
-## Technology Stack
+## Technical Architecture
 
-| **Layer**       | **Technology**          | **Version** | **Purpose**  |
-|-----------------|-------------------------|-------------|-------------|
-| **Frontend**    | React + Vite            | 18.x        | Dynamic UI  |  
-| **State**       | Context API             | -           | Client state |  
-| **Backend**     | PHP Slim Framework      | 8.1+        | REST API    |  
-| **Database**    | MySQL                   | 8.0         | Data storage |  
-| **Search**      | Fuse.js                 | 6.6         | Client-side search |  
-| **Payments**    | PayFast                 | -           | Subscription billing |  
-| **Maps**        | Google Maps API         | -           | Location services |  
+### Frontend
 
-## Project Structure
+- **Framework**: React.js with Vite build tool
+- **State Management**: React Context API
+- **Routing**: React Router v6
+- **UI Components**: Custom components with responsive design
+- **Styling**: CSS Modules with SCSS
+- **HTTP Client**: Axios for API communication
+- **Search**: Fuse.js for client-side fuzzy search
 
-The project follows a client-server architecture with a clear separation between the frontend and backend components:
+### Backend
+
+- **Framework**: Custom PHP MVC framework
+- **API**: RESTful JSON API
+- **Authentication**: JWT-based authentication with PHP sessions
+- **Database**: MySQL with optimized schema
+- **File Storage**: Local file system with image optimization
+- **Service Layer**: Business logic encapsulated in dedicated service classes
+- **Rate Limiting**: Token bucket algorithm for API rate limiting
+- **Input Validation**: Robust input sanitization and validation
+
+### External Integrations
+
+- **Payment Gateway**: PayFast for handling subscription payments
+- **Email Service**: SMTP for transactional emails
+- **Analytics**: Custom analytics tracking system
+
+## Project Architecture
+
+The project follows a client-server architecture with clean separation of concerns:
+
+### Client-Side Structure
 
 ```
-mpbusinesshub/
-├── client/               # React Frontend
-│   ├── src/
-│   │   ├── components/   # Reusable UI components
-│   │   ├── pages/        # Page components
-│   │   ├── context/      # State management
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── utils/        # Utility functions
-│   │   └── assets/       # Static assets
-├── server/               # PHP Backend
-│   ├── api/              # API endpoints
-│   ├── config/           # Configuration files
-│   ├── models/           # Data models
-│   ├── middleware/       # Request middleware
-│   └── utils/            # Utility functions
-├── docs/                 # Documentation
-└── scripts/              # Deployment and utility scripts
+client/
+├── public/          # Static assets
+├── src/
+│   ├── components/  # Reusable UI components
+│   ├── pages/       # Page components
+│   ├── utils/       # Utility functions and helpers
+│   ├── errors/      # Error handling components
+│   ├── App.jsx      # Main application component
+│   └── main.jsx     # Application entry point
 ```
 
-## Membership Tiers
+### Server-Side Structure
 
-The platform offers a tiered membership system with increasing features and capabilities:
-
-| Feature                   | Basic | Bronze | Silver | Gold |
-|---------------------------|-------|--------|--------|------|
-| **Listing Visibility**    | ✅    | ✅     | ✅     | ✅   |
-| **Contact Links**         | ❌    | ✅     | ✅     | ✅   |
-| **Product Listings**      | ❌    | ❌     | ✅     | ✅   |
-| **Monthly Adverts**       | 0     | 0      | 1      | 4    |
-| **Featured Placement**    | ❌    | ❌     | ❌     | ✅   |
-| **Analytics Dashboard**   | ❌    | ✅     | ✅     | ✅   |
-| **Price (Monthly)**       | Free  | R200   | R500   | R1000|
-| **Price (Annual)**        | Free  | R2000  | R5000  | R10000|
-
-## Implementation Roadmap
-
-### Phase 1: Core Functionality (Completed)
-
-- Frontend components and pages
-- Basic business listing features
-- User authentication and registration
-- Business owner dashboard
-
-### Phase 2: Enhanced Features (Current)
-
-- Complete business management features
-- Subscription payment processing
-- Advanced search and filtering
-- Review and rating system
-
-### Phase 3: Future Enhancements (Planned)
-
-- Mobile application
-- Business-to-business networking
-- Events calendar
-- Local marketplace
-- Integration with additional payment gateways
+```
+server/
+├── public/          # Public-facing directory 
+│   ├── index.php    # Entry point
+│   └── uploads/     # Uploaded files (images)
+├── src/
+│   ├── config/      # Configuration files
+│   ├── controllers/ # Request handlers
+│   ├── middleware/  # Request middleware
+│   ├── models/      # Data models
+│   ├── services/    # Business logic services
+│   ├── utils/       # Utility functions
+│   └── exceptions/  # Custom exceptions
+└── database/        # Database scripts
+```
 
 ## Current Status
 
-The project is currently in Phase 2 of development with the following components completed:
+The project has been fully implemented with the following components completed:
 
 - Complete frontend UI implementation
-- User authentication flows
-- Business registration process
+- User authentication flows with JWT and session handling
+- Business registration process with admin approval workflow
 - Business listing and discovery features
+- Advanced search with Fuse.js integration
 - Business owner dashboard with profile management
-- Product management for premium tiers
+- Product management for premium tiers with tier-based access control
 - Advertising management system
-- **Complete payment processing system with PayFast integration**
-- **Comprehensive statistics tracking and analytics dashboard**
-- **Business performance visualization with metrics for views, engagement, and revenue**
-- **API endpoints for all business operations**
-- **Database schema with optimized tables and relationships**
+- Complete payment processing system with PayFast integration
+- Comprehensive statistics tracking and analytics dashboard
+- Business performance visualization with metrics for views, engagement, and revenue
+- API endpoints for all business operations
+- Database schema with optimized tables and relationships
+- Service layer architecture implementation for better code organization
+- Error handling and input validation throughout the application
+- Rate limiting to prevent API abuse
+- Admin dashboard for business approval and system monitoring

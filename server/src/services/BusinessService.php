@@ -251,4 +251,104 @@ class BusinessService {
     public function getUserBusinesses(int $userId): array {
         return $this->business->getBusinessesByUserId($userId);
     }
+    
+    /**
+     * Check if a business has access to a specific feature based on their package
+     * 
+     * @param int $businessId Business ID
+     * @param string $feature Feature name to check access for
+     * @return bool|int Whether the business has access (or count for limited features)
+     * @throws NotFoundException If business not found
+     */
+    public function checkFeatureAccess(int $businessId, string $feature) {
+        // Get the business tier
+        $stmt = $this->db->prepare("SELECT package_type FROM businesses WHERE id = ?");
+        $stmt->execute([$businessId]);
+        $business = $stmt->fetch();
+        
+        if (!$business) {
+            throw new \Exception("Business not found");
+        }
+        
+        $tier = $business['package_type'];
+        
+        // Define feature access by tier
+        $features = [
+            // Boolean features - true means access is allowed
+            'website' => [
+                'Basic' => false,
+                'Silver' => true, 
+                'Gold' => true
+            ],
+            'social_media' => [
+                'Basic' => true,
+                'Silver' => true,
+                'Gold' => true
+            ],
+            'analytics' => [
+                'Basic' => false,
+                'Silver' => true,
+                'Gold' => true
+            ],
+            'featured_listing' => [
+                'Basic' => false,
+                'Silver' => false,
+                'Gold' => true
+            ],
+            
+            // Count features - number indicates the limit
+            'products' => [
+                'Basic' => 5,
+                'Silver' => 15,
+                'Gold' => 30
+            ],
+            'adverts' => [
+                'Basic' => 0,
+                'Silver' => 1,
+                'Gold' => 3
+            ],
+            'images' => [
+                'Basic' => 3,
+                'Silver' => 10,
+                'Gold' => 20
+            ]
+        ];
+        
+        // If feature doesn't exist in our definitions, deny access
+        if (!isset($features[$feature])) {
+            return false;
+        }
+        
+        // Return the appropriate value (boolean or count)
+        return $features[$feature][$tier];
+    }
+    
+    /**
+     * Get counts for various business items to check against limits
+     * 
+     * @param int $businessId The business ID
+     * @param string $itemType Type of item to count (products, adverts, images)
+     * @return int Current count
+     */
+    public function getItemCount(int $businessId, string $itemType): int {
+        switch ($itemType) {
+            case 'products':
+                $sql = "SELECT COUNT(*) as count FROM products WHERE business_id = ?";
+                break;
+            case 'adverts':
+                $sql = "SELECT COUNT(*) as count FROM adverts WHERE business_id = ?";
+                break;
+            case 'images':
+                $sql = "SELECT COUNT(*) as count FROM business_images WHERE business_id = ?";
+                break;
+            default:
+                return 0;
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$businessId]);
+        $result = $stmt->fetch();
+        
+        return (int)$result['count'];
+    }
 }

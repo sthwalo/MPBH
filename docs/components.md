@@ -61,6 +61,58 @@ The Mpumalanga Business Hub frontend is built using a component-based architectu
 - Displays business name, category, rating, and brief description
 - Shows badge for premium listings (Gold package)
 
+### AdminPanel
+
+**File:** `/client/src/components/admin/AdminPanel.jsx`
+
+**Purpose:** Main component for the admin dashboard.
+
+**Features:**
+- System-wide statistics
+- Links to admin sections
+
+**Props:** None
+
+**Implementation Details:**
+- Fetches system statistics on mount
+- Conditionally renders admin sections based on user role
+
+### ApiErrorBoundary
+
+**File:** `/client/src/errors/ApiErrorBoundary.jsx`
+
+**Purpose:** Error boundary component for handling API errors gracefully.
+
+**Features:**
+- Catches and displays API errors
+- Provides a fallback UI for error states
+
+**Props:**
+- `children`: Child components to wrap
+- `fallback`: Custom fallback UI renderer
+
+**Implementation Details:**
+- Uses React's Error Boundary API to catch errors
+- Renders a default error message or custom fallback UI
+
+### BusinessSearch
+
+**File:** `/client/src/components/BusinessSearch.jsx`
+
+**Purpose:** Advanced search component using Fuse.js for fuzzy search functionality.
+
+**Features:**
+- Search input with autocomplete suggestions
+- Displays search results with pagination
+
+**Props:**
+- `businesses`: List of businesses to search
+- `onResultsChange`: Callback for search results
+
+**Implementation Details:**
+- Uses Fuse.js for fuzzy search functionality
+- Implements pagination for search results
+
 ## Dashboard Components
 
 ### DashboardHome

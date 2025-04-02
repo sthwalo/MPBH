@@ -10,6 +10,8 @@ use App\Controllers\ReviewController;
 use App\Controllers\AdvertController;
 use App\Controllers\PaymentController;
 use App\Controllers\StatisticsController;
+use App\Controllers\SearchController;
+use App\Controllers\AdminController;
 
 return function (App $app) {
     // API version 1 group
@@ -24,6 +26,13 @@ return function (App $app) {
             $group->post('/reset-password', [AuthController::class, 'resetPassword']);
         });
         
+        // Search routes (public)
+        $group->group('/search', function (RouteCollectorProxy $group) {
+            $group->get('', [SearchController::class, 'handleSearch']);
+            $group->get('/categories', [SearchController::class, 'getCategories']);
+            $group->get('/districts', [SearchController::class, 'getDistricts']);
+        });
+        
         // Business routes (public)
         $group->group('/businesses', function (RouteCollectorProxy $group) {
             // Public routes
@@ -34,6 +43,7 @@ return function (App $app) {
             
             // Protected routes - require authentication
             $group->group('', function (RouteCollectorProxy $group) {
+                $group->post('', [BusinessController::class, 'createBusiness']);
                 $group->get('/my-business', [BusinessController::class, 'getMyBusiness']);
                 $group->put('/my-business', [BusinessController::class, 'updateMyBusiness']);
                 $group->post('/my-business/logo', [BusinessController::class, 'uploadLogo']);
@@ -87,9 +97,6 @@ return function (App $app) {
             $group->get('/history', [PaymentController::class, 'getPaymentHistory']);
             $group->post('/initiate', [PaymentController::class, 'initiatePayment']);
             $group->get('/packages', [PaymentController::class, 'getPackages']);
-            
-            // Public route for payment webhook callbacks
-            $group->post('/webhook', [PaymentController::class, 'processWebhook']);
         })->add(new AuthMiddleware());
         
         // Statistics routes (protected)
@@ -97,11 +104,19 @@ return function (App $app) {
             $group->get('/dashboard', [StatisticsController::class, 'getDashboardStats']);
             $group->get('/location', [StatisticsController::class, 'getTrafficByLocation']);
             $group->get('/referral', [StatisticsController::class, 'getTrafficByReferral']);
-            
-            // Public route for logging interactions
-            $group->post('/log/{id}', [StatisticsController::class, 'logInteraction']);
         })->add(new AuthMiddleware());
+        
+        // Admin routes (protected + admin role)
+        $group->group('/admin', function (RouteCollectorProxy $group) {
+            $group->get('/businesses/pending', [AdminController::class, 'getPendingBusinesses']);
+            $group->put('/businesses/{id}/status', [AdminController::class, 'updateBusinessStatus']);
+            $group->get('/dashboard', [AdminController::class, 'getDashboardStats']);
+        });
     });
+    
+    // Exclude webhook endpoints from authentication
+    $app->post('/api/payments/notify', [PaymentController::class, 'processWebhook']);
+    $app->post('/api/statistics/log/{id}', [StatisticsController::class, 'logInteraction']);
     
     // Redirect root to API documentation or frontend
     $app->get('/', function ($request, $response) {

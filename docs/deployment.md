@@ -51,6 +51,19 @@ MAIL_PORT=587
 MAIL_USERNAME=noreply@mpbusinesshub.co.za
 MAIL_PASSWORD=your_mail_password
 MAIL_FROM=noreply@mpbusinesshub.co.za
+
+# Rate limiting configuration
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_REQUESTS=60
+RATE_LIMIT_PER_MINUTE=1
+
+# Admin approval settings
+ADMIN_APPROVAL_REQUIRED=true
+ADMIN_NOTIFICATION_EMAIL=admin@mpbusinesshub.co.za
+
+# Search configuration
+SEARCH_RESULTS_PER_PAGE=20
+SEARCH_LOG_ENABLED=true
 ```
 
 ## Frontend Deployment
@@ -153,6 +166,19 @@ Create a subdomain for the API (e.g., `api.mpbusinesshub.co.za`) and set up the 
   RewriteCond %{REQUEST_METHOD} OPTIONS
   RewriteRule ^(.*)$ $1 [R=200,L]
 </IfModule>
+
+# Rate limiting (IP-based)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Exclude specific endpoints from rate limiting (e.g., public business listings)
+  RewriteCond %{REQUEST_URI} !^/api/businesses/public
+  
+  # Apply rate limiting to API calls
+  RewriteCond %{HTTP:X-Forwarded-For} !^$
+  RewriteCond %{REQUEST_URI} ^/api/
+  RewriteRule .* - [E=RATE_LIMIT:1]
+</IfModule>
 ```
 
 ## Domain Configuration
@@ -190,6 +216,15 @@ Set up the following cron jobs for maintenance tasks:
 
 # Weekly - Database backup (Sunday at 2am)
 0 2 * * 0 /usr/bin/php /path/to/private/api/cron/backup_database.php
+
+# Daily - Reset rate limiting counters
+0 0 * * * /usr/bin/php /path/to/private/api/cron/reset_rate_limits.php
+
+# Weekly - Clean up search logs (keep last 90 days)
+0 3 * * 0 /usr/bin/php /path/to/private/api/cron/clean_search_logs.php
+
+# Daily - Generate admin statistics report
+0 5 * * * /usr/bin/php /path/to/private/api/cron/generate_admin_stats.php
 ```
 
 ## PayFast Integration
@@ -199,71 +234,103 @@ To set up PayFast payment processing:
 1. Log in to your PayFast merchant account
 2. Configure the return URL: `https://mpbusinesshub.co.za/payment/success`
 3. Configure the cancel URL: `https://mpbusinesshub.co.za/payment/cancel`
-4. Configure the notify URL: `https://api.mpbusinesshub.co.za/payments/notify`
-5. Enable API access and generate API keys
-6. Update your backend `.env` file with the PayFast credentials
+4. Configure the notify URL: `https://api.mpbusinesshub.co.za/api/payments/notify`
+5. Enable Instant Transaction Notifications (ITN)
+6. Whitelist the server IP address in your PayFast merchant account
 
-## Post-Deployment Tasks
+## Service Layer Configuration
 
-### Verify Deployment
-
-1. Visit the frontend URL (`https://mpbusinesshub.co.za`) and verify that the site loads correctly
-2. Test the API endpoints by accessing `https://api.mpbusinesshub.co.za/businesses`
-3. Try registering a new business account
-4. Test the login functionality
-5. Verify that the dashboard works for authenticated users
-
-### Monitor Logs
-
-Set up log monitoring to catch and address any issues:
-
-1. Configure error logging in PHP:
-   ```php
-   // In your index.php or bootstrap file
-   ini_set('display_errors', 0);
-   ini_set('log_errors', 1);
-   ini_set('error_log', '/path/to/private/logs/php_errors.log');
-   ```
-
-2. Set up regular log checking via cron job or manual review
-
-## Backup Strategy
-
-Implement a comprehensive backup strategy:
-
-1. Database backups:
-   - Daily automated backups using the cron job mentioned above
-   - Store backups in a secure, off-site location
-   
-2. File backups:
-   - Weekly backup of all application files
-   - Use Afrihost's backup service or a third-party solution
-
-3. Verify backup integrity regularly by performing test restores
-
-## Deployment Automation (Optional)
-
-For more streamlined deployments, consider setting up a basic CI/CD pipeline:
-
-1. Create a deployment script:
+The application uses a service layer architecture to encapsulate business logic. Ensure the following directories have proper permissions for the web server user:
 
 ```bash
-#!/bin/bash
-
-# Frontend deployment
-cd /path/to/MPBH/client
-git pull
-npm install
-npm run build
-rsync -avz --delete dist/ username@hostname:/path/to/public_html/
-
-# Backend deployment
-cd /path/to/MPBH/server
-git pull
-rsync -avz --exclude '.env' --exclude 'logs/' --exclude 'uploads/' ./ username@hostname:/path/to/private/api/
+chmod -R 755 /path/to/private/api/src/services
+chmod -R 755 /path/to/private/api/src/controllers
+chmod -R 755 /path/to/private/api/src/middleware
 ```
 
-2. Run this script manually or integrate with GitHub Actions or other CI/CD tools
+## Rate Limiting Configuration
+
+The application implements rate limiting to prevent abuse. The rate limiting is configured at two levels:
+
+1. **Server Level**: Using the `.htaccess` configuration
+2. **Application Level**: Using the PHP middleware
+
+To configure rate limiting limits for different endpoints, edit the `config/rate_limits.php` file:
+
+```php
+return [
+    'default' => [
+        'requests' => 60,  // Number of requests
+        'per_minute' => 1,  // Time window in minutes
+    ],
+    'search' => [
+        'requests' => 30,
+        'per_minute' => 1,
+    ],
+    'admin' => [
+        'requests' => 120,
+        'per_minute' => 1,
+    ],
+];
+```
+
+## Search Service Configuration
+
+The application uses a search service for advanced business searching. To configure the search service:
+
+1. Ensure the `search_logs` table exists in the database
+2. Configure search parameters in the `.env` file (as shown above)
+3. Run the initial search index build script:
+
+```bash
+/usr/bin/php /path/to/private/api/scripts/build_search_index.php
+```
+
+## Admin Approval Workflow
+
+The admin approval workflow requires configuration:
+
+1. Set up admin users in the database with the appropriate role
+2. Configure the admin notification email in the `.env` file
+3. Ensure the admin dashboard is accessible only to users with admin privileges
+
+## Monitoring and Maintenance
+
+### Error Logging
+
+Configure error logging to capture and log application errors:
+
+1. Create a log directory:
+
+```bash
+mkdir -p /path/to/private/api/logs
+chmod 755 /path/to/private/api/logs
+```
+
+2. Configure log settings in the `.env` file:
+
+```
+LOG_LEVEL=error  // Options: debug, info, warning, error
+LOG_FILE=/path/to/private/api/logs/app.log
+```
+
+### Performance Monitoring
+
+Consider setting up basic performance monitoring:
+
+1. Configure PHP slow query logging
+2. Set up a cron job to analyze logs for performance issues
+
+```bash
+// Weekly - Analyze logs for performance issues
+0 4 * * 0 /usr/bin/php /path/to/private/api/scripts/analyze_performance.php
+```
+
+## Conclusion
+
+This deployment guide covers the essential steps for deploying the Mpumalanga Business Hub application to Afrihost Shared Hosting. Follow these instructions carefully to ensure a successful deployment.
+
+For any issues or questions related to deployment, refer to the troubleshooting section in the project documentation or contact the development team.
 
 ## Troubleshooting
 

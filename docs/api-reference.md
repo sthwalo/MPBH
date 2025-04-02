@@ -30,64 +30,60 @@ Authorization: Bearer <token>
 
 Tokens are obtained by authenticating through the login endpoint (`/api/auth/login`). The token should be stored securely on the client and included in subsequent requests.
 
-## Error Handling
+### Rate Limiting
 
-The API uses standard HTTP response codes to indicate success or failure:
+API endpoints implement rate limiting to prevent abuse. The limits vary by endpoint type:
 
-- `2xx` - Success
-- `4xx` - Client error (invalid request)
-- `5xx` - Server error
+- Auth endpoints: 10 requests per minute
+- Public endpoints: 30 requests per minute
+- Business endpoints: 100 requests per minute
+- Default authenticated endpoints: 60 requests per minute
 
-Error responses include a JSON payload with error details:
+When rate limits are exceeded, a 429 Too Many Requests response will be returned.
+
+## Error Responses
+
+All error responses follow a standard format:
 
 ```json
 {
   "status": "error",
-  "code": 400,
-  "message": "Validation failed",
-  "errors": {
-    "email": "Email is required"
-  }
+  "message": "Description of the error",
+  "error": "Optional detailed error information"
 }
 ```
 
-## Rate Limiting
+Error codes follow standard HTTP status codes:
 
-API requests are subject to rate limiting to prevent abuse. The current limits are:
-
-- 100 requests per minute for authenticated users
-- 30 requests per minute for unauthenticated users
-
-Rate limit headers are included in responses:
-
-```
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1617567600
-```
+- `400` - Bad Request (invalid input)
+- `401` - Unauthorized (invalid or missing token)
+- `403` - Forbidden (insufficient permissions)
+- `404` - Not Found (resource does not exist)
+- `422` - Unprocessable Entity (validation error)
+- `429` - Too Many Requests (rate limit exceeded)
+- `500` - Internal Server Error
 
 ## API Endpoints
 
 ### Authentication
 
-#### Register a new business
+#### Register
 
 ```
 POST /api/auth/register
 ```
 
+Register a new user account.
+
 **Request Body:**
 
 ```json
 {
-  "email": "business@example.com",
-  "password": "securepassword",
-  "businessName": "Example Business",
-  "category": "Tourism",
-  "description": "A sample business description",
-  "address": "123 Main St, Mbombela",
-  "phone": "+27 13 123 4567",
-  "packageType": "Basic"
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "securePassword123",
+  "password_confirmation": "securePassword123",
+  "phone": "0791234567"
 }
 ```
 
@@ -96,11 +92,12 @@ POST /api/auth/register
 ```json
 {
   "status": "success",
-  "message": "Registration successful",
+  "message": "User registered successfully",
   "data": {
-    "user_id": 123,
-    "business_id": 456,
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "id": 123,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGci..."
   }
 }
 ```
@@ -111,12 +108,14 @@ POST /api/auth/register
 POST /api/auth/login
 ```
 
+Authenticate a user and get an access token.
+
 **Request Body:**
 
 ```json
 {
-  "email": "business@example.com",
-  "password": "securepassword"
+  "email": "john@example.com",
+  "password": "securePassword123"
 }
 ```
 
@@ -128,10 +127,10 @@ POST /api/auth/login
   "data": {
     "user": {
       "id": 123,
-      "email": "business@example.com",
-      "business_id": 456
+      "name": "John Doe",
+      "email": "john@example.com"
     },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGci..."
   }
 }
 ```
@@ -142,6 +141,8 @@ POST /api/auth/login
 POST /api/auth/logout
 ```
 
+Invalidate the current user's token.
+
 **Headers:**
 
 ```
@@ -153,69 +154,112 @@ Authorization: Bearer <token>
 ```json
 {
   "status": "success",
-  "message": "Logged out successfully"
+  "message": "Successfully logged out"
 }
 ```
 
-### Businesses
-
-#### Get all businesses
+#### Forgot Password
 
 ```
-GET /api/businesses
+POST /api/auth/forgot-password
 ```
 
-**Query Parameters:**
+Request a password reset link.
 
-| Parameter  | Type   | Description                             |
-|------------|--------|-----------------------------------------|
-| category   | string | Filter by business category             |
-| district   | string | Filter by district                      |
-| search     | string | Search term for name or description     |
-| page       | number | Page number for pagination              |
-| limit      | number | Number of records per page (default 20) |
-| sort       | string | Sort field (name, created_at, rating)   |
-| order      | string | Sort order (asc, desc)                  |
+**Request Body:**
+
+```json
+{
+  "email": "john@example.com"
+}
+```
 
 **Response:**
 
 ```json
 {
   "status": "success",
-  "data": {
-    "businesses": [
-      {
-        "id": 1,
-        "name": "Kruger Safari Adventures",
-        "description": "Luxury safari tours in the Kruger National Park",
-        "category": "Tourism",
-        "district": "Mbombela",
-        "address": "123 Elephant Road, Hazyview",
-        "phone": "+27 13 123 4567",
-        "email": "info@krugersafari.co.za",
-        "website": "https://www.krugersafari.co.za",
-        "logo": "https://example.com/logos/kruger.jpg",
-        "package_type": "Gold",
-        "rating": 4.8,
-        "created_at": "2025-01-15T08:30:00Z"
-      },
-      // More businesses...
-    ],
-    "pagination": {
-      "total": 150,
-      "page": 1,
-      "limit": 20,
-      "pages": 8
-    }
+  "message": "Password reset link sent to your email"
+}
+```
+
+#### Reset Password
+
+```
+POST /api/auth/reset-password
+```
+
+Reset password using token from email.
+
+**Request Body:**
+
+```json
+{
+  "token": "reset-token-from-email",
+  "password": "newSecurePassword123",
+  "password_confirmation": "newSecurePassword123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Password has been reset successfully"
+}
+```
+
+### Business Management
+
+#### Get All Businesses
+
+```
+GET /api/businesses
+```
+
+Get a list of all verified businesses with optional filtering.
+
+**Query Parameters:**
+
+- `category` (optional): Filter by business category
+- `district` (optional): Filter by district
+- `page` (optional): Page number for pagination (default: 1)
+- `per_page` (optional): Items per page (default: 10)
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "name": "Kruger Safari Adventures",
+      "category": "Tourism",
+      "district": "Ehlanzeni",
+      "description": "Guided safari tours in Kruger National Park",
+      "logo": "https://api.mpbusinesshub.co.za/uploads/businesses/1/logo.jpg",
+      "package_type": "Gold"
+    },
+    // More businesses...
+  ],
+  "meta": {
+    "current_page": 1,
+    "per_page": 10,
+    "total": 45,
+    "total_pages": 5
   }
 }
 ```
 
-#### Get a specific business
+#### Get Business by ID
 
 ```
 GET /api/businesses/{id}
 ```
+
+Get detailed information about a specific business.
 
 **Response:**
 
@@ -225,83 +269,107 @@ GET /api/businesses/{id}
   "data": {
     "id": 1,
     "name": "Kruger Safari Adventures",
-    "description": "Luxury safari tours in the Kruger National Park",
     "category": "Tourism",
-    "district": "Mbombela",
-    "address": "123 Elephant Road, Hazyview",
-    "phone": "+27 13 123 4567",
+    "district": "Ehlanzeni",
+    "description": "Guided safari tours in Kruger National Park",
+    "address": "123 Park Street, Hazyview",
+    "phone": "0131234567",
     "email": "info@krugersafari.co.za",
     "website": "https://www.krugersafari.co.za",
-    "logo": "https://example.com/logos/kruger.jpg",
-    "cover_image": "https://example.com/covers/kruger.jpg",
+    "social_media": {
+      "facebook": "krugersafari",
+      "instagram": "krugersafari"
+    },
+    "operating_hours": "Mon-Sun: 06:00-18:00",
+    "logo": "https://api.mpbusinesshub.co.za/uploads/businesses/1/logo.jpg",
     "package_type": "Gold",
-    "rating": 4.8,
-    "reviews": [
-      {
-        "id": 101,
-        "user_name": "John Smith",
-        "rating": 5,
-        "comment": "Excellent safari experience!",
-        "created_at": "2025-02-10T14:30:00Z"
-      },
-      // More reviews...
-    ],
     "products": [
       {
-        "id": 201,
+        "id": 1,
         "name": "Full Day Safari",
-        "description": "A full day guided safari in the Kruger Park",
-        "price": 1500,
-        "image": "https://example.com/products/safari.jpg"
+        "description": "Full day guided safari in an open vehicle",
+        "price": 1200,
+        "image": "https://api.mpbusinesshub.co.za/uploads/products/1/image.jpg"
       },
       // More products...
     ],
-    "created_at": "2025-01-15T08:30:00Z",
-    "updated_at": "2025-03-20T10:15:00Z"
+    "reviews": [
+      {
+        "id": 1,
+        "user_name": "Sarah Johnson",
+        "rating": 5,
+        "comment": "Amazing experience! Our guide was very knowledgeable.",
+        "created_at": "2023-03-15T14:30:45Z"
+      },
+      // More reviews...
+    ]
   }
 }
 ```
 
-#### Get my business (authenticated)
+#### Create Business
 
 ```
-GET /api/businesses/my-business
+POST /api/businesses
 ```
+
+Create a new business listing (requires authentication).
 
 **Headers:**
 
 ```
 Authorization: Bearer <token>
+Content-Type: multipart/form-data
 ```
+
+**Form Data:**
+
+- `name`: Business name
+- `category`: Business category
+- `district`: District location
+- `description`: Business description
+- `address`: Physical address
+- `phone`: Contact phone number
+- `email`: Contact email
+- `website` (optional): Business website
+- `social_media` (optional): JSON string of social media links
+- `operating_hours` (optional): Operating hours description
+- `package_type` (optional): Membership tier (default: Basic)
+- `logo` (optional): Business logo image file
 
 **Response:**
 
-Similar to the "Get a specific business" endpoint, but includes additional fields related to the business owner's account.
+```json
+{
+  "status": "success",
+  "message": "Business created successfully and pending approval",
+  "data": {
+    "id": 123,
+    "name": "My New Business",
+    "verification_status": "pending",
+    // Other business fields...
+  }
+}
+```
 
-#### Update business details (authenticated)
+#### Update My Business
 
 ```
 PUT /api/businesses/my-business
 ```
 
+Update the authenticated user's business details.
+
 **Headers:**
 
 ```
 Authorization: Bearer <token>
+Content-Type: multipart/form-data
 ```
 
-**Request Body:**
+**Form Data:**
 
-```json
-{
-  "name": "Updated Business Name",
-  "description": "Updated business description",
-  "address": "456 New Street, Mbombela",
-  "phone": "+27 13 987 6543",
-  "email": "newemail@business.com",
-  "website": "https://www.updatedbusiness.co.za"
-}
-```
+- All fields from the Create Business endpoint are optional here
 
 **Response:**
 
@@ -310,21 +378,22 @@ Authorization: Bearer <token>
   "status": "success",
   "message": "Business updated successfully",
   "data": {
-    "id": 456,
+    "id": 123,
     "name": "Updated Business Name",
-    // Other updated fields...
-    "updated_at": "2025-04-01T09:45:00Z"
+    // Updated business fields...
   }
 }
 ```
 
-### Products
+### Product Management
 
-#### Get products for a business
+#### Get Business Products
 
 ```
 GET /api/businesses/{id}/products
 ```
+
+Get all products for a specific business.
 
 **Response:**
 
@@ -333,40 +402,38 @@ GET /api/businesses/{id}/products
   "status": "success",
   "data": [
     {
-      "id": 201,
+      "id": 1,
       "name": "Full Day Safari",
-      "description": "A full day guided safari in the Kruger Park",
-      "price": 1500,
-      "image": "https://example.com/products/safari.jpg",
-      "created_at": "2025-01-20T11:30:00Z"
+      "description": "Full day guided safari in an open vehicle",
+      "price": 1200,
+      "image": "https://api.mpbusinesshub.co.za/uploads/products/1/image.jpg"
     },
     // More products...
   ]
 }
 ```
 
-#### Create a product (authenticated)
+#### Create Product
 
 ```
 POST /api/products
 ```
 
+Add a new product to the authenticated user's business (requires Silver or Gold tier).
+
 **Headers:**
 
 ```
 Authorization: Bearer <token>
+Content-Type: multipart/form-data
 ```
 
-**Request Body:**
+**Form Data:**
 
-```json
-{
-  "name": "New Product",
-  "description": "Product description",
-  "price": 750,
-  "image": "base64-encoded-image-data" // Optional
-}
-```
+- `name`: Product name
+- `description`: Product description
+- `price`: Product price
+- `image` (optional): Product image file
 
 **Response:**
 
@@ -375,83 +442,24 @@ Authorization: Bearer <token>
   "status": "success",
   "message": "Product created successfully",
   "data": {
-    "id": 204,
+    "id": 123,
     "name": "New Product",
     "description": "Product description",
-    "price": 750,
-    "image": "https://example.com/products/new-product.jpg",
-    "created_at": "2025-04-01T10:15:00Z"
+    "price": 299.99,
+    "image": "https://api.mpbusinesshub.co.za/uploads/products/123/image.jpg"
   }
 }
 ```
 
-#### Update a product (authenticated)
+### Payment Processing
 
-```
-PUT /api/products/{id}
-```
-
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Request Body:**
-
-```json
-{
-  "name": "Updated Product Name",
-  "description": "Updated product description",
-  "price": 800
-}
-```
-
-**Response:**
-
-```json
-{
-  "status": "success",
-  "message": "Product updated successfully",
-  "data": {
-    "id": 204,
-    "name": "Updated Product Name",
-    "description": "Updated product description",
-    "price": 800,
-    "image": "https://example.com/products/new-product.jpg",
-    "updated_at": "2025-04-01T11:30:00Z"
-  }
-}
-```
-
-#### Delete a product (authenticated)
-
-```
-DELETE /api/products/{id}
-```
-
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-{
-  "status": "success",
-  "message": "Product deleted successfully"
-}
-```
-
-### Payments
-
-#### Get package information
+#### Get Packages
 
 ```
 GET /api/payments/packages
 ```
+
+Get available membership packages and pricing.
 
 **Headers:**
 
@@ -468,119 +476,59 @@ Authorization: Bearer <token>
     {
       "id": "basic",
       "name": "Basic",
-      "price": 0,
-      "billing_cycle": "once",
-      "features": [
-        "Business listing",
-        "Contact information",
-        "Basic analytics",
-        "Community reviews"
-      ],
-      "limits": {
-        "adverts": 0,
-        "products": 0
+      "description": "Basic business listing",
+      "features": ["Business listing", "Contact information"],
+      "price": {
+        "monthly": 0,
+        "annual": 0
       }
     },
     {
       "id": "silver",
       "name": "Silver",
-      "price": 500,
-      "billing_cycle": "monthly",
-      "features": [
-        "Everything in Basic",
-        "Product catalog (up to 20 products)",
-        "Featured in category searches",
-        "Advanced analytics",
-        "1 advert slot per month"
-      ],
-      "limits": {
-        "adverts": 1,
-        "products": 20
+      "description": "Enhanced business profile with products",
+      "features": ["Business listing", "Contact information", "Product listings (up to 15)", "1 monthly advert", "Website link", "Analytics dashboard"],
+      "price": {
+        "monthly": 349.99,
+        "annual": 3499.99
       }
     },
     {
       "id": "gold",
       "name": "Gold",
-      "price": 1000,
-      "billing_cycle": "monthly",
-      "features": [
-        "Everything in Silver",
-        "Unlimited products",
-        "Priority listing in search results",
-        "Featured on homepage",
-        "Social media promotion",
-        "3 advert slots per month"
-      ],
-      "limits": {
-        "adverts": 3,
-        "products": 0
+      "description": "Premium business profile with maximum visibility",
+      "features": ["Business listing", "Contact information", "Product listings (up to 30)", "3 monthly adverts", "Featured placement", "Website link", "Analytics dashboard"],
+      "price": {
+        "monthly": 599.99,
+        "annual": 5999.99
       }
     }
   ]
 }
 ```
 
-#### Get payment history (authenticated)
-
-```
-GET /api/payments/history
-```
-
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-{
-  "status": "success",
-  "data": {
-    "payments": [
-      {
-        "id": 1,
-        "reference": "MPBH_1617283940_1234",
-        "amount": 1000,
-        "payment_type": "upgrade",
-        "package_type": "Gold",
-        "status": "completed",
-        "transaction_id": "PF12345678",
-        "created_at": "2025-04-01T10:30:00Z"
-      },
-      // More payment records...
-    ],
-    "statistics": {
-      "total_spent": 3500,
-      "successful_payments": 4,
-      "failed_payments": 1,
-      "last_payment_date": "2025-04-01T10:30:00Z"
-    },
-    "current_package": "Gold",
-    "subscription_id": "SUB12345"
-  }
-}
-```
-
-#### Initiate payment (authenticated)
+#### Initiate Payment
 
 ```
 POST /api/payments/initiate
 ```
 
+Initiate a new payment for a package subscription.
+
 **Headers:**
 
 ```
 Authorization: Bearer <token>
+Content-Type: application/json
 ```
 
 **Request Body:**
 
 ```json
 {
+  "business_id": 123,
   "package_type": "Gold",
-  "payment_type": "upgrade"
+  "payment_type": "monthly" // or "annual"
 }
 ```
 
@@ -589,47 +537,21 @@ Authorization: Bearer <token>
 ```json
 {
   "status": "success",
-  "message": "Payment initiated successfully",
   "data": {
-    "payment_id": 25,
-    "reference": "MPBH_1617283940_5678",
-    "amount": 1000,
-    "payment_url": "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=abcdefgh&..."
+    "payment_id": "MPBH12345678",
+    "amount": 599.99,
+    "payment_url": "https://sandbox.payfast.co.za/eng/process?merchant_id=123456&merchant_key=abcdef..."  
   }
 }
 ```
 
-#### Payment webhook (for payment processor callbacks)
+#### Get Payment History
 
 ```
-POST /api/payments/webhook
+GET /api/payments/history
 ```
 
-**Request Body:**
-```json
-{
-  "payment_reference": "MPBH_1617283940_5678",
-  "payment_status": "COMPLETE",
-  "transaction_id": "PF87654321",
-  "subscription_id": "SUB54321"
-}
-```
-
-**Response:**
-```json
-{
-  "status": "success",
-  "message": "Webhook processed successfully"
-}
-```
-
-### Adverts
-
-#### Get all adverts for my business (authenticated)
-
-```
-GET /api/adverts
-```
+Get payment history for the authenticated user's business.
 
 **Headers:**
 
@@ -645,87 +567,120 @@ Authorization: Bearer <token>
   "data": [
     {
       "id": 1,
-      "title": "Special Safari Discount",
-      "description": "20% off all safari packages booked in April!",
-      "start_date": "2025-04-01T00:00:00Z",
-      "end_date": "2025-04-30T23:59:59Z",
-      "status": "active",
-      "created_at": "2025-03-15T14:30:00Z"
+      "payment_id": "MPBH12345678",
+      "amount": 599.99,
+      "package_type": "Gold",
+      "payment_type": "monthly",
+      "status": "completed",
+      "created_at": "2023-03-15T14:30:45Z"
     },
-    // More adverts...
+    // More payment records...
   ]
 }
 ```
 
-#### Create a new advert (authenticated)
+### Search
+
+#### Search Businesses
 
 ```
-POST /api/adverts
+GET /api/search
 ```
 
-**Headers:**
+Search for businesses using various criteria.
 
-```
-Authorization: Bearer <token>
-```
+**Query Parameters:**
 
-**Request Body:**
-
-```json
-{
-  "title": "Summer Holiday Package",
-  "description": "Exclusive summer holiday deals for families",
-  "start_date": "2025-06-01T00:00:00Z",
-  "end_date": "2025-06-30T23:59:59Z"
-}
-```
+- `q`: Search query term
+- `category` (optional): Filter by category
+- `district` (optional): Filter by district
+- `page` (optional): Page number (default: 1)
+- `per_page` (optional): Items per page (default: 10, max: 50)
 
 **Response:**
 
 ```json
 {
   "status": "success",
-  "message": "Advert created successfully",
-  "data": {
-    "id": 3,
-    "title": "Summer Holiday Package",
-    "description": "Exclusive summer holiday deals for families",
-    "start_date": "2025-06-01T00:00:00Z",
-    "end_date": "2025-06-30T23:59:59Z",
-    "status": "scheduled",
-    "created_at": "2025-04-01T09:30:00Z"
+  "data": [
+    {
+      "id": 1,
+      "name": "Kruger Safari Adventures",
+      "category": "Tourism",
+      "district": "Ehlanzeni",
+      "description": "Guided safari tours in Kruger National Park",
+      "logo": "https://api.mpbusinesshub.co.za/uploads/businesses/1/logo.jpg",
+      "package_type": "Gold"
+    },
+    // More search results...
+  ],
+  "meta": {
+    "current_page": 1,
+    "per_page": 10,
+    "total": 25,
+    "total_pages": 3
   }
 }
 ```
 
-#### Delete an advert (authenticated)
+#### Get Categories
 
 ```
-DELETE /api/adverts/{id}
+GET /api/search/categories
 ```
 
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
+Get all available business categories.
 
 **Response:**
 
 ```json
 {
   "status": "success",
-  "message": "Advert deleted successfully"
+  "data": [
+    "Agriculture",
+    "Construction",
+    "Education",
+    "Healthcare",
+    "Hospitality",
+    "Manufacturing",
+    "Retail",
+    "Technology",
+    "Tourism",
+    "Transport"
+  ]
 }
 ```
 
-### Statistics and Analytics
+#### Get Districts
 
-#### Get dashboard statistics (authenticated)
+```
+GET /api/search/districts
+```
+
+Get all available districts in Mpumalanga.
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": [
+    "Ehlanzeni",
+    "Gert Sibande",
+    "Nkangala"
+  ]
+}
+```
+
+### Statistics
+
+#### Get Dashboard Statistics
 
 ```
 GET /api/statistics/dashboard
 ```
+
+Get dashboard statistics for the authenticated user's business.
 
 **Headers:**
 
@@ -741,85 +696,42 @@ Authorization: Bearer <token>
   "data": {
     "business": {
       "id": 123,
-      "name": "Kruger Safari Adventures",
-      "package_type": "Gold",
-      "verification_status": "verified",
-      "adverts_remaining": 2
+      "name": "My Business",
+      "package_type": "Gold"
     },
-    "statistics": {
-      "visitors": {
-        "total_views": 3450,
-        "unique_visitors": 2103,
-        "views_last_7_days": 245,
-        "views_last_30_days": 876,
-        "daily_views": [
-          { "date": "2025-03-03", "views": 26 },
-          { "date": "2025-03-04", "views": 31 },
-          // Additional days...
-        ]
-      },
-      "reviews": {
-        "total_reviews": 47,
-        "average_rating": 4.7,
-        "approved_reviews": 42,
-        "pending_reviews": 5,
-        "new_reviews": 8,
-        "rating_breakdown": [
-          { "rating": 1, "count": 1 },
-          { "rating": 2, "count": 2 },
-          { "rating": 3, "count": 3 },
-          { "rating": 4, "count": 12 },
-          { "rating": 5, "count": 29 }
-        ]
-      },
-      "inquiries": {
-        "total_inquiries": 156,
-        "inquiries_last_7_days": 12,
-        "inquiries_last_30_days": 43,
-        "weekly_inquiries": [
-          { "week": 202513, "count": 8 },
-          { "week": 202514, "count": 12 },
-          // Additional weeks...
-        ]
-      },
-      "products": {
-        "total_products": 24,
-        "active_products": 20,
-        "new_products": 3,
-        "top_products": [
-          { "product_id": 45, "name": "Safari Day Pass", "views": 312 },
-          { "product_id": 23, "name": "Wildlife Photography Tour", "views": 245 },
-          // Additional products...
-        ]
-      },
-      "adverts": {
-        "total_adverts": 12,
-        "active_adverts": 3,
-        "pending_adverts": 1,
-        "expired_adverts": 8,
-        "adverts_remaining": 2,
-        "advert_clicks": [
-          { "advert_id": 8, "title": "Summer Safari Special", "clicks": 125 },
-          { "advert_id": 10, "title": "Family Weekend Package", "clicks": 87 },
-          // Additional adverts...
-        ]
-      }
+    "views": {
+      "total": 1250,
+      "today": 25,
+      "this_week": 175,
+      "this_month": 450
     },
-    "payments": {
-      "total_spent": 5000,
-      "successful_payments": 5,
-      "failed_payments": 0,
-      "last_payment_date": "2025-03-01T10:15:30Z"
-    }
+    "engagement": {
+      "total_contacts": 48,
+      "today": 3,
+      "this_week": 15,
+      "this_month": 28
+    },
+    "popular_products": [
+      {
+        "id": 1,
+        "name": "Popular Product 1",
+        "views": 120
+      },
+      // More products...
+    ]
   }
 }
 ```
 
-#### Get traffic by location statistics (authenticated)
+### Admin Endpoints
+
+#### Get Pending Businesses
 
 ```
-GET /api/statistics/location
+GET /api/admin/businesses/pending
 ```
+
+Get list of businesses pending approval (admin only).
 
 **Headers:**
 
@@ -833,67 +745,39 @@ Authorization: Bearer <token>
 {
   "status": "success",
   "data": [
-    { "location": "Nelspruit", "visits": 150 },
-    { "location": "White River", "visits": 85 },
-    { "location": "Sabie", "visits": 63 },
-    { "location": "Barberton", "visits": 47 },
-    { "location": "Hazyview", "visits": 35 },
-    { "location": "Other Mpumalanga", "visits": 120 },
-    { "location": "Gauteng", "visits": 180 },
-    { "location": "Other Provinces", "visits": 95 },
-    { "location": "International", "visits": 25 }
+    {
+      "id": 123,
+      "name": "New Business",
+      "category": "Retail",
+      "district": "Ehlanzeni",
+      "created_at": "2023-04-01T09:30:45Z",
+      "user_id": 456
+    },
+    // More pending businesses...
   ]
 }
 ```
 
-#### Get traffic by referral source (authenticated)
+#### Update Business Status
 
 ```
-GET /api/statistics/referral
+PUT /api/admin/businesses/{id}/status
 ```
+
+Approve or reject a business listing (admin only).
 
 **Headers:**
 
 ```
 Authorization: Bearer <token>
+Content-Type: application/json
 ```
-
-**Response:**
-
-```json
-{
-  "status": "success",
-  "data": [
-    { "source": "Direct", "visits": 245 },
-    { "source": "Directory Search", "visits": 185 },
-    { "source": "Google", "visits": 165 },
-    { "source": "Facebook", "visits": 110 },
-    { "source": "Twitter", "visits": 35 },
-    { "source": "Other Social Media", "visits": 45 },
-    { "source": "Adverts", "visits": 55 },
-    { "source": "Other", "visits": 60 }
-  ]
-}
-```
-
-#### Log user interaction with a business (public)
-
-```
-POST /api/statistics/log/{id}
-```
-
-**Path Parameters:**
-
-- `id` - Business ID
 
 **Request Body:**
 
 ```json
 {
-  "type": "page_view", // page_view, product_view, advert_click, inquiry
-  "product_id": 45, // Optional, required for product_view
-  "advert_id": 8, // Optional, required for advert_click
-  "inquiry_type": "contact" // Optional, required for inquiry
+  "status": "verified" // or "rejected"
 }
 ```
 
@@ -902,34 +786,62 @@ POST /api/statistics/log/{id}
 ```json
 {
   "status": "success",
-  "message": "Interaction logged successfully"
+  "message": "Business approved successfully"
 }
 ```
 
-## Versioning
-
-The API may evolve over time. To ensure backward compatibility, versioning is implemented in the URL:
+#### Get Admin Dashboard Statistics
 
 ```
-https://api.mpbusinesshub.co.za/v1/businesses
+GET /api/admin/dashboard
 ```
 
-The current version is v1. When breaking changes are introduced, a new version (v2, v3, etc.) will be created.
+Get admin dashboard statistics (admin only).
 
-## Rate Limits
+**Headers:**
 
-To prevent abuse and ensure fair usage, the API implements rate limiting:
+```
+Authorization: Bearer <token>
+```
 
-| Endpoint                   | Unauthenticated | Authenticated |
-|----------------------------|-----------------|---------------|
-| `/api/auth/*`              | 10/min          | N/A           |
-| `/api/businesses` (GET)    | 30/min          | 100/min       |
-| `/api/businesses/*` (GET)  | 20/min          | 100/min       |
-| Authenticated endpoints    | N/A             | 60/min        |
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "businesses": {
+      "total": 150,
+      "verified": 120,
+      "pending": 25,
+      "rejected": 5
+    },
+    "packages": {
+      "basic": 50,
+      "silver": 40,
+      "gold": 30
+    },
+    "payments": {
+      "recent": [
+        {
+          "id": 1,
+          "business_name": "Business Name",
+          "amount": 599.99,
+          "payment_type": "monthly",
+          "status": "completed",
+          "created_at": "2023-04-01T09:30:45Z"
+        },
+        // More payments...
+      ],
+      "total_revenue": 25499.85
+    }
+  }
+}
+```
 
 ## Cross-Origin Resource Sharing (CORS)
 
-The API supports CORS for browser-based applications. The following origins are allowed:
+CORS is enabled for all API endpoints. The following origins are allowed:
 
 - `https://mpbusinesshub.co.za`
 - `https://www.mpbusinesshub.co.za`
