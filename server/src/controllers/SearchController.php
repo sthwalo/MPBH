@@ -131,8 +131,19 @@ class SearchController {
      */
     public function getCategories(Request $request, Response $response): Response {
         try {
-            $stmt = $this->db->query("SELECT * FROM categories ORDER BY name ASC");
-            $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Get unique categories from the businesses table
+            $stmt = $this->db->query("SELECT DISTINCT category FROM businesses ORDER BY category ASC");
+            $categoriesRaw = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            
+            // Format categories as objects with id and name
+            $categories = [];
+            foreach ($categoriesRaw as $index => $category) {
+                $categories[] = [
+                    'id' => $index + 1,  // Generate a numeric ID
+                    'name' => $category, // Use the category string as the name
+                    'slug' => strtolower(str_replace(' ', '-', $category))
+                ];
+            }
             
             return ResponseHelper::success($response, $categories);
             

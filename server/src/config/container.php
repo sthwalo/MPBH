@@ -1,15 +1,36 @@
 <?php
 
 use App\Config\Database;
+use App\Controllers\BusinessController;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Processor\UidProcessor;
+use Psr\Container\ContainerInterface;
 
 return [
-    // Database connection
+    // Database connection - shared instance
     PDO::class => function() {
-        $database = new Database();
-        return $database->getConnection();
+        try {
+            $database = new Database();
+            $connection = $database->getConnection();
+            
+            if (!$connection) {
+                throw new \Exception('Failed to establish database connection');
+            }
+            
+            return $connection;
+        } catch (\Exception $e) {
+            error_log('Database connection error: ' . $e->getMessage());
+            throw $e;
+        }
+    },
+    
+    // Controller registrations with explicit dependencies
+    BusinessController::class => function(ContainerInterface $container) {
+        return new BusinessController(
+            $container->get(PDO::class),
+            $container->get(Logger::class)
+        );
     },
     
     // Logger

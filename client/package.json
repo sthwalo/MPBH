@@ -13,7 +13,8 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.2",
     "@sentry/react": "^9.10.1",
-    "axios": "^1.5.0",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.8.4",
     "bootstrap": "^5.3.3",
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",

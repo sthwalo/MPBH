@@ -990,3 +990,6 @@ SELECT * FROM businesses
 WHERE social_media->>'facebook' IS NOT NULL 
 ORDER BY created_at DESC
 LIMIT 10;
+
+
+curl -v "http://localhost:8000/api/businesses?limit=5"
