@@ -41,17 +41,22 @@ Options -Indexes
 
 # Security Headers
 <IfModule mod_headers.c>
-    # CORS Configuration
-    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-CSRF-Token"
-    Header set Access-Control-Allow-Credentials "true"
+    # CORS Configuration - Force enable for all requests
+    # Always set CORS headers for all responses
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-CSRF-Token, Accept, Origin, X-Requested-With"
+    Header always set Access-Control-Allow-Credentials "true"
+    Header always set Access-Control-Expose-Headers "Content-Disposition, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset"
+    Header always set Access-Control-Max-Age "86400"
     
-    # Dynamic origin handling
-    # Allow specific origins including local development
-    SetEnvIf Origin "^(https://mpbusinesshub\.co\.za|http://localhost:3000|http://localhost:3000)$" CORS_ALLOWED_ORIGIN=$0
-    Header set Access-Control-Allow-Origin "%{CORS_ALLOWED_ORIGIN}e" env=CORS_ALLOWED_ORIGIN
-    # Cache pre-flight requests for 10 minutes
-    Header set Access-Control-Max-Age "600" env=CORS_ALLOWED_ORIGIN
+    # Handle OPTIONS method separately for preflight
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+    
+    # Dynamic origin handling with more permissive approach
+    SetEnvIf Origin ".*" ORIGIN=$0
+    Header always set Access-Control-Allow-Origin "%{ORIGIN}e" env=ORIGIN
     
     # Essential Security Headers
     Header set X-Content-Type-Options "nosniff"

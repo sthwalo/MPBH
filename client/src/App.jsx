@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -34,6 +35,27 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      {/* Toast notifications */}
+      <Toaster 
+        position="top-right" 
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          success: {
+            style: {
+              background: '#166534', // Tailwind green-800
+            },
+          },
+          error: {
+            style: {
+              background: '#991b1b', // Tailwind red-800
+            },
+          }
+        }}
+      />
     </div>
   )
 }

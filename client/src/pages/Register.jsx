@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import api from '../utils/api'
+import toast from 'react-hot-toast'
 
 function Register() {
   const [step, setStep] = useState(1)
@@ -141,6 +141,46 @@ function Register() {
     window.scrollTo(0, 0)
   }
 
+  // Function to handle successful registration response
+  const handleSuccessfulRegistration = (response) => {
+    // Extract token and user data - handle both API response formats
+    const token = response?.data?.token || response?.token;
+    const userId = response?.data?.user_id || response?.userId;
+    const businessId = response?.data?.business_id || response?.businessId;
+    
+    // Log what we're trying to save
+    console.log('Saving user data:', { token, userId, businessId });
+    
+    // Save token if available
+    if (token) {
+      localStorage.setItem('mpbh_token', token);
+      
+      // Save user info
+      if (userId || businessId) {
+        localStorage.setItem('mpbh_user', JSON.stringify({
+          id: userId,
+          businessId: businessId
+        }));
+      }
+      
+      // Show success message with toast notification
+      console.log('Registration successful! Redirecting to dashboard...');
+      toast.success('Registration successful! Redirecting to dashboard...');
+      
+      // Redirect to dashboard
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
+    } else {
+      console.warn('No token found in response:', response);
+      console.log('Registration successful, but login required');
+      toast.warning('Registration successful, but login required');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -165,19 +205,65 @@ function Register() {
         website: formData.website
       }
       
-      // Call the registration endpoint
-      const response = await api.post('/auth/register', registerData)
+          console.log('Attempting to register with data:', registerData);
       
-      // If we get here, registration was successful
-      console.log('Registration successful:', response)
+      // Show loading toast
+      const loadingToast = toast.loading('Registering your business...');
       
-      // Save token if provided by the API
-      if (response && response.token) {
-        localStorage.setItem('mpbh_token', response.token)
+      try {
+        // Use direct fetch API to the debug endpoint
+        const response = await fetch('http://localhost:8000/debug-api.php?action=register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(registerData)
+        });
+        
+        // Clear loading toast
+        toast.dismiss(loadingToast);
+        
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Registration successful via debug-api:', data);
+        toast.success('Registration successful!');
+        
+        // Handle the successful registration 
+        handleSuccessfulRegistration(data);
+        return; // Exit early on success
+      } catch (error) {
+        // Clear loading toast if still showing
+        toast.dismiss(loadingToast);
+        
+        console.error('Registration error:', error);
+        toast.error(error.message || 'Registration failed. Please try again.');
+        throw error; // Rethrow to be caught by the outer try/catch
       }
       
-      // Navigate to success page or dashboard
-      navigate('/dashboard')
+      // This code is now unreachable since we're using the proxy approach above
+      // It's kept here temporarily for reference
+      /* 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw { 
+          status: response.status, 
+          data: errorData,
+          message: errorData.message || 'Registration failed'
+        };
+      }
+      
+      // Parse successful response
+      const data = await response.json();
+      */
+      
+      // This section is no longer needed as the successful response is
+      // handled in the try block above with return statement
+      // This code should never be reached
+      
+      // The navigation will happen inside handleSuccessfulRegistration
     } catch (error) {
       console.error('Registration error:', error)
       

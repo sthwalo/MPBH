@@ -1,0 +1,93 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Handle Front Controller Pattern
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+    
+    # Set CORS headers for API
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-CSRF-Token"
+        Header set Access-Control-Allow-Credentials "true"
+        Header set Access-Control-Allow-Origin "%{HTTP_ORIGIN}e" env=HTTP_ORIGIN
+        Header always set Access-Control-Allow-Origin "[mpbusinesshub.co.za](https://mpbusinesshub.co.za)" env=!HTTP_ORIGIN
+        
+        # Handle preflight OPTIONS requests
+        RewriteCond %{REQUEST_METHOD} OPTIONS
+        RewriteRule ^(.*)$ $1 [R=200,L]
+        
+        # Security headers
+        Header set X-Content-Type-Options "nosniff"
+        Header set X-XSS-Protection "1; mode=block"
+        Header set X-Frame-Options "SAMEORIGIN"
+        # Missing security headers (Add these)
+        Header set Content-Security-Policy "default-src 'self'"
+        Header set Referrer-Policy "strict-origin-when-cross-origin"
+        Header set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+        
+        # Set caching policies (adjust as needed)
+        <FilesMatch "\.(html|htm|php)$">
+            Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+        </FilesMatch>
+        
+        <FilesMatch "\.(css|js)$">
+            Header set Cache-Control "max-age=31536000, public"
+        </FilesMatch>
+        
+        <FilesMatch "\.(jpg|jpeg|png|gif|ico|svg|webp)$">
+            Header set Cache-Control "max-age=31536000, public"
+        </FilesMatch>
+    </IfModule>
+    
+    # PHP settings optimized for PostgreSQL
+    <IfModule mod_php7.c>
+        php_value default_socket_timeout 60
+        php_value max_execution_time 30
+        php_value memory_limit 128M
+        php_value post_max_size 20M
+        php_value upload_max_filesize 10M
+        # Increase connection timeouts for PostgreSQL
+        php_value default_socket_timeout 60
+    </IfModule>
+    
+    # Error handling
+    ErrorDocument 404 /index.php
+    ErrorDocument 500 /index.php
+
+    # Add before ErrorDocument
+    <IfModule mod_ratelimit.c>
+        # 100 requests/minute for API
+        <Location "/api/">
+            SetEnvIf Request_URI "^/api/auth" RateLimit=600/60
+            SetEnvIf Request_URI "^/api/" RateLimit=100/60
+            Order Allow,Deny
+            Allow from all
+            Deny from env=RateLimit
+        </Location>
+    </IfModule>
+
+    # Add versioned asset handling
+    <FilesMatch "\.(css|js|jpg|jpeg|png|gif|ico|svg|webp)-[a-f0-9]{8}\.[a-z]+$">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+    </FilesMatch>
+
+    # Current
+    ErrorDocument 404 /index.php
+    
+    # Improved
+    ErrorDocument 400 /error/400
+    ErrorDocument 401 /error/401
+    ErrorDocument 403 /error/403
+    ErrorDocument 404 /error/404
+    ErrorDocument 500 /error/500
+
+    # Current (mod_php7.c)
+    # Modern servers use PHP-FPM
+    <IfModule proxy_fcgi_module>
+        <FilesMatch "\.php$">
+            SetHandler "proxy:fcgi://127.0.0.1:9000"
+        </FilesMatch>
+    </IfModule>
+</IfModule>
