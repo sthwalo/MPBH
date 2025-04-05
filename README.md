@@ -1,105 +1,118 @@
 # Mpumalanga Business Hub
 
-A directory platform connecting local businesses (Tourism, Agriculture, Construction, Events) in Mpumalanga with enhanced membership tiers and discovery features.
+A web platform connecting businesses in Mpumalanga Province with potential customers through a comprehensive business directory and resource center.
 
-## Project Overview
+## Overview
 
-### Objective
-To build a comprehensive business directory platform for the Mpumalanga region, supporting businesses across Tourism, Agriculture, Construction, and Events sectors with tiered membership options.
+The Mpumalanga Business Hub is designed to promote economic growth in the region by providing businesses with online visibility and connecting them with customers. The platform features a tiered membership system with increasing benefits based on subscription level.
 
-### Key Metrics
-- **Target Users**: 10,000+ local businesses  
-- **Revenue Model**: Tiered subscriptions (R200-R1000/month)  
-- **Tech Stack**: React + PHP + MySQL on Afrihost Shared Hosting
+## Features
+
+- **User Registration & Authentication**: Secure JWT-based authentication
+- **Business Profiles**: Comprehensive business information including contact details, operating hours, and descriptions
+- **Business Directory**: Searchable and filterable listing of local businesses
+- **Business Dashboard**: Statistics and profile management for business owners
+- **Tiered Memberships**: Different packages with varying benefits
 
 ## Technology Stack
 
-| **Layer**       | **Technology**          | **Version** | **Purpose**  |
-|-----------------|-------------------------|-------------|------------|
-| **Frontend**    | React + Vite            | 18.x        | Dynamic UI  |  
-| **State**       | Context API             | -           | Client state |  
-| **Backend**     | PHP Slim Framework      | 8.1+        | REST API    |  
-| **Database**    | MySQL                   | 8.0         | Data storage |  
-| **Search**      | Fuse.js                 | 6.6         | Client-side search |  
-| **Payments**    | PayFast                 | -           | Subscription billing |  
-| **Maps**        | Google Maps API         | -           | Location services |  
+### Frontend
+- **Framework**: React with Vite
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Routing**: React Router v6
 
-## Repository Structure
-
-```
-mpbusinesshub/
-├── client/               # React Frontend
-│   ├── src/
-│   │   ├── modules/
-│   │   │   ├── search/
-│   │   │   ├── auth/
-│   │   │   ├── dashboard/
-│   │   │   └── payments/
-├── server/               # PHP Backend
-│   ├── api/
-│   │   ├── businesses/
-│   │   ├── auth/
-│   │   └── payments/
-│   └── config/
-├── docs/                 # Documentation
-└── scripts/              # Deployment
-```
+### Backend
+- **Language**: PHP 8.x
+- **Database**: PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **Server**: Apache (for production)
 
 ## Membership Tiers
 
-| Feature               | Basic | Bronze | Silver | Gold |
-|-----------------------|-------|--------|--------|------|
-| **Listing Visibility** | ✅    | ✅     | ✅     | ✅   |
-| **Contact Links**     | ❌    | ✅     | ✅     | ✅   |
-| **E-Commerce**        | ❌    | ❌     | ✅     | ✅   |
-| **Monthly Adverts**   | 0     | 0      | 1      | 4    |
+| Feature                    | Basic (Free) | Bronze (R200) | Silver (R500) | Gold (R1000) |
+|----------------------------|-------------|--------------|--------------|-------------|
+| **Business Name Listing**  | u2705        | u2705         | u2705         | u2705        |
+| **Area of Operation**      | u2705        | u2705         | u2705         | u2705        |
+| **Website Link**           | u274c        | u2705         | u2705         | u2705        |
+| **WhatsApp Number**        | u274c        | u2705         | u2705         | u2705        |
+| **Email Contact**          | u274c        | u274c         | u2705         | u2705        |
+| **Star Ratings**           | u274c        | u2705         | u2705         | u2705        |
+| **Product Catalog**        | u274c        | u274c         | u2705         | u2705        |
+| **Monthly Adverts**        | 0           | 0            | 1            | 4           |
+| **Social Media Feature**   | u274c        | u274c         | u274c         | 1/month     |
+
+**Annual Pricing**: Bronze: R2,000/year, Silver: R5,000/year, Gold: R10,000/year
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (>= 14.x)
 - PHP (>= 8.1)
-- MySQL (>= 8.0)
+- PostgreSQL (>= 13.0)
+- Composer
 
 ### Installation
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/mpbusinesshub.git
+git clone <repository-url>
+cd MPBH
 ```
 
-2. Install frontend dependencies
-```bash
-cd client
-npm install
-```
-
-3. Install backend dependencies
+2. Install backend dependencies
 ```bash
 cd server
 composer install
 ```
 
-4. Set up the database
+3. Configure environment variables
 ```bash
-mysql -u username -p database_name < schema.sql
+cp .env.example .env
+# Edit .env with your database credentials
 ```
 
-## Development Roadmap
+4. Set up the database
+```bash
+php setup-database.php
+```
 
-### Milestone 1: Core Directory (3 Weeks)
-- Database Schema Design
-- CRUD API for Businesses
-- Search UI Implementation
+5. Install frontend dependencies
+```bash
+cd ../client
+npm install
+```
 
-### Milestone 2: Membership System (2 Weeks)
-- PayFast Integration
-- Tier Comparison UI
+### Running the Development Server
 
-### Milestone 3: Admin Tools (1 Week)
-- Admin Dashboard
-- Analytics Implementation
+1. Start the PHP backend server
+```bash
+cd server
+php -S localhost:8000 -t public
+```
 
-## License
+2. Start the frontend development server
+```bash
+cd client
+npm run dev
+```
 
-This project is licensed under the terms specified in the LICENSE file.
+3. Access the application at http://localhost:3000
+
+## API Endpoints
+
+The API documentation is available in the [docs/api-reference.md](./docs/api-reference.md) file.
+
+## Deployment
+
+Deployment instructions for Afrihost shared hosting are available in the [docs/deployment.md](./docs/deployment.md) file.
+
+## Documentation
+
+Comprehensive documentation is available in the [docs](./docs) directory:
+
+- [Project Overview](./docs/project-overview.md)
+- [API Reference](./docs/api-reference.md)
+- [Database Schema](./docs/database-schema.md)
+- [Deployment Guide](./docs/deployment.md)
+- [Membership Tiers](./docs/membership-tiers.md)

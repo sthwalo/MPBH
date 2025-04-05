@@ -24,7 +24,7 @@ class Business
     public ?string $website = null;
     public ?string $logo = null;
     public ?string $cover_image = null;
-    public string $package_type = 'Basic';
+    public string $package_type = 'Basic'; // One of: Basic, Bronze, Silver, Gold
     public ?int $subscription_id = null;
     public ?string $verification_status = 'pending';
     public ?string $social_media = null; // JSON

@@ -81,6 +81,11 @@ try {
            (isset($_GET['endpoint']) && $_GET['endpoint'] === 'businesses')) {
         handleBusinessesList($db);
     }
+    // PACKAGE TIERS ENDPOINT - handle both URL pattern and endpoint parameter
+    elseif (strpos($path, 'packages/tiers') !== false || 
+           (isset($_GET['endpoint']) && $_GET['endpoint'] === 'packages/tiers')) {
+        handlePackageTiers($db);
+    }
     // FALLBACK - Debug information for unknown routes
     else {
         // Default debug information response
@@ -500,4 +505,80 @@ function handleLogin(PDO $db, array $data): void {
             'debug' => $e->getMessage() // Remove in production
         ]);
     }
+}
+
+/**
+ * Handle package tiers request
+ * 
+ * @param PDO $db Database connection
+ */
+function handlePackageTiers(PDO $db): void {
+    // Return details about available packages
+    $tiers = [
+        'Basic' => [
+            'price_monthly' => 0,
+            'price_yearly' => 0,
+            'features' => [
+                'business_name' => true,
+                'area_of_operation' => true,
+                'website' => false,
+                'whatsapp' => false,
+                'email' => false,
+                'star_ratings' => false,
+                'product_catalog' => false,
+                'monthly_adverts' => 0,
+                'social_media_feature' => false
+            ]
+        ],
+        'Bronze' => [
+            'price_monthly' => 200,
+            'price_yearly' => 2000,
+            'features' => [
+                'business_name' => true,
+                'area_of_operation' => true,
+                'website' => true,
+                'whatsapp' => true,
+                'email' => false,
+                'star_ratings' => true,
+                'product_catalog' => false,
+                'monthly_adverts' => 0,
+                'social_media_feature' => false
+            ]
+        ],
+        'Silver' => [
+            'price_monthly' => 500,
+            'price_yearly' => 5000,
+            'features' => [
+                'business_name' => true,
+                'area_of_operation' => true,
+                'website' => true,
+                'whatsapp' => true,
+                'email' => true,
+                'star_ratings' => true,
+                'product_catalog' => true,
+                'monthly_adverts' => 1,
+                'social_media_feature' => false
+            ]
+        ],
+        'Gold' => [
+            'price_monthly' => 1000,
+            'price_yearly' => 10000,
+            'features' => [
+                'business_name' => true,
+                'area_of_operation' => true,
+                'website' => true,
+                'whatsapp' => true,
+                'email' => true,
+                'star_ratings' => true,
+                'product_catalog' => true,
+                'monthly_adverts' => 4,
+                'social_media_feature' => true
+            ]
+        ]
+    ];
+    
+    echo json_encode([
+        'status' => 'success',
+        'data' => $tiers
+    ]);
 }
