@@ -12,14 +12,14 @@ class User
     private string $table = 'users';
     
     // User properties
-    public ?int $id = null;
+    public ?int $user_id = null;
+    public string $name;
     public string $email;
-    public string $password;
-    public ?string $reset_token = null;
-    public ?string $reset_token_expires = null;
-    public string $created_at;
-    public ?string $updated_at = null;
-    public ?string $last_password_change = null;
+    public string $password; // Used for input only, stored as password_hash in DB
+    public ?string $password_hash = null;
+    public ?string $phone_number = null;
+    public ?string $area_of_operation = null;
+    public ?string $language_preference = null;
     
     /**
      * Constructor with database dependency
@@ -39,20 +39,25 @@ class User
     public function create(): bool
     {
         $query = "INSERT INTO " . $this->table . "
-                 (email, password)
-                 VALUES (:email, :password)";
+                 (name, email, password_hash, phone_number)
+                 VALUES (:name, :email, :password_hash, :phone_number)";
         
         $stmt = $this->db->prepare($query);
         
-        // Sanitize and bind params
+        // Sanitize inputs
+        $this->name = htmlspecialchars(strip_tags($this->name ?? 'User'));
         $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->password = password_hash($this->password, PASSWORD_DEFAULT); // Hash the password
+        $this->password_hash = password_hash($this->password, PASSWORD_DEFAULT); // Hash the password
+        $this->phone_number = !empty($this->phone_number) ? htmlspecialchars(strip_tags($this->phone_number)) : null;
         
+        // Bind params
+        $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':password', $this->password);
+        $stmt->bindParam(':password_hash', $this->password_hash);
+        $stmt->bindParam(':phone_number', $this->phone_number);
         
         if ($stmt->execute()) {
-            $this->id = $this->db->lastInsertId();
+            $this->user_id = $this->db->lastInsertId();
             return true;
         }
         
@@ -67,9 +72,9 @@ class User
      */
     public function readOne(int $id): bool
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE id = :id LIMIT 1";
+        $query = "SELECT * FROM " . $this->table . " WHERE user_id = :user_id LIMIT 1";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':user_id', $id);
         $stmt->execute();
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -79,14 +84,13 @@ class User
         }
         
         // Set properties
-        $this->id = $row['id'];
+        $this->user_id = $row['user_id'];
+        $this->name = $row['name'] ?? null;
         $this->email = $row['email'];
-        $this->password = $row['password'];
-        $this->reset_token = $row['reset_token'];
-        $this->reset_token_expires = $row['reset_token_expires'];
-        $this->created_at = $row['created_at'];
-        $this->updated_at = $row['updated_at'];
-        $this->last_password_change = $row['last_password_change'] ?? null;
+        $this->password_hash = $row['password_hash'];
+        $this->phone_number = $row['phone_number'] ?? null;
+        $this->area_of_operation = $row['area_of_operation'] ?? null;
+        $this->language_preference = $row['language_preference'] ?? null;
         
         return true;
     }
@@ -111,14 +115,13 @@ class User
         }
         
         // Set properties
-        $this->id = $row['id'];
+        $this->user_id = $row['user_id'];
+        $this->name = $row['name'] ?? null;
         $this->email = $row['email'];
-        $this->password = $row['password'];
-        $this->reset_token = $row['reset_token'];
-        $this->reset_token_expires = $row['reset_token_expires'];
-        $this->created_at = $row['created_at'];
-        $this->updated_at = $row['updated_at'];
-        $this->last_password_change = $row['last_password_change'] ?? null;
+        $this->password_hash = $row['password_hash'];
+        $this->phone_number = $row['phone_number'] ?? null;
+        $this->area_of_operation = $row['area_of_operation'] ?? null;
+        $this->language_preference = $row['language_preference'] ?? null;
         
         return true;
     }
@@ -134,7 +137,7 @@ class User
                  SET email = :email, 
                      reset_token = :reset_token,
                      reset_token_expires = :reset_token_expires
-                 WHERE id = :id";
+                 WHERE user_id = :user_id";
         
         $stmt = $this->db->prepare($query);
         
@@ -144,7 +147,7 @@ class User
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':reset_token', $this->reset_token);
         $stmt->bindParam(':reset_token_expires', $this->reset_token_expires);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':user_id', $this->user_id);
         
         return $stmt->execute();
     }
@@ -158,18 +161,16 @@ class User
     public function updatePassword(string $password): bool
     {
         $query = "UPDATE " . $this->table . " 
-                 SET password = :password, 
-                     reset_token = NULL, 
-                     reset_token_expires = NULL 
-                 WHERE id = :id";
+                 SET password_hash = :password_hash 
+                 WHERE user_id = :user_id";
         
         $stmt = $this->db->prepare($query);
         
         // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
-        $stmt->bindParam(':password', $hashedPassword);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':password_hash', $hashedPassword);
+        $stmt->bindParam(':user_id', $this->user_id);
         
         return $stmt->execute();
     }
@@ -226,14 +227,13 @@ class User
         }
         
         // Set properties
-        $this->id = $row['id'];
+        $this->user_id = $row['user_id'];
+        $this->name = $row['name'] ?? null;
         $this->email = $row['email'];
-        $this->password = $row['password'];
-        $this->reset_token = $row['reset_token'];
-        $this->reset_token_expires = $row['reset_token_expires'];
-        $this->created_at = $row['created_at'];
-        $this->updated_at = $row['updated_at'];
-        $this->last_password_change = $row['last_password_change'] ?? null;
+        $this->password_hash = $row['password_hash'];
+        $this->phone_number = $row['phone_number'] ?? null;
+        $this->area_of_operation = $row['area_of_operation'] ?? null;
+        $this->language_preference = $row['language_preference'] ?? null;
         
         return true;
     }
@@ -246,7 +246,7 @@ class User
      */
     public function verifyPassword(string $password): bool
     {
-        return password_verify($password, $this->password);
+        return password_verify($password, $this->password_hash);
     }
     
     /**
@@ -259,6 +259,7 @@ class User
     {
         $query = "SELECT COUNT(*) FROM " . $this->table . " WHERE email = :email";
         $stmt = $this->db->prepare($query);
+        $email = strtolower(trim($email)); // Normalize email
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         
@@ -273,10 +274,13 @@ class User
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->user_id, // Return as 'id' for backward compatibility
+            'user_id' => $this->user_id,
+            'name' => $this->name,
             'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'phone_number' => $this->phone_number,
+            'area_of_operation' => $this->area_of_operation,
+            'language_preference' => $this->language_preference
         ];
     }
     
@@ -304,8 +308,8 @@ class User
      * @return bool Success status
      */
     public function updatePasswordTimestamp(): bool {
-        $query = "UPDATE {$this->table} SET last_password_change = NOW() WHERE id = ?";
+        $query = "UPDATE {$this->table} SET updated_at = NOW() WHERE user_id = ?";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([$this->id]);
+        return $stmt->execute([$this->user_id]);
     }
 }

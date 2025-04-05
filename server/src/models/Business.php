@@ -12,7 +12,7 @@ class Business
     private string $table = 'businesses';
     
     // Business properties
-    public ?int $id = null;
+    public ?int $business_id = null;
     public int $user_id;
     public string $name;
     public ?string $description = null;
@@ -26,7 +26,7 @@ class Business
     public ?string $cover_image = null;
     public string $package_type = 'Basic';
     public ?int $subscription_id = null;
-    public string $verification_status = 'pending';
+    public ?string $verification_status = 'pending';
     public ?string $social_media = null; // JSON
     public ?string $business_hours = null; // JSON
     public ?float $longitude = null;
@@ -81,7 +81,7 @@ class Business
         $stmt->bindParam(':package_type', $this->package_type);
         
         if ($stmt->execute()) {
-            $this->id = $this->db->lastInsertId();
+            $this->business_id = $this->db->lastInsertId();
             return true;
         }
         
@@ -96,9 +96,9 @@ class Business
      */
     public function readOne(int $id): bool
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE id = :id LIMIT 1";
+        $query = "SELECT * FROM " . $this->table . " WHERE business_id = :business_id LIMIT 1";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':business_id', $id);
         $stmt->execute();
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -108,7 +108,7 @@ class Business
         }
         
         // Set properties
-        $this->id = $row['id'];
+        $this->business_id = $row['business_id'];
         $this->user_id = $row['user_id'];
         $this->name = $row['name'];
         $this->description = $row['description'];
@@ -153,29 +153,29 @@ class Business
             return false;
         }
         
-        // Set properties same as in readOne
-        $this->id = $row['id'];
+        // Set properties with null coalescing to handle missing columns
+        $this->business_id = $row['business_id'] ?? null; 
         $this->user_id = $row['user_id'];
         $this->name = $row['name'];
-        $this->description = $row['description'];
+        $this->description = $row['description'] ?? null;
         $this->category = $row['category'];
         $this->district = $row['district'];
-        $this->address = $row['address'];
-        $this->phone = $row['phone'];
+        $this->address = $row['address'] ?? null;
+        $this->phone = $row['phone'] ?? null;
         $this->email = $row['email'];
-        $this->website = $row['website'];
-        $this->logo = $row['logo'];
-        $this->cover_image = $row['cover_image'];
-        $this->package_type = $row['package_type'];
-        $this->subscription_id = $row['subscription_id'];
-        $this->verification_status = $row['verification_status'];
-        $this->social_media = $row['social_media'];
-        $this->business_hours = $row['business_hours'];
-        $this->longitude = $row['longitude'];
-        $this->latitude = $row['latitude'];
-        $this->adverts_remaining = $row['adverts_remaining'];
-        $this->created_at = $row['created_at'];
-        $this->updated_at = $row['updated_at'];
+        $this->website = $row['website'] ?? null;
+        $this->logo = $row['logo'] ?? null;
+        $this->cover_image = $row['cover_image'] ?? null;
+        $this->package_type = $row['package_type'] ?? 'Basic';
+        $this->subscription_id = $row['subscription_id'] ?? null;
+        $this->verification_status = $row['verification_status'] ?? 'pending';
+        $this->social_media = $row['social_media'] ?? null;
+        $this->business_hours = $row['business_hours'] ?? null;
+        $this->longitude = $row['longitude'] ?? null;
+        $this->latitude = $row['latitude'] ?? null;
+        $this->adverts_remaining = $row['adverts_remaining'] ?? 0;
+        $this->created_at = $row['created_at'] ?? null;
+        $this->updated_at = $row['updated_at'] ?? null;
         
         return true;
     }
@@ -507,7 +507,8 @@ class Business
     public function toArray(bool $includePrivate = false): array
     {
         $data = [
-            'id' => $this->id,
+            'id' => $this->business_id, // Return as 'id' for backward compatibility
+            'business_id' => $this->business_id,
             'name' => $this->name,
             'description' => $this->description,
             'category' => $this->category,

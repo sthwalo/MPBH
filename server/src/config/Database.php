@@ -22,13 +22,16 @@ class Database {
      * Constructor - initializes database connection parameters
      */
     public function __construct() {
-        // Load from environment variables
-        $this->host = $_ENV['DB_HOST'];
-        $this->db_name = $_ENV['DB_NAME'];
+        // Load from environment variables with fallback to development defaults
+        $this->host = $_ENV['DB_HOST'] ?? 'localhost';
+        $this->db_name = $_ENV['DB_NAME'] ?? 'mpbh_db';
         $this->db_port = $_ENV['DB_PORT'] ?? '5432';
-        $this->username = $_ENV['DB_USER'];
-        $this->password = $_ENV['DB_PASSWORD'];
+        $this->username = $_ENV['DB_USER'] ?? 'postgres';
+        $this->password = $_ENV['DB_PASSWORD'] ?? 'postgres';
         $this->connection_string = $_ENV['DB_CONNECTION'] ?? 'pgsql';
+        
+        // For development purposes - log connection parameters
+        error_log("Database connection parameters: {$this->connection_string}:host={$this->host};port={$this->db_port};dbname={$this->db_name}");
     }
 
     /**
@@ -39,8 +42,9 @@ class Database {
         $this->conn = null;
 
         try {
-            // Create PostgreSQL connection string
-            $dsn = "{$this->connection_string}:host={$this->host};port={$this->db_port};dbname={$this->db_name}";
+            // Create PostgreSQL connection string - properly formatted for PostgreSQL
+            $dsn = "{$this->connection_string}:host={$this->host};dbname={$this->db_name};port={$this->db_port}";
+            error_log("Connecting to PostgreSQL database with DSN: {$dsn}");
             
             // Create connection with error mode set to exceptions
             $this->conn = new PDO($dsn, $this->username, $this->password);
@@ -50,15 +54,13 @@ class Database {
             // Set UTF-8 encoding
             $this->conn->exec("SET NAMES 'UTF8'");
             
-            // Log successful connection if in debug mode
-            if (isset($_ENV['LOG_LEVEL']) && $_ENV['LOG_LEVEL'] == 'debug') {
-                error_log("Database connection established successfully");
-            }
+            // Log successful connection
+            error_log("PostgreSQL database connection established successfully");
         } catch(PDOException $e) {
             // Log connection error
-            error_log("Database Connection Error: " . $e->getMessage());
+            error_log("PostgreSQL Database Connection Error: " . $e->getMessage());
         }
-
+        
         return $this->conn;
     }
 

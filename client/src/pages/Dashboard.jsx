@@ -20,54 +20,128 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    // In production, this would fetch the user's business data from the API
-    // const fetchBusinessData = async () => {
-    //   try {
-    //     const response = await fetch('/api/businesses/my-business', {
-    //       headers: {
-    //         'Authorization': `Bearer ${localStorage.getItem('token')}`
-    //       }
-    //     })
-    //     if (!response.ok) throw new Error('Failed to fetch business data')
-    //     const data = await response.json()
-    //     setBusinessData(data)
-    //   } catch (error) {
-    //     console.error('Error fetching business data:', error)
-    //   } finally {
-    //     setLoading(false)
-    //   }
-    // }
-    // 
-    // fetchBusinessData()
-    
-    // For demo, we'll use mock data
-    setTimeout(() => {
-      setBusinessData({
-        id: 1,
-        name: 'Kruger Gateway Lodge',
-        category: 'Tourism',
-        district: 'Mbombela',
-        package_type: 'Gold',
-        rating: 4.8,
-        adverts_remaining: 3,
-        subscription: {
-          status: 'active',
-          next_billing_date: '2025-05-01',
-          amount: 1000
-        },
-        statistics: {
-          views: 256,
-          contacts: 48,
-          reviews: 15
+    // Fetch the user's business data from our API
+    const fetchBusinessData = async () => {
+      try {
+        // Get the auth token from localStorage
+        const token = localStorage.getItem('mpbh_token');
+        if (!token) {
+          // No token found, redirect to login
+          navigate('/login');
+          return;
         }
-      })
-      setLoading(false)
-    }, 1000)
+        
+        // Fetch business details from our enhanced debug API
+        const response = await fetch('http://localhost:8000/debug-api.php?endpoint=business/details', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          // If we get a 401 Unauthorized, redirect to login
+          if (response.status === 401) {
+            localStorage.removeItem('mpbh_token');
+            navigate('/login');
+            return;
+          }
+          
+          throw new Error(`Failed to fetch business data: ${response.status}`);
+        }
+        
+        // Parse the response data
+        const result = await response.json();
+        
+        if (result.status === 'success' && result.data) {
+          // Transform the API data to match our component's expected format
+          const businessData = {
+            id: result.data.id,
+            name: result.data.name,
+            category: result.data.category,
+            district: result.data.district,
+            description: result.data.description,
+            address: result.data.address,
+            phone: result.data.phone,
+            email: result.data.email,
+            website: result.data.website,
+            package_type: result.data.package_type || 'Basic',
+            adverts_remaining: result.data.adverts_remaining || 0,
+            subscription: {
+              status: 'active',
+              next_billing_date: '2025-05-01',
+              amount: 0
+            },
+            statistics: {
+              views: 0,
+              contacts: 0,
+              reviews: 0
+            }
+          };
+          
+          setBusinessData(businessData);
+        } else {
+          // If our API returned an error or no data
+          console.error('API returned an error:', result);
+          
+          // Fallback to mock data for testing if API fails
+          setBusinessData({
+            id: 1,
+            name: 'Your Business',
+            category: 'Tourism',
+            district: 'Mbombela',
+            package_type: 'Basic',
+            rating: 0,
+            adverts_remaining: 0,
+            subscription: {
+              status: 'active',
+              next_billing_date: '2025-05-01',
+              amount: 0
+            },
+            statistics: {
+              views: 0,
+              contacts: 0,
+              reviews: 0
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching business data:', error);
+        
+        // For a better user experience, show mock data instead of an error screen
+        setBusinessData({
+          id: 1,
+          name: 'Your Business',
+          category: 'General',
+          district: 'Mbombela',
+          package_type: 'Basic',
+          rating: 0,
+          adverts_remaining: 0,
+          subscription: {
+            status: 'active',
+            next_billing_date: '2025-05-01',
+            amount: 0
+          },
+          statistics: {
+            views: 0,
+            contacts: 0,
+            reviews: 0
+          }
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    // Call the fetch function
+    fetchBusinessData();
   }, [])
   
   const handleLogout = () => {
-    // Clear authentication token
-    localStorage.removeItem('token')
+    // Clear authentication token and user data
+    localStorage.removeItem('mpbh_token')
+    localStorage.removeItem('mpbh_user')
     // Redirect to login page
     navigate('/login')
   }

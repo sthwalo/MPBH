@@ -1,0 +1,149 @@
+2025-04-05 11:34:39 - Database connection failed
+[05-Apr-2025 12:18:04 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:18:04 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:18:04 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:18:04 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:18:04 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:18:04 UTC] ===== REGISTRATION ATTEMPT =====
+[05-Apr-2025 12:18:04 UTC] Data received: {"email":"nyoniii@gmail.com","password":"Imma12345","businessName":"Global Hope Consortium","description":"jdahjau adgljn;sc vjasvs;;b;ajbf;habfsjbcvihdfaaefjsn;a","category":"Tourism","district":"Emalahleni","address":"131 Shamrock Street\nFlorida","phone":"+27733685971","website":"https:\/\/ghcons.com"}
+[05-Apr-2025 12:18:04 UTC] Starting database transaction
+[05-Apr-2025 12:18:04 UTC] Creating User object
+[05-Apr-2025 12:18:04 UTC] Checking if email exists: nyoniii@gmail.com
+[05-Apr-2025 12:18:04 UTC] Email check passed - email doesn't exist
+[05-Apr-2025 12:18:04 UTC] Setting user properties
+[05-Apr-2025 12:18:04 UTC] Attempting to create user
+[05-Apr-2025 12:18:05 UTC] ERROR in registration: SQLSTATE[42703]: Undefined column: 7 ERROR:  column "password" of relation "users" does not exist
+LINE 2:                  (email, password)
+                                 ^
+[05-Apr-2025 12:18:05 UTC] Stack trace: #0 /Users/sthwalonyoni/MPBH/server/src/Models/User.php(54): PDOStatement->execute()
+#1 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(162): App\Models\User->create()
+#2 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(62): handleRegistration(Object(PDO), Array)
+#3 {main}
+[05-Apr-2025 12:21:59 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:21:59 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:21:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:22:00 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:22:00 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:24:49 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:24:49 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:24:49 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:24:49 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:24:49 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:24:49 UTC] ===== REGISTRATION ATTEMPT =====
+[05-Apr-2025 12:24:49 UTC] Data received: {"email":"nyoniii@gmail.com","password":"Password123","businessName":"Global Hope Consortium","description":"scdsljnvlsvbvljdbfvljbvkdhjvdbvfajblvjbjkvbsvlodjfbldabvkvbljfsblvadjvbjoaobsfljvsfvbdajekbvoasblv;xbnvdjfabov;osbfjvx dk jdk ","category":"Tourism","district":"Mbombela","address":"131 Shamrock Street\nFlorida","phone":"+27733685971","website":"https:\/\/ghcons.com"}
+[05-Apr-2025 12:24:49 UTC] Starting database transaction
+[05-Apr-2025 12:24:49 UTC] Creating User object
+[05-Apr-2025 12:24:49 UTC] Checking if email exists: nyoniii@gmail.com
+[05-Apr-2025 12:24:50 UTC] Email check passed - email doesn't exist
+[05-Apr-2025 12:24:50 UTC] Setting user properties
+[05-Apr-2025 12:24:50 UTC] Attempting to create user
+[05-Apr-2025 12:24:50 UTC] ERROR in registration: SQLSTATE[42703]: Undefined column: 7 ERROR:  column "password" of relation "users" does not exist
+LINE 2:                  (email, password)
+                                 ^
+[05-Apr-2025 12:24:50 UTC] Stack trace: #0 /Users/sthwalonyoni/MPBH/server/src/Models/User.php(54): PDOStatement->execute()
+#1 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(162): App\Models\User->create()
+#2 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(62): handleRegistration(Object(PDO), Array)
+#3 {main}
+[05-Apr-2025 12:27:09 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:27:09 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:27:09 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:27:09 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:27:09 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:27:09 UTC] ===== REGISTRATION ATTEMPT =====
+[05-Apr-2025 12:27:09 UTC] Data received: {"email":"nyoniii@gmail.com","password":"Password123","businessName":"Global Hope Consortium","description":"scdsljnvlsvbvljdbfvljbvkdhjvdbvfajblvjbjkvbsvlodjfbldabvkvbljfsblvadjvbjoaobsfljvsfvbdajekbvoasblv;xbnvdjfabov;osbfjvx dk jdk ","category":"Tourism","district":"Mbombela","address":"131 Shamrock Street\nFlorida","phone":"+27733685971","website":"https:\/\/ghcons.com"}
+[05-Apr-2025 12:27:09 UTC] Starting database transaction
+[05-Apr-2025 12:27:09 UTC] Creating User object
+[05-Apr-2025 12:27:09 UTC] Checking if email exists: nyoniii@gmail.com
+[05-Apr-2025 12:27:09 UTC] Email check passed - email doesn't exist
+[05-Apr-2025 12:27:09 UTC] Setting user properties
+[05-Apr-2025 12:27:09 UTC] Attempting to create user
+[05-Apr-2025 12:27:09 UTC] User created successfully with ID: 1
+[05-Apr-2025 12:27:09 UTC] Creating Business object
+[05-Apr-2025 12:27:09 UTC] Setting business properties
+[05-Apr-2025 12:27:09 UTC] User ID for business: 1
+[05-Apr-2025 12:27:09 UTC] Attempting to create business
+[05-Apr-2025 12:27:09 UTC] Business created successfully with ID: 1
+[05-Apr-2025 12:27:09 UTC] PHP Warning:  Undefined property: App\Models\User::$id in /Users/sthwalonyoni/MPBH/server/public/debug-api.php on line 200
+[05-Apr-2025 12:27:09 UTC] PHP Fatal error:  Uncaught TypeError: generateJWT(): Argument #1 ($userId) must be of type int, null given, called in /Users/sthwalonyoni/MPBH/server/public/debug-api.php on line 200 and defined in /Users/sthwalonyoni/MPBH/server/public/debug-api.php:332
+Stack trace:
+#0 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(200): generateJWT(NULL)
+#1 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(62): handleRegistration(Object(PDO), Array)
+#2 {main}
+  thrown in /Users/sthwalonyoni/MPBH/server/public/debug-api.php on line 332
+[05-Apr-2025 12:28:22 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:28:22 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:28:22 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:28:22 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:28:22 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:28:22 UTC] ===== REGISTRATION ATTEMPT =====
+[05-Apr-2025 12:28:22 UTC] Data received: {"email":"nyoniii@gmail.com","password":"Password123","businessName":"Global Hope Consortium","description":"scdsljnvlsvbvljdbfvljbvkdhjvdbvfajblvjbjkvbsvlodjfbldabvkvbljfsblvadjvbjoaobsfljvsfvbdajekbvoasblv;xbnvdjfabov;osbfjvx dk jdk ","category":"Tourism","district":"Mbombela","address":"131 Shamrock Street\nFlorida","phone":"+27733685971","website":"https:\/\/ghcons.com"}
+[05-Apr-2025 12:28:22 UTC] Starting database transaction
+[05-Apr-2025 12:28:22 UTC] Creating User object
+[05-Apr-2025 12:28:22 UTC] Checking if email exists: nyoniii@gmail.com
+[05-Apr-2025 12:28:22 UTC] Email already exists: nyoniii@gmail.com
+[05-Apr-2025 12:29:36 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:29:36 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:29:36 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:29:36 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:29:36 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:29:36 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:29:36 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:29:36 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:29:36 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:29:36 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:31:49 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:31:49 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:31:49 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:31:49 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:31:49 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 12:31:49 UTC] PHP Warning:  Undefined array key "id" in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 157
+[05-Apr-2025 12:31:49 UTC] PHP Deprecated:  Creation of dynamic property App\Models\Business::$id is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 157
+[05-Apr-2025 12:31:49 UTC] PHP Warning:  Undefined array key "logo" in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 167
+[05-Apr-2025 12:31:49 UTC] PHP Warning:  Undefined array key "cover_image" in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 168
+[05-Apr-2025 12:31:49 UTC] PHP Warning:  Undefined array key "subscription_id" in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 170
+[05-Apr-2025 12:31:49 UTC] PHP Warning:  Undefined array key "verification_status" in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 171
+[05-Apr-2025 12:31:49 UTC] PHP Fatal error:  Uncaught TypeError: Cannot assign null to property App\Models\Business::$verification_status of type string in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php:171
+Stack trace:
+#0 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(241): App\Models\Business->findByUserId('1')
+#1 /Users/sthwalonyoni/MPBH/server/public/debug-api.php(67): handleBusinessDetails(Object(PDO))
+#2 {main}
+  thrown in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 171
+[05-Apr-2025 12:32:56 UTC] Environment variables loaded for development environment
+[05-Apr-2025 12:32:56 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 12:32:56 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 12:32:56 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 12:32:56 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:16:59 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:16:59 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:16:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:16:59 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:16:59 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:16:59 UTC] ===== REGISTRATION ATTEMPT =====
+[05-Apr-2025 13:16:59 UTC] Data received: {"email":"test2@example.com","password":"Password123","businessName":"Test Business LLC","description":"A test business for validation","category":"Information Technology","district":"Gert Sibande","address":"456 Test Avenue","phone":"+27731234567","website":"https:\/\/testbusiness.com"}
+[05-Apr-2025 13:16:59 UTC] Starting database transaction
+[05-Apr-2025 13:16:59 UTC] Creating User object
+[05-Apr-2025 13:16:59 UTC] Checking if email exists: test2@example.com
+[05-Apr-2025 13:16:59 UTC] Email check passed - email doesn't exist
+[05-Apr-2025 13:16:59 UTC] Setting user properties
+[05-Apr-2025 13:16:59 UTC] Attempting to create user
+[05-Apr-2025 13:17:00 UTC] User created successfully with ID: 2
+[05-Apr-2025 13:17:00 UTC] Creating Business object
+[05-Apr-2025 13:17:00 UTC] Setting business properties
+[05-Apr-2025 13:17:00 UTC] User ID for business: 2
+[05-Apr-2025 13:17:00 UTC] Attempting to create business
+[05-Apr-2025 13:17:00 UTC] Business created successfully with ID: 2
+[05-Apr-2025 13:17:11 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:17:11 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:17:11 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:17:11 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:17:11 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:17:22 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:17:22 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:17:22 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:17:22 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:17:22 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:17:59 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:17:59 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:17:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:17:59 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:17:59 UTC] Successfully connected to PostgreSQL database

@@ -211,7 +211,7 @@ function Register() {
       const loadingToast = toast.loading('Registering your business...');
       
       try {
-        // Use direct fetch API to the debug endpoint
+        // Use the enhanced debug API endpoint
         const response = await fetch('http://localhost:8000/debug-api.php?action=register', {
           method: 'POST',
           headers: {
