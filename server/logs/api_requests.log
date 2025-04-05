@@ -20,3 +20,11 @@
 2025-04-05 13:22:16 - /debug-api.php?endpoint=business/details - 
 2025-04-05 13:22:16 - /debug-api.php?endpoint=business/details - 
 2025-04-05 13:27:00 - /debug-api.php?endpoint=businesses - 
+2025-04-05 15:35:52 - /debug-api.php?endpoint=packages/tiers - 
+2025-04-05 15:43:37 - /debug-api.php?endpoint=packages/tiers - 
+2025-04-05 15:46:03 - /debug-api.php?endpoint=packages/tiers - 
+2025-04-05 15:49:21 - /debug-api.php/businesses?category=Agriculture - 
+2025-04-05 15:49:21 - /debug-api.php/businesses?category=Agriculture - 
+2025-04-05 15:50:07 - /debug-api.php/businesses?district=Mbombela - 
+2025-04-05 15:50:07 - /debug-api.php/businesses?district=Mbombela - 
+2025-04-05 15:50:25 - /debug-api.php/businesses?district=Bushbuckridge - 

@@ -381,21 +381,42 @@ class Business
      * @param int|null $subscriptionId Subscription ID
      * @param int $advertsRemaining Number of adverts remaining
      * @return bool Success status
+     * @throws \InvalidArgumentException If package type is invalid
      */
     public function updatePackage(string $packageType, ?int $subscriptionId, int $advertsRemaining): bool
     {
+        // Validate package type
+        $validPackages = ['Basic', 'Bronze', 'Silver', 'Gold'];
+        if (!in_array($packageType, $validPackages)) {
+            throw new \InvalidArgumentException("Invalid package type: $packageType. Must be one of: " . implode(', ', $validPackages));
+        }
+        
+        // Set adverts remaining based on package type if not explicitly provided
+        if ($advertsRemaining < 0) {
+            switch ($packageType) {
+                case 'Gold':
+                    $advertsRemaining = 4;
+                    break;
+                case 'Silver':
+                    $advertsRemaining = 1;
+                    break;
+                default:
+                    $advertsRemaining = 0;
+            }
+        }
+        
         $query = "UPDATE " . $this->table . "
                  SET package_type = :package_type, 
                      subscription_id = :subscription_id,
                      adverts_remaining = :adverts_remaining
-                 WHERE id = :id";
+                 WHERE business_id = :business_id";
         
         $stmt = $this->db->prepare($query);
         
         $stmt->bindParam(':package_type', $packageType);
         $stmt->bindParam(':subscription_id', $subscriptionId);
         $stmt->bindParam(':adverts_remaining', $advertsRemaining);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':business_id', $this->business_id);
         
         if ($stmt->execute()) {
             $this->package_type = $packageType;

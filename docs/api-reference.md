@@ -172,3 +172,6 @@
     }
   }
   ```
+# First, let's start the server in the background
+cd /Users/sthwalonyoni/MPBH/server
+php -S localhost:8000 -t public &

@@ -12,7 +12,10 @@ const api = axios.create({
     'Accept': 'application/json'
   }
 });
-
+// In api.js
+export const fetchPackageTiers = async () => {
+  return api.get('/packages/tiers');
+};
 // Request interceptor for adding auth tokens
 api.interceptors.request.use(
   config => {

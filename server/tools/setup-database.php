@@ -57,7 +57,7 @@ try {
             phone VARCHAR(20),
             email VARCHAR(255) NOT NULL,
             website VARCHAR(255),
-            package_type VARCHAR(50) DEFAULT 'Basic',
+            package_type VARCHAR(50) DEFAULT 'Basic' CHECK (package_type IN ('Basic', 'Bronze', 'Silver', 'Gold')),
             verified BOOLEAN DEFAULT FALSE,
             active BOOLEAN DEFAULT TRUE,
             rating DECIMAL(3,2) DEFAULT 0,
