@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Logo from './Logo'
 
 function Header({ isAuthenticated }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -20,7 +21,7 @@ function Header({ isAuthenticated }) {
     <header className="bg-white shadow-brand-sm border-b border-brand-gray-200">
       <div className="container mx-auto py-4 px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <span className="text-2xl font-serif font-bold tracking-wide text-brand-black">Mpumalanga Business Hub</span>
+          <Logo size="small" />
         </Link>
 
         {/* Desktop Navigation */}
