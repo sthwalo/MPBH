@@ -28,7 +28,7 @@ const PricingTable = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-black"></div>
       </div>
     );
   }
@@ -38,7 +38,7 @@ const PricingTable = () => {
       <div className="text-center p-8">
         <p className="text-red-500">{error}</p>
         <button 
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="mt-4 px-4 py-2 bg-brand-black text-white rounded hover:bg-brand-gray-800 transition-colors"
           onClick={() => window.location.reload()}
         >
           Try Again
@@ -55,42 +55,42 @@ const PricingTable = () => {
 
   const getFeatureIcon = (value) => {
     return value ? (
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-tier-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
       </svg>
     ) : (
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
       </svg>
     );
   };
 
   return (
-    <div className="py-12 bg-gray-100">
+    <div className="py-12 bg-brand-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+          <h2 className="text-3xl font-serif font-extrabold text-brand-black sm:text-4xl tracking-wide">
             Membership Packages
           </h2>
-          <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+          <p className="mt-4 max-w-2xl text-xl text-brand-gray-600 mx-auto">
             Choose the perfect package for your business
           </p>
         </div>
 
         {/* Billing toggle */}
         <div className="mt-8 flex justify-center">
-          <div className="relative flex items-center rounded-full p-1 bg-gray-200">
+          <div className="relative flex items-center rounded-full p-1 bg-brand-gray-200">
             <button
               onClick={toggleBillingCycle}
-              className={`${billingCycle === 'monthly' ? 'bg-white shadow-sm' : ''} rounded-full py-2 px-6 text-sm font-medium transition-all`}
+              className={`${billingCycle === 'monthly' ? 'bg-white shadow-brand-sm' : 'text-brand-gray-600'} rounded-full py-2 px-6 text-sm font-medium transition-all`}
             >
               Monthly
             </button>
             <button
               onClick={toggleBillingCycle}
-              className={`${billingCycle === 'yearly' ? 'bg-white shadow-sm' : ''} rounded-full py-2 px-6 text-sm font-medium transition-all`}
+              className={`${billingCycle === 'yearly' ? 'bg-white shadow-brand-sm' : 'text-brand-gray-600'} rounded-full py-2 px-6 text-sm font-medium transition-all`}
             >
-              Yearly <span className="text-green-600 font-semibold">Save up to 16%</span>
+              Yearly <span className="text-tier-gold font-semibold">Save up to 16%</span>
             </button>
           </div>
         </div>
@@ -98,20 +98,20 @@ const PricingTable = () => {
         {/* Pricing cards */}
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {Object.entries(pricingData).map(([tier, data]) => (
-            <div key={tier} className="bg-white overflow-hidden shadow-lg rounded-lg divide-y divide-gray-200">
+            <div key={tier} className="bg-white overflow-hidden shadow-brand-md hover:shadow-brand-lg transition-all duration-300 rounded-lg divide-y divide-brand-gray-200 border border-brand-gray-200">
               {/* Package header */}
-              <div className="px-6 py-8">
-                <h3 className="text-2xl font-medium text-gray-900 text-center">{tier}</h3>
+              <div className="px-6 py-8" style={{backgroundColor: tier === 'Gold' ? 'rgba(255, 215, 0, 0.05)' : tier === 'Silver' ? 'rgba(192, 192, 192, 0.05)' : tier === 'Bronze' ? 'rgba(205, 127, 50, 0.05)' : 'transparent'}}>
+                <h3 className="text-2xl font-serif font-medium text-center" style={{color: tier === 'Gold' ? 'var(--color-tier-gold)' : tier === 'Silver' ? 'var(--color-tier-silver)' : tier === 'Bronze' ? 'var(--color-tier-bronze)' : 'var(--color-tier-basic)'}}>{tier}</h3>
                 <div className="mt-4 flex justify-center items-baseline">
-                  <span className="text-5xl font-extrabold tracking-tight text-gray-900">
+                  <span className="text-5xl font-extrabold tracking-tight text-brand-black">
                     R{billingCycle === 'monthly' ? data.price_monthly : data.price_yearly}
                   </span>
-                  <span className="ml-1 text-xl font-semibold text-gray-500">
+                  <span className="ml-1 text-xl font-semibold text-brand-gray-500">
                     /{billingCycle === 'monthly' ? 'mo' : 'yr'}
                   </span>
                 </div>
                 {tier !== 'Basic' && billingCycle === 'yearly' && (
-                  <p className="mt-2 text-sm text-green-600 text-center">
+                  <p className="mt-2 text-sm text-tier-gold text-center font-medium">
                     Save R{data.price_monthly * 12 - data.price_yearly}
                   </p>
                 )}
@@ -119,41 +119,41 @@ const PricingTable = () => {
 
               {/* Features list */}
               <div className="px-6 pt-6 pb-8">
-                <h4 className="text-sm font-semibold text-gray-900 tracking-wide uppercase">What's included</h4>
+                <h4 className="text-sm font-semibold text-brand-gray-900 tracking-wide uppercase">What's included</h4>
                 <ul className="mt-6 space-y-4">
                   <li className="flex">
                     {getFeatureIcon(data.features.business_name)}
-                    <span className="ml-3 text-base text-gray-700">Business name listing</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Business name listing</span>
                   </li>
                   <li className="flex">
                     {getFeatureIcon(data.features.area_of_operation)}
-                    <span className="ml-3 text-base text-gray-700">Area of operation</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Area of operation</span>
                   </li>
                   <li className="flex">
                     {getFeatureIcon(data.features.website)}
-                    <span className="ml-3 text-base text-gray-700">Website link</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Website link</span>
                   </li>
                   <li className="flex">
                     {getFeatureIcon(data.features.whatsapp)}
-                    <span className="ml-3 text-base text-gray-700">WhatsApp contact</span>
+                    <span className="ml-3 text-base text-brand-gray-700">WhatsApp contact</span>
                   </li>
                   <li className="flex">
                     {getFeatureIcon(data.features.email)}
-                    <span className="ml-3 text-base text-gray-700">Email contact</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Email contact</span>
                   </li>
                   <li className="flex">
                     {getFeatureIcon(data.features.star_ratings)}
-                    <span className="ml-3 text-base text-gray-700">Star ratings</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Star ratings</span>
                   </li>
                   <li className="flex">
                     {getFeatureIcon(data.features.product_catalog)}
-                    <span className="ml-3 text-base text-gray-700">Product catalog</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Product catalog</span>
                   </li>
                   <li className="flex">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-600">
                       {data.features.monthly_adverts}
                     </span>
-                    <span className="ml-3 text-base text-gray-700">Monthly adverts</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Monthly adverts</span>
                   </li>
                   <li className="flex">
                     {data.features.social_media_feature ? (
@@ -161,7 +161,7 @@ const PricingTable = () => {
                         1
                       </span>
                     ) : getFeatureIcon(false)}
-                    <span className="ml-3 text-base text-gray-700">Social media feature</span>
+                    <span className="ml-3 text-base text-brand-gray-700">Social media feature</span>
                   </li>
                 </ul>
               </div>
@@ -169,7 +169,12 @@ const PricingTable = () => {
               {/* CTA button */}
               <div className="px-6 py-6">
                 <button
-                  className={`w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white ${tier === 'Gold' ? 'bg-yellow-600 hover:bg-yellow-700' : tier === 'Silver' ? 'bg-gray-400 hover:bg-gray-500' : tier === 'Bronze' ? 'bg-amber-700 hover:bg-amber-800' : 'bg-gray-300 hover:bg-gray-400'}`}
+                  className={`w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white shadow-brand-sm transition-all duration-200 ${
+                    tier === 'Gold' ? 'bg-tier-gold text-amber-900 hover:bg-opacity-90' : 
+                    tier === 'Silver' ? 'bg-tier-silver text-gray-900 hover:bg-opacity-90' : 
+                    tier === 'Bronze' ? 'bg-tier-bronze hover:bg-opacity-90' : 
+                    'bg-tier-basic hover:bg-opacity-90'
+                  }`}
                 >
                   {tier === 'Basic' ? 'Get Started' : 'Upgrade'}
                 </button>
@@ -179,23 +184,23 @@ const PricingTable = () => {
         </div>
 
         {/* Feature comparison details */}
-        <div className="mt-16 bg-white p-8 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-6">Detailed Feature Comparison</h3>
+        <div className="mt-16 bg-white p-8 rounded-lg shadow-brand-md border border-brand-gray-200">
+          <h3 className="text-2xl font-serif font-semibold text-brand-black mb-6 tracking-wide">Detailed Feature Comparison</h3>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-brand-gray-200">
+              <thead className="bg-brand-gray-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-brand-gray-700 uppercase tracking-wider">
                     Feature
                   </th>
                   {Object.keys(pricingData).map(tier => (
-                    <th key={tier} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th key={tier} scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: tier === 'Gold' ? 'var(--color-tier-gold)' : tier === 'Silver' ? 'var(--color-tier-silver)' : tier === 'Bronze' ? 'var(--color-tier-bronze)' : 'var(--color-tier-basic)'}}>
                       {tier}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-brand-gray-200">
                 {[
                   { id: 'business_name', name: 'Business Name Listing' },
                   { id: 'area_of_operation', name: 'Area of Operation' },

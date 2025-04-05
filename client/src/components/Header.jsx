@@ -17,31 +17,31 @@ function Header({ isAuthenticated }) {
   }
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow-brand-sm border-b border-brand-gray-200">
       <div className="container mx-auto py-4 px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <span className="text-2xl font-bold text-primary-600">Mpumalanga Business Hub</span>
+          <span className="text-2xl font-serif font-bold tracking-wide text-brand-black">Mpumalanga Business Hub</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <Link to="/" className="font-medium hover:text-primary-600">Home</Link>
-          <Link to="/directory" className="font-medium hover:text-primary-600">Directory</Link>
+          <Link to="/" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Home</Link>
+          <Link to="/directory" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Directory</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/dashboard" className="font-medium hover:text-primary-600">Dashboard</Link>
-              <button onClick={handleLogout} className="font-medium hover:text-primary-600">Logout</button>
+              <Link to="/dashboard" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Dashboard</Link>
+              <button onClick={handleLogout} className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Logout</button>
             </>
           ) : (
             <>
-              <Link to="/login" className="font-medium hover:text-primary-600">Login</Link>
-              <Link to="/register" className="btn btn-primary">Register Business</Link>
+              <Link to="/login" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Login</Link>
+              <Link to="/register" className="px-4 py-2 bg-brand-black text-white rounded-md font-medium hover:bg-brand-gray-800 transition-colors">Register Business</Link>
             </>
           )}
         </nav>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden" onClick={toggleMenu}>
+        <button className="md:hidden text-brand-gray-700 hover:text-brand-black" onClick={toggleMenu}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
@@ -50,14 +50,14 @@ function Header({ isAuthenticated }) {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white shadow-md">
+        <div className="md:hidden bg-white shadow-brand-md">
           <div className="container mx-auto px-4 py-3 space-y-3">
-            <Link to="/" className="block font-medium hover:text-primary-600" onClick={toggleMenu}>Home</Link>
-            <Link to="/directory" className="block font-medium hover:text-primary-600" onClick={toggleMenu}>Directory</Link>
+            <Link to="/" className="block font-medium text-brand-gray-700 hover:text-brand-black transition-colors" onClick={toggleMenu}>Home</Link>
+            <Link to="/directory" className="block font-medium text-brand-gray-700 hover:text-brand-black transition-colors" onClick={toggleMenu}>Directory</Link>
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="block font-medium hover:text-primary-600" onClick={toggleMenu}>Dashboard</Link>
-                <button onClick={() => { handleLogout(); toggleMenu(); }} className="block w-full text-left font-medium hover:text-primary-600">Logout</button>
+                <Link to="/dashboard" className="block font-medium text-brand-gray-700 hover:text-brand-black transition-colors" onClick={toggleMenu}>Dashboard</Link>
+                <button onClick={() => { handleLogout(); toggleMenu(); }} className="block w-full text-left font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Logout</button>
               </>
             ) : (
               <>
