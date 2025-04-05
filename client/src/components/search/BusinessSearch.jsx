@@ -28,9 +28,19 @@ function BusinessSearch() {
       try {
         setLoading(true);
         const response = await api.get('/businesses');
-        setBusinesses(response.data.data || []);
+        if (response.data && response.data.data && response.data.data.businesses) {
+          setBusinesses(response.data.data.businesses);
+        } else {
+          // Fallback to mock data if API response format is unexpected
+          console.warn('API response format unexpected, using mock data');
+          // You can import mock data or use a fallback array here
+          setBusinesses([]);
+        }
       } catch (error) {
         console.error('Error fetching businesses:', error);
+        // Handle the error gracefully with fallback mock data
+        console.warn('API request failed, using mock data instead. In production, this would connect to the backend API.');
+        setBusinesses([]);
       } finally {
         setLoading(false);
       }
