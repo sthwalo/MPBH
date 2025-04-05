@@ -53,6 +53,7 @@ yarn-error.log*
 client/src/pages/BusinessDirectory.jsx
 client/index.html
 docs/**/*
+!docs/api-reference.md
 
 # Ignore specific technical terms
 server/src/middleware/SecurityHeadersMiddleware.php

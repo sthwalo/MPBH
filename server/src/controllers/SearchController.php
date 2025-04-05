@@ -4,14 +4,18 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Services\SearchService;
+use App\Helpers\ResponseHelper;
 use App\Utils\Sanitizer;
+use PDO;
+use Monolog\Logger;
 
 class SearchController {
-    private $searchService;
+    private $db;
+    private $logger;
     
-    public function __construct($container) {
-        $this->searchService = new SearchService($container->get('db'));
+    public function __construct(PDO $db, Logger $logger) {
+        $this->db = $db;
+        $this->logger = $logger;
     }
     
     /**
@@ -30,38 +34,96 @@ class SearchController {
             $query = Sanitizer::cleanInput($params['q'] ?? '');
             $category = Sanitizer::cleanInput($params['category'] ?? '');
             $district = Sanitizer::cleanInput($params['district'] ?? '');
-            $page = Sanitizer::cleanInt($params['page'] ?? 1) ?: 1;
-            $perPage = Sanitizer::cleanInt($params['per_page'] ?? 10) ?: 10;
+            $page = isset($params['page']) ? (int)$params['page'] : 1;
+            $limit = isset($params['limit']) ? (int)$params['limit'] : 10;
             
-            // Limit per_page to avoid overloading
-            $perPage = min($perPage, 50);
+            // Build query
+            $sql = "SELECT b.*, c.name AS category_name, d.name AS district_name, 
+                    (SELECT COUNT(*) FROM reviews r WHERE r.business_id = b.id) AS review_count,
+                    (SELECT COALESCE(AVG(rating), 0) FROM reviews r WHERE r.business_id = b.id) AS average_rating 
+                    FROM businesses b 
+                    LEFT JOIN categories c ON b.category_id = c.id 
+                    LEFT JOIN districts d ON b.district_id = d.id 
+                    WHERE b.status = 'approved'";
             
-            // Perform search
-            $results = $this->searchService->searchBusinesses(
-                $query,
-                [
-                    'category' => $category,
-                    'district' => $district
-                ],
-                $page,
-                $perPage
-            );
+            $params = [];
             
-            // Log search for analytics
-            $this->logSearch($request, $query, count($results['data']));
+            // Add search conditions
+            if (!empty($query)) {
+                $sql .= " AND (b.name ILIKE :query OR b.description ILIKE :query OR b.tags ILIKE :query)";
+                $params['query'] = "%{$query}%";
+            }
             
-            return $response->withJson($results);
+            if (!empty($category)) {
+                $sql .= " AND b.category_id = :category";
+                $params['category'] = $category;
+            }
+            
+            if (!empty($district)) {
+                $sql .= " AND b.district_id = :district";
+                $params['district'] = $district;
+            }
+            
+            // Add order by and pagination
+            $sql .= " ORDER BY b.name ASC LIMIT :limit OFFSET :offset";
+            $params['limit'] = $limit;
+            $params['offset'] = ($page - 1) * $limit;
+            
+            // Execute query
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+            $stmt->execute();
+            $businesses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Count total results for pagination
+            $countSql = "SELECT COUNT(*) FROM businesses b WHERE b.status = 'approved'";
+            $countParams = [];
+            
+            if (!empty($query)) {
+                $countSql .= " AND (b.name ILIKE :query OR b.description ILIKE :query OR b.tags ILIKE :query)";
+                $countParams['query'] = "%{$query}%";
+            }
+            
+            if (!empty($category)) {
+                $countSql .= " AND b.category_id = :category";
+                $countParams['category'] = $category;
+            }
+            
+            if (!empty($district)) {
+                $countSql .= " AND b.district_id = :district";
+                $countParams['district'] = $district;
+            }
+            
+            $countStmt = $this->db->prepare($countSql);
+            foreach ($countParams as $key => $value) {
+                $countStmt->bindValue(":$key", $value);
+            }
+            $countStmt->execute();
+            $totalCount = $countStmt->fetchColumn();
+            
+            // Return results
+            $result = [
+                'businesses' => $businesses,
+                'pagination' => [
+                    'total' => (int)$totalCount,
+                    'page' => $page,
+                    'limit' => $limit,
+                    'pages' => ceil($totalCount / $limit)
+                ]
+            ];
+            
+            return ResponseHelper::success($response, $result);
+            
         } catch (\Exception $e) {
-            return $response->withStatus(500)->withJson([
-                'status' => 'error',
-                'message' => 'Search failed',
-                'error' => $e->getMessage()
-            ]);
+            $this->logger->error("Search error: " . $e->getMessage());
+            return ResponseHelper::error($response, "Error processing search", 500);
         }
     }
     
     /**
-     * Get available categories for filtering
+     * Get all business categories
      * 
      * @param Request $request The request object
      * @param Response $response The response object
@@ -69,23 +131,19 @@ class SearchController {
      */
     public function getCategories(Request $request, Response $response): Response {
         try {
-            $categories = $this->searchService->getCategories();
+            $stmt = $this->db->query("SELECT * FROM categories ORDER BY name ASC");
+            $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            return $response->withJson([
-                'status' => 'success',
-                'data' => $categories
-            ]);
+            return ResponseHelper::success($response, $categories);
+            
         } catch (\Exception $e) {
-            return $response->withStatus(500)->withJson([
-                'status' => 'error',
-                'message' => 'Failed to get categories',
-                'error' => $e->getMessage()
-            ]);
+            $this->logger->error("Categories error: " . $e->getMessage());
+            return ResponseHelper::error($response, "Error fetching categories", 500);
         }
     }
     
     /**
-     * Get available districts for filtering
+     * Get all districts
      * 
      * @param Request $request The request object
      * @param Response $response The response object
@@ -93,57 +151,14 @@ class SearchController {
      */
     public function getDistricts(Request $request, Response $response): Response {
         try {
-            $districts = $this->searchService->getDistricts();
+            $stmt = $this->db->query("SELECT * FROM districts ORDER BY name ASC");
+            $districts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            return $response->withJson([
-                'status' => 'success',
-                'data' => $districts
-            ]);
+            return ResponseHelper::success($response, $districts);
+            
         } catch (\Exception $e) {
-            return $response->withStatus(500)->withJson([
-                'status' => 'error',
-                'message' => 'Failed to get districts',
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-    
-    /**
-     * Log search query for analytics
-     * 
-     * @param Request $request Request object
-     * @param string $query Search query
-     * @param int $resultCount Number of results
-     */
-    private function logSearch(Request $request, string $query, int $resultCount): void {
-        try {
-            // Get user ID if authenticated
-            $userId = null;
-            $token = $request->getAttribute('token');
-            if ($token) {
-                $userId = $token->sub;
-            }
-            
-            // Get IP address
-            $ip = $request->getServerParams()['REMOTE_ADDR'] ?? null;
-            
-            // Log search to database
-            $db = $request->getAttribute('db');
-            $stmt = $db->prepare(
-                "INSERT INTO search_logs 
-                (query, filters, user_id, ip_address, result_count, created_at) 
-                VALUES (?, ?, ?, ?, ?, NOW())"
-            );
-            
-            // Get all filters as JSON
-            $filters = json_encode(array_filter($request->getQueryParams(), function($key) {
-                return $key !== 'q' && $key !== 'page' && $key !== 'per_page';
-            }, ARRAY_FILTER_USE_KEY));
-            
-            $stmt->execute([$query, $filters, $userId, $ip, $resultCount]);
-        } catch (\Exception $e) {
-            // Just log the error, don't interrupt the main response
-            error_log('Failed to log search: ' . $e->getMessage());
+            $this->logger->error("Districts error: " . $e->getMessage());
+            return ResponseHelper::error($response, "Error fetching districts", 500);
         }
     }
 }
