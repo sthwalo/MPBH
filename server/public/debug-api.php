@@ -76,6 +76,11 @@ try {
            (isset($_GET['endpoint']) && $_GET['endpoint'] === 'user/profile')) {
         handleUserProfile($db);
     }
+    // BUSINESSES LIST ENDPOINT - handle both URL pattern and endpoint parameter
+    elseif (strpos($path, 'businesses') !== false || 
+           (isset($_GET['endpoint']) && $_GET['endpoint'] === 'businesses')) {
+        handleBusinessesList($db);
+    }
     // FALLBACK - Debug information for unknown routes
     else {
         // Default debug information response
@@ -280,6 +285,56 @@ function handleBusinessDetails(PDO $db): void {
         echo json_encode([
             'status' => 'error',
             'message' => 'Invalid token',
+            'debug' => $e->getMessage() // Remove in production
+        ]);
+    }
+}
+
+/**
+ * Handle user profile request
+ */
+/**
+ * Handle businesses list request
+ * 
+ * @param PDO $db Database connection
+ */
+function handleBusinessesList(PDO $db): void {
+    // Extract query parameters for filtering and pagination
+    $category = $_GET['category'] ?? null;
+    $district = $_GET['district'] ?? null;
+    $search = $_GET['search'] ?? null;
+    $page = (int) ($_GET['page'] ?? 1);
+    $limit = (int) ($_GET['limit'] ?? 20);
+    $sortBy = $_GET['sort_by'] ?? 'name';
+    $order = $_GET['order'] ?? 'asc';
+    
+    // Create filters array
+    $filters = [];
+    if ($category) $filters['category'] = $category;
+    if ($district) $filters['district'] = $district;
+    if ($search) $filters['search'] = $search;
+    
+    try {
+        // Initialize business model
+        $business = new Business($db);
+        
+        // Get businesses with filters and pagination
+        $result = $business->readAll($filters, $page, $limit, $sortBy, $order);
+        
+        // Return success response with businesses data
+        echo json_encode([
+            'status' => 'success',
+            'data' => [
+                'businesses' => $result['businesses'],
+                'pagination' => $result['pagination']
+            ]
+        ]);
+    } catch (Exception $e) {
+        // Return error response
+        http_response_code(500);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to fetch businesses',
             'debug' => $e->getMessage() // Remove in production
         ]);
     }

@@ -186,3 +186,14 @@ Stack trace:
 [05-Apr-2025 13:22:16 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
 [05-Apr-2025 13:22:16 UTC] PostgreSQL database connection established successfully
 [05-Apr-2025 13:22:16 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:27:00 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:27:00 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:27:00 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:27:00 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:27:00 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:27:00 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[05-Apr-2025 13:27:00 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[05-Apr-2025 13:27:00 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[05-Apr-2025 13:27:00 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[05-Apr-2025 13:27:00 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[05-Apr-2025 13:27:00 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
