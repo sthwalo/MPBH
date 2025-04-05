@@ -1,344 +1,85 @@
 # Database Schema
 
-## Overview
+The Mpumalanga Business Hub uses a PostgreSQL database with the following structure:
 
-The Mpumalanga Business Hub application uses MySQL 8.0 as its database management system. This document outlines the database schema, including tables, relationships, and field descriptions.
-
-## Entity Relationship Diagram
-
-```
-+----------------+       +-------------------+       +------------------+
-| users          |       | businesses        |<----->| products         |
-+----------------+       +-------------------+       +------------------+
-| PK id          |<----->| PK id             |       | PK id            |
-| name           |       | FK user_id        |       | FK business_id   |
-| email          |       | name              |       | name             |
-| password       |       | description       |       | description      |
-| phone          |       | category          |       | price            |
-| reset_token    |       | district          |       | image            |
-| reset_expires  |       | address           |       | status           |
-| role           |       | phone             |       | created_at       |
-| created_at     |       | email             |       | updated_at       |
-| updated_at     |       | website           |       +------------------+
-+----------------+       | social_media      |                ^
-        |                | operating_hours   |                |
-        |                | logo              |                |
-        |                | package_type      |                |
-        |                | verification_status|                |
-        |                | created_at        |       +------------------+
-        |                | updated_at        |<----->| reviews          |
-        |                +-------------------+       +------------------+
-        |                        |                   | PK id            |
-        |                        |                   | FK business_id   |
-        |                        |                   | FK user_id       |
-        |                        |                   | rating           |
-        |                        |                   | comment          |
-        |                        |                   | status           |
-        |                        |                   | created_at       |
-        |                        |                   +------------------+
-        |                        |
-        |                        v
-        |                +-------------------+       +------------------+
-        +--------------->| payments         |<----->| statistics       |
-                         +-------------------+       +------------------+
-                         | PK id             |       | PK id            |
-                         | FK business_id    |       | FK business_id   |
-                         | payment_id        |       | view_count       |
-                         | amount            |       | inquiry_count    |
-                         | package_type      |       | date             |
-                         | payment_type      |       | district         |
-                         | status            |       | source           |
-                         | reference         |       | created_at       |
-                         | created_at        |       +------------------+
-                         +-------------------+              ^
-                                  |                         |
-                                  v                         |
-                         +-------------------+              |
-                         | adverts          |              |
-                         +-------------------+              |
-                         | PK id             |              |
-                         | FK business_id    |              |
-                         | title             |              |
-                         | description       |              |
-                         | image             |              |
-                         | placement         |              |
-                         | start_date        |              |
-                         | end_date          |              |
-                         | status            |              |
-                         | created_at        |              |
-                         +-------------------+              |
-                                                           |
-        +----------------+                                 |
-        | search_logs    |                                 |
-        +----------------+                                 |
-        | PK id          |                                 |
-        | query          |                                 |
-        | filters        |                                 |
-        | FK user_id     |                                 |
-        | ip_address     |                                 |
-        | result_count   |                                 |
-        | created_at     |                                 |
-        +----------------+                      +------------------+
-                                                | interactions    |
-                                                +------------------+
-                                                | PK id            |
-                                                | FK business_id   |
-                                                | FK user_id       |
-                                                | type             |
-                                                | source           |
-                                                | FK product_id    |
-                                                | FK advert_id     |
-                                                | ip_address       |
-                                                | created_at       |
-                                                +------------------+
-```
-
-## Table Definitions
+## Core Tables
 
 ### users
-
-Stores user account information for business owners and administrators.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| name         | VARCHAR(255) | NOT NULL         | User's full name                     |
-| email        | VARCHAR(255) | UNIQUE, NOT NULL | User's email address                 |
-| password     | VARCHAR(255) | NOT NULL         | Hashed password                      |
-| phone        | VARCHAR(20)  | NULL             | User's phone number                  |
-| reset_token  | VARCHAR(100) | NULL             | Password reset token                 |
-| reset_expires| TIMESTAMP    | NULL             | Password reset token expiration time |
-| role         | ENUM         | DEFAULT 'user'   | User role (user, admin)              |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-| updated_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Record update timestamp |
+| Column              | Type          | Constraints     | Description                           |
+|---------------------|---------------|----------------|---------------------------------------|
+| user_id             | SERIAL        | PRIMARY KEY    | Unique identifier for the user        |
+| name                | VARCHAR(255)  | NOT NULL       | User's full name                      |
+| email               | VARCHAR(255)  | NOT NULL, UNIQUE| User's email address                  |
+| password_hash       | VARCHAR(255)  | NOT NULL       | Bcrypt hashed password                |
+| phone_number        | VARCHAR(20)   |                | User's contact phone number           |
+| area_of_operation   | VARCHAR(255)  |                | User's primary region of operation    |
+| language_preference | VARCHAR(50)   |                | User's preferred language             |
+| is_admin            | BOOLEAN       | DEFAULT FALSE  | Whether user has admin privileges     |
+| created_at          | TIMESTAMP     | DEFAULT NOW()  | When the record was created           |
+| updated_at          | TIMESTAMP     |                | When the record was last updated      |
 
 ### businesses
+| Column              | Type          | Constraints     | Description                           |
+|---------------------|---------------|----------------|---------------------------------------|
+| business_id         | SERIAL        | PRIMARY KEY    | Unique identifier for the business    |
+| user_id             | INTEGER       | FOREIGN KEY    | References users table                |
+| name                | VARCHAR(255)  | NOT NULL       | Business name                         |
+| description         | TEXT          |                | Business description                  |
+| category            | VARCHAR(100)  | NOT NULL       | Business category                     |
+| district            | VARCHAR(100)  | NOT NULL       | District/region                       |
+| address             | TEXT          |                | Physical address                      |
+| phone               | VARCHAR(20)   |                | Contact phone                         |
+| email               | VARCHAR(255)  | NOT NULL       | Contact email                         |
+| website             | VARCHAR(255)  |                | Website URL                           |
+| logo                | VARCHAR(255)  |                | Logo image path                       |
+| cover_image         | VARCHAR(255)  |                | Cover image path                      |
+| package_type        | VARCHAR(50)   | DEFAULT 'Basic'| Subscription package (Basic/Silver/Gold) |
+| subscription_id     | INTEGER       |                | References subscriptions table        |
+| verification_status | VARCHAR(50)   | DEFAULT 'pending'| Verification status                  |
+| social_media        | JSONB         |                | Social media links                    |
+| business_hours      | JSONB         |                | Operating hours                       |
+| longitude           | DECIMAL(10,7) |                | Business location longitude           |
+| latitude            | DECIMAL(10,7) |                | Business location latitude            |
+| adverts_remaining   | INTEGER       | DEFAULT 0      | Number of adverts user can post       |
+| created_at          | TIMESTAMP     | DEFAULT NOW()  | When the record was created           |
+| updated_at          | TIMESTAMP     |                | When the record was last updated      |
 
-Stores business information including profile details, contact information, and subscription status.
-
-| Column        | Type         | Constraints      | Description                          |
-|---------------|--------------|------------------|--------------------------------------|
-| id            | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| user_id       | INT          | FK, NOT NULL     | Reference to users table             |
-| name          | VARCHAR(255) | NOT NULL         | Business name                        |
-| description   | TEXT         | NOT NULL         | Business description                 |
-| category      | VARCHAR(100) | NOT NULL         | Business category                    |
-| district      | VARCHAR(100) | NOT NULL         | Geographic district                  |
-| address       | TEXT         | NOT NULL         | Physical address                     |
-| phone         | VARCHAR(20)  | NOT NULL         | Contact phone number                 |
-| email         | VARCHAR(255) | NOT NULL         | Contact email address                |
-| website       | VARCHAR(255) | NULL             | Business website URL                 |
-| social_media  | JSON         | NULL             | Social media links                   |
-| operating_hours| TEXT         | NULL             | Business operating hours             |
-| logo          | VARCHAR(255) | NULL             | Path to logo image                   |
-| package_type  | ENUM         | DEFAULT 'Basic'  | Subscription package type            |
-| verification_status | ENUM   | DEFAULT 'pending'| Status (pending, verified, rejected) |
-| created_at    | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-| updated_at    | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Record update timestamp |
+## Additional Tables
 
 ### products
-
-Stores products and services offered by businesses.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| business_id  | INT          | FK, NOT NULL     | Reference to businesses table        |
-| name         | VARCHAR(255) | NOT NULL         | Product name                         |
-| description  | TEXT         | NOT NULL         | Product description                  |
-| price        | DECIMAL(10,2)| NOT NULL         | Product price                        |
-| image        | VARCHAR(255) | NULL             | Path to product image                |
-| status       | ENUM         | DEFAULT 'active' | Status (active, inactive)            |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-| updated_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Record update timestamp |
-
-### reviews
-
-Stores customer reviews for businesses.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| business_id  | INT          | FK, NOT NULL     | Reference to businesses table        |
-| user_id      | INT          | FK, NOT NULL     | Reference to users table             |
-| rating       | DECIMAL(2,1) | NOT NULL         | Rating value (0.0-5.0)               |
-| comment      | TEXT         | NOT NULL         | Review comment                       |
-| status       | ENUM         | DEFAULT 'pending'| Status (pending, approved, rejected) |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-
-### payments
-
-Stores payment transactions for business subscriptions.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| business_id  | INT          | FK, NOT NULL     | Reference to businesses table        |
-| payment_id   | VARCHAR(100) | UNIQUE, NOT NULL | Payment reference ID                 |
-| amount       | DECIMAL(10,2)| NOT NULL         | Payment amount                       |
-| package_type | ENUM         | NOT NULL         | Package type (Basic, Silver, Gold)   |
-| payment_type | ENUM         | NOT NULL         | Payment type (monthly, annual)       |
-| status       | ENUM         | DEFAULT 'pending'| Status (pending, completed, failed)  |
-| reference    | VARCHAR(255) | NULL             | Payment gateway reference            |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-
-### statistics
-
-Stores business statistics for analytics.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| business_id  | INT          | FK, NOT NULL     | Reference to businesses table        |
-| view_count   | INT          | DEFAULT 0        | Number of profile views              |
-| inquiry_count| INT          | DEFAULT 0        | Number of inquiries                  |
-| date         | DATE         | NOT NULL         | Statistics date                      |
-| district     | VARCHAR(100) | NULL             | Visitor district                     |
-| source       | VARCHAR(100) | NULL             | Traffic source                       |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
+| Column              | Type          | Constraints     | Description                           |
+|---------------------|---------------|----------------|---------------------------------------|
+| product_id          | SERIAL        | PRIMARY KEY    | Unique identifier for the product     |
+| business_id         | INTEGER       | FOREIGN KEY    | References businesses table           |
+| name                | VARCHAR(255)  | NOT NULL       | Product name                          |
+| description         | TEXT          |                | Product description                   |
+| price               | DECIMAL(10,2) |                | Product price                         |
+| image               | VARCHAR(255)  |                | Product image path                    |
+| created_at          | TIMESTAMP     | DEFAULT NOW()  | When the record was created           |
+| updated_at          | TIMESTAMP     |                | When the record was last updated      |
 
 ### adverts
+| Column              | Type          | Constraints     | Description                           |
+|---------------------|---------------|----------------|---------------------------------------|
+| advert_id           | SERIAL        | PRIMARY KEY    | Unique identifier for the advert      |
+| business_id         | INTEGER       | FOREIGN KEY    | References businesses table           |
+| title               | VARCHAR(255)  | NOT NULL       | Advert title                          |
+| description         | TEXT          | NOT NULL       | Advert description                    |
+| image               | VARCHAR(255)  |                | Advert image path                     |
+| start_date          | DATE          | NOT NULL       | When advert starts displaying         |
+| end_date            | DATE          | NOT NULL       | When advert stops displaying          |
+| status              | VARCHAR(50)   | DEFAULT 'pending'| Advert status                        |
+| created_at          | TIMESTAMP     | DEFAULT NOW()  | When the record was created           |
+| updated_at          | TIMESTAMP     |                | When the record was last updated      |
 
-Stores business advertisements.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| business_id  | INT          | FK, NOT NULL     | Reference to businesses table        |
-| title        | VARCHAR(255) | NOT NULL         | Advertisement title                  |
-| description  | TEXT         | NOT NULL         | Advertisement description            |
-| image        | VARCHAR(255) | NOT NULL         | Path to advertisement image          |
-| placement    | ENUM         | NOT NULL         | Placement location                   |
-| start_date   | DATETIME     | NOT NULL         | Start date and time                  |
-| end_date     | DATETIME     | NOT NULL         | End date and time                    |
-| status       | ENUM         | DEFAULT 'pending'| Status (pending, active, expired)    |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-
-### interactions
-
-Stores user interactions with businesses.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| business_id  | INT          | FK, NOT NULL     | Reference to businesses table        |
-| user_id      | INT          | FK, NULL         | Reference to users table             |
-| type         | ENUM         | NOT NULL         | Interaction type                     |
-| source       | VARCHAR(255) | NULL             | Traffic source                       |
-| product_id   | INT          | FK, NULL         | Reference to products table          |
-| advert_id    | INT          | FK, NULL         | Reference to adverts table           |
-| ip_address   | VARCHAR(45)  | NULL             | Visitor IP address                   |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-
-### search_logs
-
-Stores search queries and results for analytics.
-
-| Column       | Type         | Constraints      | Description                          |
-|--------------|--------------|------------------|--------------------------------------|
-| id           | INT          | PK, AUTO_INCREMENT| Unique identifier                    |
-| query        | VARCHAR(255) | NOT NULL         | Search query text                    |
-| filters      | JSON         | NULL             | Search filters used                  |
-| user_id      | INT          | FK, NULL         | Reference to users table (if authenticated) |
-| ip_address   | VARCHAR(45)  | NULL             | Searcher IP address                  |
-| result_count | INT          | DEFAULT 0        | Number of search results             |
-| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Record creation timestamp     |
-
-## Indexes
-
-### Primary Keys
-- `users.id`
-- `businesses.id`
-- `products.id`
-- `reviews.id`
-- `payments.id`
-- `statistics.id`
-- `adverts.id`
-- `interactions.id`
-- `search_logs.id`
-
-### Foreign Keys
-- `businesses.user_id` → `users.id`
-- `products.business_id` → `businesses.id`
-- `reviews.business_id` → `businesses.id`
-- `reviews.user_id` → `users.id`
-- `payments.business_id` → `businesses.id`
-- `statistics.business_id` → `businesses.id`
-- `adverts.business_id` → `businesses.id`
-- `interactions.business_id` → `businesses.id`
-- `interactions.user_id` → `users.id`
-- `interactions.product_id` → `products.id`
-- `interactions.advert_id` → `adverts.id`
-- `search_logs.user_id` → `users.id`
-
-### Additional Indexes
-- `users.email` (UNIQUE)
-- `businesses.name` (INDEX)
-- `businesses.category` (INDEX)
-- `businesses.district` (INDEX)
-- `businesses.verification_status` (INDEX)
-- `payments.payment_id` (UNIQUE)
-- `statistics.date` (INDEX)
-- `adverts.status` (INDEX)
-- `adverts.start_date` (INDEX)
-- `adverts.end_date` (INDEX)
-- `search_logs.query` (INDEX)
-
-## Constraints
-
-### Cascading Deletes
-- When a user is deleted, all associated businesses are deleted
-- When a business is deleted, all associated products, reviews, payments, adverts, and statistics are deleted
-
-### Validation
-- `businesses.package_type` must be one of: 'Basic', 'Silver', 'Gold'
-- `businesses.verification_status` must be one of: 'pending', 'verified', 'rejected'
-- `reviews.rating` must be between 0.0 and 5.0
-- `payments.status` must be one of: 'pending', 'completed', 'failed'
-- `adverts.status` must be one of: 'pending', 'active', 'expired'
-- `users.role` must be one of: 'user', 'admin'
-
-# PostgreSQL Database Schema
-
-## Database Migration
-The Mpumalanga Business Hub has migrated from MySQL to PostgreSQL for improved performance and compatibility with Afrihost hosting. This document outlines the PostgreSQL-specific schema implementation.
-
-## Key PostgreSQL Features Utilized
-
-### Custom Enumerated Types
-PostgreSQL uses custom types instead of MySQL ENUMs:
-
-```sql
-CREATE TYPE package_type_enum AS ENUM ('Basic', 'Silver', 'Gold');
-CREATE TYPE verification_status_enum AS ENUM ('pending', 'verified', 'rejected');
-CREATE TYPE product_status_enum AS ENUM ('active', 'inactive');
-CREATE TYPE review_status_enum AS ENUM ('pending', 'approved', 'rejected');
-CREATE TYPE advert_status_enum AS ENUM ('pending', 'active', 'rejected', 'expired');
-CREATE TYPE advert_placement_enum AS ENUM ('sidebar', 'banner', 'featured');
-CREATE TYPE payment_type_enum AS ENUM ('upgrade', 'advert');
-CREATE TYPE payment_status_enum AS ENUM ('pending', 'completed', 'failed');
-
-
-### 2. Update for deployment.md
-
-```markdown
-# PostgreSQL Deployment on Afrihost
-
-## Migration to PostgreSQL
-The Mpumalanga Business Hub now uses PostgreSQL for database management. This guide covers deploying to Afrihost's PostgreSQL environment.
-
-## PostgreSQL Setup in Afrihost
-
-### Database Creation
-1. Log in to Afrihost cPanel
-2. Navigate to **PostgreSQL Databases**
-3. Create a new database: `mpbusis6k1d8_sthwalo`
-4. Create a database user with a strong password
-5. Assign the user to the database with full privileges
-
-### Schema Import
-Upload the PostgreSQL schema to your Afrihost account:
-1. Upload `schema_pg.sql` to your server
-2. Import via phpPgAdmin or command line:
-   ```bash
-   psql -U mpbusis6k1d8_sthwalo -h localhost -d mpbusis6k1d8_sthwalo -f schema_pg.sql
+### reviews
+| Column              | Type          | Constraints     | Description                           |
+|---------------------|---------------|----------------|---------------------------------------|
+| review_id           | SERIAL        | PRIMARY KEY    | Unique identifier for the review      |
+| business_id         | INTEGER       | FOREIGN KEY    | References businesses table           |
+| user_id             | INTEGER       | FOREIGN KEY    | References users table                |
+| rating              | INTEGER       | NOT NULL       | Rating (1-5)                          |
+| comment             | TEXT          |                | Review comment                        |
+| status              | VARCHAR(50)   | DEFAULT 'pending'| Review status                        |
+| created_at          | TIMESTAMP     | DEFAULT NOW()  | When the record was created           |
+| updated_at          | TIMESTAMP     |                | When the record was last updated      |
