@@ -48,7 +48,7 @@ Options -Indexes
     
     # Dynamic origin handling
     # Allow specific origins including local development
-    SetEnvIf Origin "^(https://mpbusinesshub\.co\.za|http://localhost:3000)$" CORS_ALLOWED_ORIGIN=$0
+    SetEnvIf Origin "^(https://mpbusinesshub\.co\.za|http://localhost:3000|http://localhost:3000)$" CORS_ALLOWED_ORIGIN=$0
     Header set Access-Control-Allow-Origin "%{CORS_ALLOWED_ORIGIN}e" env=CORS_ALLOWED_ORIGIN
     # Cache pre-flight requests for 10 minutes
     Header set Access-Control-Max-Age "600" env=CORS_ALLOWED_ORIGIN

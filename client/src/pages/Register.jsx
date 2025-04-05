@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import api from '../utils/api'
 
 function Register() {
   const [step, setStep] = useState(1)
@@ -146,27 +147,56 @@ function Register() {
     if (!validateStep3()) return
     
     setIsLoading(true)
+    setErrors({})
     
     try {
-      // In production, this would be a real API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // })
+      // Format the data according to backend API expectations
+      const registerData = {
+        // Auth/user data
+        email: formData.email,
+        password: formData.password,
+        // Business data - flattened to match API expectations
+        businessName: formData.businessName,
+        description: formData.description,
+        category: formData.category,
+        district: formData.district,
+        address: formData.address,
+        phone: formData.phone,
+        website: formData.website
+      }
       
-      // if (!response.ok) {
-      //   const errorData = await response.json()
-      //   throw new Error(errorData.message || 'Registration failed')
-      // }
+      // Call the registration endpoint
+      const response = await api.post('/auth/register', registerData)
       
-      // For demo purposes, we're just simulating a successful registration
-      setTimeout(() => {
-        // Navigate to success page or login
-        navigate('/registration-success')
-      }, 1500)
+      // If we get here, registration was successful
+      console.log('Registration successful:', response)
+      
+      // Save token if provided by the API
+      if (response && response.token) {
+        localStorage.setItem('mpbh_token', response.token)
+      }
+      
+      // Navigate to success page or dashboard
+      navigate('/dashboard')
     } catch (error) {
-      setErrors({ form: error.message || 'Registration failed. Please try again.' })
+      console.error('Registration error:', error)
+      
+      // Handle API error responses
+      if (error.status === 422 && error.data && error.data.errors) {
+        // Format validation errors from the API
+        const backendErrors = {}
+        Object.entries(error.data.errors).forEach(([field, messages]) => {
+          backendErrors[field] = Array.isArray(messages) ? messages[0] : messages
+        })
+        setErrors(backendErrors)
+      } else if (error.status === 409) {
+        // Email already exists
+        setErrors({ email: 'This email is already registered. Please use a different email or login.' })
+      } else {
+        // Generic error message
+        setErrors({ form: error.message || 'Registration failed. Please try again.' })
+      }
+      
       window.scrollTo(0, 0)
     } finally {
       setIsLoading(false)
