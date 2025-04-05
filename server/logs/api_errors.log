@@ -147,3 +147,42 @@ Stack trace:
 [05-Apr-2025 13:17:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
 [05-Apr-2025 13:17:59 UTC] PostgreSQL database connection established successfully
 [05-Apr-2025 13:17:59 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:19:48 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:19:48 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:19:48 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:19:48 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:19:48 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:19:48 UTC] ===== REGISTRATION ATTEMPT =====
+[05-Apr-2025 13:19:48 UTC] Data received: {"email":"sthwaloe@gmail.com","password":"Password123","businessName":"Global Hope Consortium","description":"sclzcn\/jzn ljn;jc;jz njzbncmnbj;bmz .,j;zbvuwvjbcj sicvk.NB","category":"Tourism","district":"Mbombela","address":"131 Shamrock Street\nFlorida","phone":"+27733685971","website":"https:\/\/ghcons.com"}
+[05-Apr-2025 13:19:48 UTC] Starting database transaction
+[05-Apr-2025 13:19:48 UTC] Creating User object
+[05-Apr-2025 13:19:48 UTC] Checking if email exists: sthwaloe@gmail.com
+[05-Apr-2025 13:19:48 UTC] Email check passed - email doesn't exist
+[05-Apr-2025 13:19:48 UTC] Setting user properties
+[05-Apr-2025 13:19:48 UTC] Attempting to create user
+[05-Apr-2025 13:19:48 UTC] User created successfully with ID: 3
+[05-Apr-2025 13:19:48 UTC] Creating Business object
+[05-Apr-2025 13:19:48 UTC] Setting business properties
+[05-Apr-2025 13:19:48 UTC] User ID for business: 3
+[05-Apr-2025 13:19:48 UTC] Attempting to create business
+[05-Apr-2025 13:19:48 UTC] Business created successfully with ID: 3
+[05-Apr-2025 13:20:05 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:20:05 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:20:05 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:20:05 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:20:05 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:20:05 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:20:05 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:20:05 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:20:05 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:20:05 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:22:16 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:22:16 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:22:16 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:22:16 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:22:16 UTC] Successfully connected to PostgreSQL database
+[05-Apr-2025 13:22:16 UTC] Environment variables loaded for development environment
+[05-Apr-2025 13:22:16 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[05-Apr-2025 13:22:16 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[05-Apr-2025 13:22:16 UTC] PostgreSQL database connection established successfully
+[05-Apr-2025 13:22:16 UTC] Successfully connected to PostgreSQL database

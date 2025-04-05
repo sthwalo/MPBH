@@ -11,7 +11,7 @@ function DashboardHome({ businessData }) {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-blue-600">Profile Views</p>
-              <h3 className="text-3xl font-bold mt-2">{businessData.statistics.views}</h3>
+              <h3 className="text-3xl font-bold mt-2">{businessData.statistics?.views || 0}</h3>
             </div>
             <div className="p-3 bg-blue-100 rounded-full">
               <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@ function DashboardHome({ businessData }) {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-green-600">Contact Clicks</p>
-              <h3 className="text-3xl font-bold mt-2">{businessData.statistics.contacts}</h3>
+              <h3 className="text-3xl font-bold mt-2">{businessData.statistics?.contacts || 0}</h3>
             </div>
             <div className="p-3 bg-green-100 rounded-full">
               <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,7 +42,7 @@ function DashboardHome({ businessData }) {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-yellow-600">Reviews</p>
-              <h3 className="text-3xl font-bold mt-2">{businessData.statistics.reviews}</h3>
+              <h3 className="text-3xl font-bold mt-2">{businessData.statistics?.reviews || 0}</h3>
             </div>
             <div className="p-3 bg-yellow-100 rounded-full">
               <svg className="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,7 +50,7 @@ function DashboardHome({ businessData }) {
               </svg>
             </div>
           </div>
-          <div className="mt-2 text-sm text-yellow-600">Average Rating: {businessData.rating.toFixed(1)}/5</div>
+          <div className="mt-2 text-sm text-yellow-600">Average Rating: {businessData.rating ? businessData.rating.toFixed(1) : '0.0'}/5</div>
         </div>
       </div>
       
@@ -60,14 +60,14 @@ function DashboardHome({ businessData }) {
         <div className="flex flex-col md:flex-row md:items-center justify-between">
           <div>
             <div className="flex items-center">
-              <span className={`inline-block w-3 h-3 rounded-full mr-2 ${businessData.subscription.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}></span>
-              <span className="font-medium">{businessData.subscription.status === 'active' ? 'Active' : 'Inactive'}</span>
+              <span className={`inline-block w-3 h-3 rounded-full mr-2 ${businessData.subscription?.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+              <span className="font-medium">{businessData.subscription?.status === 'active' ? 'Active' : 'Inactive'}</span>
             </div>
             <p className="text-gray-600 mt-1">
-              {businessData.package_type} Package - R{businessData.subscription.amount}/month
+              {businessData.package_type} Package {businessData.subscription?.amount ? `- R${businessData.subscription.amount}/month` : ''}
             </p>
             <p className="text-gray-600 mt-1">
-              Next billing date: {new Date(businessData.subscription.next_billing_date).toLocaleDateString()}
+              {businessData.subscription?.next_billing_date ? `Next billing date: ${new Date(businessData.subscription.next_billing_date).toLocaleDateString()}` : 'No active subscription'}
             </p>
           </div>
           <div className="mt-4 md:mt-0">

@@ -14,3 +14,8 @@
 2025-04-05 13:17:11 - /debug-api.php?action=login - {"email": "test2@example.com", "password": "Password123"}
 2025-04-05 13:17:22 - /debug-api.php?endpoint=business/details - 
 2025-04-05 13:17:59 - /debug-api.php?endpoint=business/details - 
+2025-04-05 13:19:48 - /debug-api.php?action=register - {"email":"sthwaloe@gmail.com","password":"Password123","businessName":"Global Hope Consortium","description":"sclzcn/jzn ljn;jc;jz njzbncmnbj;bmz .,j;zbvuwvjbcj sicvk.NB","category":"Tourism","district":"Mbombela","address":"131 Shamrock Street\nFlorida","phone":"+27733685971","website":"https://ghcons.com"}
+2025-04-05 13:20:05 - /debug-api.php?endpoint=business/details - 
+2025-04-05 13:20:05 - /debug-api.php?endpoint=business/details - 
+2025-04-05 13:22:16 - /debug-api.php?endpoint=business/details - 
+2025-04-05 13:22:16 - /debug-api.php?endpoint=business/details - 
