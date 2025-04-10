@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Logo from './Logo'
+import mpbhLogo from '../assets/images/MPBH.jpeg'
 
 function Header({ isAuthenticated }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -21,7 +21,7 @@ function Header({ isAuthenticated }) {
     <header className="bg-white shadow-brand-sm border-b border-brand-gray-200">
       <div className="container mx-auto py-4 px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <Logo size="small" />
+          <img src={mpbhLogo} alt="MPBH Logo" className="h-10" />
         </Link>
 
         {/* Desktop Navigation */}
