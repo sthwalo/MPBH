@@ -31,7 +31,7 @@ function Home() {
             {/* Tourism Card */}
             <div className="card hover:shadow-brand-lg bg-brand-white overflow-hidden border border-brand-gray-200">
               <div className="h-48 bg-brand-gray-100">
-                <img src="/assets/images/tourism.jpg" alt="Tourism" className="w-full h-full object-cover" />
+                <img src="/src/assets/images/tourism.jpg" alt="Tourism" className="w-full h-full object-cover" />
               </div>
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-2 font-serif">Tourism</h3>
@@ -43,7 +43,7 @@ function Home() {
             {/* Agriculture Card */}
             <div className="card hover:shadow-brand-lg bg-brand-white overflow-hidden border border-brand-gray-200">
               <div className="h-48 bg-brand-gray-100">
-                <img src="/assets/images/agriculture.jpg" alt="Agriculture" className="w-full h-full object-cover" />
+                <img src="/src/assets/images/agriculture.png" alt="Agriculture" className="w-full h-full object-cover" />
               </div>
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-2 font-serif">Agriculture</h3>
@@ -55,7 +55,7 @@ function Home() {
             {/* Construction Card */}
             <div className="card hover:shadow-brand-lg bg-brand-white overflow-hidden border border-brand-gray-200">
               <div className="h-48 bg-brand-gray-100">
-                <img src="/assets/images/construction.jpg" alt="Construction" className="w-full h-full object-cover" />
+                <img src="/src/assets/images/construction.jpg" alt="Construction" className="w-full h-full object-cover" />
               </div>
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-2 font-serif">Construction</h3>
@@ -67,7 +67,7 @@ function Home() {
             {/* Events Card */}
             <div className="card hover:shadow-brand-lg bg-brand-white overflow-hidden border border-brand-gray-200">
               <div className="h-48 bg-brand-gray-100">
-                <img src="/assets/images/events.jpg" alt="Events" className="w-full h-full object-cover" />
+                <img src="/src/assets/images/events.jpg" alt="Events" className="w-full h-full object-cover" />
               </div>
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-2 font-serif">Events</h3>
