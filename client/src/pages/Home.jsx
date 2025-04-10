@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import mpbhLogo from '../assets/images/MPBH.jpeg'
 
 function Home() {
   return (
@@ -16,7 +17,7 @@ function Home() {
               </div>
             </div>
             <div className="md:w-1/2">
-              <img src="/assets/images/mpumalanga-hero.jpg" alt="Mpumalanga Landscape" className="rounded-lg shadow-xl" />
+              <img src={mpbhLogo} alt="Mpumalanga Business Hub" className="rounded-lg shadow-xl w-full" />
             </div>
           </div>
         </div>
