@@ -18,7 +18,7 @@ function Header({ isAuthenticated }) {
   }
 
   return (
-    <header className="bg-white shadow-brand-sm border-b border-brand-gray-200">
+    <header className="bg-brand-white shadow-brand-sm border-b border-brand-gray-200">
       <div className="container mx-auto py-4 px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <img src={mpbhLogo} alt="MPBH Logo" className="h-10" />
@@ -26,17 +26,17 @@ function Header({ isAuthenticated }) {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <Link to="/" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Home</Link>
-          <Link to="/directory" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Directory</Link>
+          <Link to="/" className="font-medium text-brand-gray-600 hover:text-brand-black transition-colors">Home</Link>
+          <Link to="/directory" className="font-medium text-brand-gray-600 hover:text-brand-black transition-colors">Directory</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/dashboard" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Dashboard</Link>
-              <button onClick={handleLogout} className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Logout</button>
+              <Link to="/dashboard" className="font-medium text-brand-gray-600 hover:text-brand-black transition-colors">Dashboard</Link>
+              <button onClick={handleLogout} className="font-medium text-brand-gray-600 hover:text-brand-black transition-colors">Logout</button>
             </>
           ) : (
             <>
-              <Link to="/login" className="font-medium text-brand-gray-700 hover:text-brand-black transition-colors">Login</Link>
-              <Link to="/register" className="px-4 py-2 bg-brand-black text-white rounded-md font-medium hover:bg-brand-gray-800 transition-colors">Register Business</Link>
+              <Link to="/login" className="font-medium text-brand-gray-600 hover:text-brand-black transition-colors">Login</Link>
+              <Link to="/register" className="px-4 py-2 bg-brand-black text-brand-white rounded-md font-medium hover:bg-brand-gray-800 transition-colors">Register Business</Link>
             </>
           )}
         </nav>

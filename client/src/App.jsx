@@ -10,7 +10,7 @@ import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound'
-import './App.css'
+/* App.css import removed - using Tailwind CSS now */
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)

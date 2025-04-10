@@ -7,8 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand colors based on the logo
+        // Strictly black and white with elegant grayscale
         'brand-black': '#000000',
+        'brand-white': '#FFFFFF',
         'brand-gray': {
           100: '#F8F8F8',
           200: '#E0E0E0',
@@ -20,11 +21,11 @@ module.exports = {
           800: '#1F1F1F',
           900: '#101010',
         },
-        // Tier colors
+        // Tier colors in grayscale for elegance
         'tier-basic': '#4A4A4A',
-        'tier-bronze': '#CD7F32',
-        'tier-silver': '#C0C0C0',
-        'tier-gold': '#FFD700',
+        'tier-bronze': '#757575',  // Dark gray for bronze tier
+        'tier-silver': '#C0C0C0',  // Silver is already grayscale
+        'tier-gold': '#E0E0E0',   // Light gray for gold tier
       },
       fontFamily: {
         sans: ['Montserrat', 'sans-serif'],
