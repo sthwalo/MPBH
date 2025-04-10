@@ -216,6 +216,7 @@ function Register() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
           body: JSON.stringify(registerData)
         });
@@ -293,24 +294,24 @@ function Register() {
   const renderProgressSteps = () => (
     <div className="flex items-center justify-between mb-8">
       <div className="flex items-center">
-        <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'}`}>
+        <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 1 ? 'bg-brand-black text-brand-white' : 'bg-brand-gray-200 text-brand-gray-600'}`}>
           1
         </div>
-        <div className={`ml-2 text-sm font-medium ${step >= 1 ? 'text-blue-600' : 'text-gray-500'}`}>Business Details</div>
+        <div className={`ml-2 text-sm font-medium ${step >= 1 ? 'text-brand-black' : 'text-brand-gray-500'}`}>Business Details</div>
       </div>
-      <div className={`flex-1 h-1 mx-4 ${step >= 2 ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
+      <div className={`flex-1 h-1 mx-4 ${step >= 2 ? 'bg-brand-black' : 'bg-brand-gray-200'}`}></div>
       <div className="flex items-center">
-        <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'}`}>
+        <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 2 ? 'bg-brand-black text-brand-white' : 'bg-brand-gray-200 text-brand-gray-600'}`}>
           2
         </div>
-        <div className={`ml-2 text-sm font-medium ${step >= 2 ? 'text-blue-600' : 'text-gray-500'}`}>Contact Info</div>
+        <div className={`ml-2 text-sm font-medium ${step >= 2 ? 'text-brand-black' : 'text-brand-gray-500'}`}>Contact Info</div>
       </div>
-      <div className={`flex-1 h-1 mx-4 ${step >= 3 ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
+      <div className={`flex-1 h-1 mx-4 ${step >= 3 ? 'bg-brand-black' : 'bg-brand-gray-200'}`}></div>
       <div className="flex items-center">
-        <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'}`}>
+        <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 3 ? 'bg-brand-black text-brand-white' : 'bg-brand-gray-200 text-brand-gray-600'}`}>
           3
         </div>
-        <div className={`ml-2 text-sm font-medium ${step >= 3 ? 'text-blue-600' : 'text-gray-500'}`}>Account Setup</div>
+        <div className={`ml-2 text-sm font-medium ${step >= 3 ? 'text-brand-black' : 'text-brand-gray-500'}`}>Account Setup</div>
       </div>
     </div>
   )
@@ -320,7 +321,7 @@ function Register() {
     <>
       <h3 className="text-xl font-bold mb-6">Business Information</h3>
       <div className="mb-6">
-        <label htmlFor="businessName" className="form-label">Business Name</label>
+        <label htmlFor="businessName" className="block text-brand-black font-medium mb-1">Business Name</label>
         <input
           type="text"
           id="businessName"
@@ -334,7 +335,7 @@ function Register() {
       </div>
       
       <div className="mb-6">
-        <label htmlFor="category" className="form-label">Business Category</label>
+        <label htmlFor="category" className="block text-brand-black font-medium mb-1">Business Category</label>
         <select
           id="category"
           name="category"
@@ -351,7 +352,7 @@ function Register() {
       </div>
       
       <div className="mb-6">
-        <label htmlFor="district" className="form-label">District</label>
+        <label htmlFor="district" className="block text-brand-black font-medium mb-1">District</label>
         <select
           id="district"
           name="district"
@@ -368,7 +369,7 @@ function Register() {
       </div>
       
       <div className="mb-6">
-        <label htmlFor="description" className="form-label">Business Description</label>
+        <label htmlFor="description" className="block text-brand-black font-medium mb-1">Business Description</label>
         <textarea
           id="description"
           name="description"
@@ -392,7 +393,7 @@ function Register() {
       <div className="mt-8">
         <button
           type="button"
-          className="btn btn-primary w-full"
+          className="px-4 py-2 bg-brand-black text-brand-white font-medium rounded hover:bg-brand-gray-800 transition-colors w-full"
           onClick={handleNextStep}
         >
           Continue to Contact Information
@@ -406,7 +407,7 @@ function Register() {
     <>
       <h3 className="text-xl font-bold mb-6">Contact Information</h3>
       <div className="mb-6">
-        <label htmlFor="phone" className="form-label">Phone Number</label>
+        <label htmlFor="phone" className="block text-brand-black font-medium mb-1">Phone Number</label>
         <input
           type="tel"
           id="phone"
@@ -420,7 +421,7 @@ function Register() {
       </div>
       
       <div className="mb-6">
-        <label htmlFor="email" className="form-label">Email Address</label>
+        <label htmlFor="email" className="block text-brand-black font-medium mb-1">Email Address</label>
         <input
           type="email"
           id="email"
@@ -434,7 +435,7 @@ function Register() {
       </div>
       
       <div className="mb-6">
-        <label htmlFor="website" className="form-label">Website (Optional)</label>
+        <label htmlFor="website" className="block text-brand-black font-medium mb-1">Website (Optional)</label>
         <input
           type="url"
           id="website"
@@ -448,7 +449,7 @@ function Register() {
       </div>
       
       <div className="mb-6">
-        <label htmlFor="address" className="form-label">Business Address</label>
+        <label htmlFor="address" className="block text-brand-black font-medium mb-1">Business Address</label>
         <textarea
           id="address"
           name="address"
@@ -492,7 +493,7 @@ function Register() {
       )}
       
       <div className="mb-6">
-        <label htmlFor="password" className="form-label">Password</label>
+        <label htmlFor="password" className="block text-brand-black font-medium mb-1">Password</label>
         <input
           type="password"
           id="password"
@@ -507,12 +508,12 @@ function Register() {
       </div>
       
       <div className="mb-6">
-        <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+        <label htmlFor="confirmPassword" className="block text-brand-black font-medium mb-1">Confirm Password</label>
         <input
           type="password"
           id="confirmPassword"
           name="confirmPassword"
-          className={`form-control ${errors.confirmPassword ? 'border-red-500' : ''}`}
+          className={`w-full p-2 border ${errors.confirmPassword ? 'border-red-500' : 'border-brand-gray-300'} rounded focus:outline-none focus:ring-1 focus:ring-brand-black`}
           value={formData.confirmPassword}
           onChange={handleChange}
           placeholder="u2022u2022u2022u2022u2022u2022u2022u2022"
@@ -529,12 +530,12 @@ function Register() {
               name="agreeToTerms"
               checked={formData.agreeToTerms}
               onChange={handleChange}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              className="h-4 w-4 text-brand-black border-brand-gray-300 rounded focus:ring-brand-black"
             />
           </div>
           <div className="ml-3 text-sm">
-            <label htmlFor="agreeToTerms" className="text-gray-700">
-              I agree to the <Link to="/terms" className="text-blue-600 hover:text-blue-800">Terms and Conditions</Link> and <Link to="/privacy" className="text-blue-600 hover:text-blue-800">Privacy Policy</Link>
+            <label htmlFor="agreeToTerms" className="text-brand-gray-700">
+              I agree to the <Link to="/terms" className="text-brand-black hover:text-brand-gray-600 border-b border-brand-gray-400">Terms and Conditions</Link> and <Link to="/privacy" className="text-brand-black hover:text-brand-gray-600 border-b border-brand-gray-400">Privacy Policy</Link>
             </label>
             {errors.agreeToTerms && <p className="text-red-500 text-sm mt-1">{errors.agreeToTerms}</p>}
           </div>
@@ -551,7 +552,7 @@ function Register() {
         </button>
         <button
           type="submit"
-          className={`btn btn-primary ${isLoading ? 'opacity-75' : ''}`}
+          className={`px-4 py-2 bg-brand-black text-brand-white font-medium rounded hover:bg-brand-gray-800 transition-colors ${isLoading ? 'opacity-75' : ''}`}
           disabled={isLoading}
         >
           {isLoading ? (
@@ -570,7 +571,7 @@ function Register() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="max-w-2xl mx-auto bg-brand-white rounded-lg shadow-md border border-brand-gray-200 overflow-hidden">
         <div className="p-8">
           <h2 className="text-2xl font-bold text-center mb-6">Register Your Business</h2>
           
@@ -583,9 +584,9 @@ function Register() {
           </form>
           
           <div className="text-center mt-6">
-            <p className="text-gray-600">
+            <p className="text-brand-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+              <Link to="/login" className="text-brand-black hover:text-brand-gray-600 border-b border-brand-gray-400 font-medium">
                 Login here
               </Link>
             </p>
