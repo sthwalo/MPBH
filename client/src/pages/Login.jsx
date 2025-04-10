@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 function Login({ setIsAuthenticated }) {
   const [formData, setFormData] = useState({
@@ -49,33 +50,49 @@ function Login({ setIsAuthenticated }) {
     setIsLoading(true)
     
     try {
-      // In production, this would be a real API call
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     email: formData.email,
-      //     password: formData.password
-      //   })
-      // })
+      // Show loading message
+      const loadingToast = toast.loading('Logging in...');
       
-      // if (!response.ok) {
-      //   const errorData = await response.json()
-      //   throw new Error(errorData.message || 'Login failed')
-      // }
+      // Make the real API call
+      const response = await fetch('http://localhost:8000/api/auth/login', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      });
       
-      // const data = await response.json()
-      // localStorage.setItem('token', data.token)
+      // Clear loading toast
+      toast.dismiss(loadingToast);
       
-      // For demo purposes, we're just simulating a successful login
-      setTimeout(() => {
-        // Mock authentication
-        localStorage.setItem('token', 'demo-token')
-        setIsAuthenticated(true)
-        
-        // Redirect to dashboard
-        navigate('/dashboard')
-      }, 1000)
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+      
+      // Parse the response data
+      const data = await response.json();
+      console.log('Login successful:', data);
+      
+      // Store the token and user info
+      localStorage.setItem('mpbh_token', data.data.token);
+      localStorage.setItem('mpbh_user', JSON.stringify({
+        id: data.data.user.id,
+        businessId: data.data.business.id
+      }));
+      
+      // Show success message
+      toast.success('Login successful!');
+      
+      // Update authentication state
+      setIsAuthenticated(true);
+      
+      // Redirect to dashboard
+      navigate('/dashboard');
     } catch (error) {
       setErrors({ form: error.message || 'Login failed. Please try again.' })
     } finally {
@@ -85,7 +102,7 @@ function Login({ setIsAuthenticated }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="max-w-md mx-auto bg-brand-white rounded-lg shadow-md border border-brand-gray-200 overflow-hidden">
         <div className="p-8">
           <h2 className="text-2xl font-bold text-center mb-6">Login to Your Account</h2>
           
@@ -97,12 +114,12 @@ function Login({ setIsAuthenticated }) {
           
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
-              <label htmlFor="email" className="form-label">Email Address</label>
+              <label htmlFor="email" className="block text-brand-black font-medium mb-1">Email Address</label>
               <input
                 type="email"
                 id="email"
                 name="email"
-                className={`form-control ${errors.email ? 'border-red-500' : ''}`}
+                className={`w-full p-2 border ${errors.email ? 'border-red-500' : 'border-brand-gray-300'} rounded focus:outline-none focus:ring-1 focus:ring-brand-black`}
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="youremail@example.com"
@@ -112,8 +129,8 @@ function Login({ setIsAuthenticated }) {
             
             <div className="mb-6">
               <div className="flex justify-between items-center">
-                <label htmlFor="password" className="form-label">Password</label>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800">
+                <label htmlFor="password" className="block text-brand-black font-medium mb-1">Password</label>
+                <Link to="/forgot-password" className="text-sm text-brand-black hover:text-brand-gray-600 border-b border-brand-gray-400">
                   Forgot Password?
                 </Link>
               </div>
@@ -121,7 +138,7 @@ function Login({ setIsAuthenticated }) {
                 type="password"
                 id="password"
                 name="password"
-                className={`form-control ${errors.password ? 'border-red-500' : ''}`}
+                className={`w-full p-2 border ${errors.password ? 'border-red-500' : 'border-brand-gray-300'} rounded focus:outline-none focus:ring-1 focus:ring-brand-black`}
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
@@ -136,16 +153,16 @@ function Login({ setIsAuthenticated }) {
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleChange}
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                className="h-4 w-4 text-brand-black border-brand-gray-300 rounded focus:ring-brand-black"
               />
-              <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-700">
+              <label htmlFor="rememberMe" className="ml-2 text-sm text-brand-gray-700">
                 Remember me
               </label>
             </div>
             
             <button
               type="submit"
-              className={`btn btn-primary w-full ${isLoading ? 'opacity-75' : ''}`}
+              className={`px-4 py-2 bg-brand-black text-brand-white font-medium rounded hover:bg-brand-gray-800 transition-colors w-full ${isLoading ? 'opacity-75' : ''}`}
               disabled={isLoading}
             >
               {isLoading ? (
@@ -161,9 +178,9 @@ function Login({ setIsAuthenticated }) {
           </form>
           
           <div className="text-center mt-6">
-            <p className="text-gray-600">
+            <p className="text-brand-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="text-blue-600 hover:text-blue-800 font-medium">
+              <Link to="/register" className="text-brand-black hover:text-brand-gray-600 border-b border-brand-gray-400 font-medium">
                 Register Your Business
               </Link>
             </p>
