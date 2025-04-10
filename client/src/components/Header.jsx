@@ -18,7 +18,7 @@ function Header({ isAuthenticated }) {
   }
 
   return (
-    <header className="bg-brand-white shadow-brand-sm border-b border-brand-gray-200">
+    <header className="sticky top-0 z-50 bg-brand-white shadow-brand-sm border-b border-brand-gray-200">
       <div className="container mx-auto py-4 px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <img src={mpbhLogo} alt="MPBH Logo" className="h-10" />
