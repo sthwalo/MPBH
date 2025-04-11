@@ -17,10 +17,13 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
+      '/debug-api.php': {
+        target: 'http://localhost:8000',
+        changeOrigin: true
+      },
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, 'debug-api.php?action=register'),
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('proxy error', err);

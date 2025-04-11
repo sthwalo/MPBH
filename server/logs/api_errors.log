@@ -449,3 +449,183 @@ Stack trace:
 [10-Apr-2025 20:35:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
 [10-Apr-2025 20:35:59 UTC] PostgreSQL database connection established successfully
 [10-Apr-2025 20:35:59 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:35:35 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:35:35 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:35:35 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:35:35 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:35:35 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:35:35 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:35:35 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:35:35 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:35:35 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:35:35 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:35:39 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:35:39 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:35:39 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:35:39 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:35:39 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:35:39 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:35:39 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:35:39 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:35:39 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:35:39 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:36:52 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:36:52 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:36:52 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:36:52 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:36:52 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:36:52 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:36:52 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:36:52 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:36:52 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:36:52 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:43:57 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:43:57 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:43:57 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:43:57 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:43:57 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:43:57 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:43:57 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:43:57 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:43:57 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:43:57 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:44:00 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:44:00 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:44:00 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:44:00 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:44:00 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:44:00 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:44:00 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:44:00 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:44:00 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:44:00 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:03 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:03 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:03 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:03 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:03 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:03 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:03 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:03 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:03 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:03 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:05 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:05 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:05 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:05 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:05 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:05 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:05 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:05 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:05 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:05 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:28 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:28 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:28 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:28 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:28 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:28 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:28 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:28 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:28 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:28 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:28 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:28 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:28 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:28 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:28 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:28 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:28 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:28 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:28 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:28 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:30 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:30 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:30 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:30 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:30 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:30 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:30 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:30 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:30 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:30 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:31 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:31 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:31 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:31 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:31 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:31 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:31 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:31 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:31 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:31 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:31 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:31 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:31 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:31 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:31 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:31 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:31 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:31 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:31 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:31 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:32 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:32 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:32 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:32 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:32 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:32 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:32 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:32 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:32 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:32 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:32 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:32 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:32 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:32 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:32 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:32 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:32 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:32 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:32 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:32 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:33 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:33 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:33 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:33 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:33 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:33 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:33 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:33 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:33 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:33 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:34 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:34 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:34 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:34 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:34 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:34 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:34 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:34 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:34 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:34 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:35 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:35 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:35 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:35 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:35 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:35 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:35 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:35 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:35 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:35 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:38 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:38 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:38 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:38 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:38 UTC] Successfully connected to PostgreSQL database
+[11-Apr-2025 13:50:38 UTC] Environment variables loaded for development environment
+[11-Apr-2025 13:50:38 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[11-Apr-2025 13:50:38 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[11-Apr-2025 13:50:38 UTC] PostgreSQL database connection established successfully
+[11-Apr-2025 13:50:38 UTC] Successfully connected to PostgreSQL database

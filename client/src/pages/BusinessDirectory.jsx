@@ -22,11 +22,11 @@ function BusinessDirectory() {
     const fetchBusinesses = async () => {
       try {
         setLoading(true)
-        // Build the query string with any selected filters
         let queryParams = new URLSearchParams()
         if (selectedCategory) queryParams.append('category', selectedCategory)
         if (selectedDistrict) queryParams.append('district', selectedDistrict)
         
+        // Update the fetch URL to include /api prefix
         const response = await fetch(`/api/businesses?${queryParams.toString()}`)
         
         if (!response.ok) {
@@ -36,12 +36,10 @@ function BusinessDirectory() {
         const data = await response.json()
         setBusinesses(data)
         setFilteredBusinesses(data)
-        setLoading(false)
       } catch (err) {
         setError(err.message)
-        setLoading(false)
-        
-        // For development: mock data when API is not available
+        // Move mock data inside the catch block
+        console.log("Falling back to mock data...")
         const mockData = [
           {
             id: 1,
@@ -112,6 +110,8 @@ function BusinessDirectory() {
         
         setBusinesses(mockData)
         setFilteredBusinesses(mockData)
+      } finally {
+        setLoading(false)
       }
     }
     
@@ -293,7 +293,7 @@ function BusinessDirectory() {
           </div>
         ) : (
           // Business cards
-          filteredBusinesses.map(business => (
+          Array.isArray(filteredBusinesses) && filteredBusinesses.map(business => (
             <BusinessCard key={business.id} business={business} />
           ))
         )}

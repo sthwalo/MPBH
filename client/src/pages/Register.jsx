@@ -212,7 +212,7 @@ function Register() {
       
       try {
         // Use the enhanced debug API endpoint
-        const response = await fetch('http://localhost:8000/debug-api.php?action=register', {
+        const response = await fetch('/debug-api.php?action=register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

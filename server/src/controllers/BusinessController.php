@@ -21,12 +21,6 @@ class BusinessController
     private PDO $db;
     private Logger $logger;
     
-    /**
-     * Constructor with dependencies
-     * 
-     * @param PDO $db Database connection
-     * @param Logger $logger Logger instance
-     */
     public function __construct(PDO $db, Logger $logger)
     {
         $this->db = $db;
@@ -42,6 +36,10 @@ class BusinessController
      */
     public function getAllBusinesses(Request $request, Response $response): Response
     {
+        $this->logger->info('Fetching businesses', [
+            'query' => $request->getQueryParams()
+        ]);
+        
         // Get query parameters
         $params = $request->getQueryParams();
         
