@@ -28,3 +28,31 @@
 2025-04-05 15:50:07 - /debug-api.php/businesses?district=Mbombela - 
 2025-04-05 15:50:07 - /debug-api.php/businesses?district=Mbombela - 
 2025-04-05 15:50:25 - /debug-api.php/businesses?district=Bushbuckridge - 
+2025-04-10 17:20:44 - /debug-api.php?action=register - {"email":"sthwaloe@gmail.com","password":"12345678","businessName":"Global Hope Consortium","description":"sfsfslfms;ka afkjgnaljbve ajngfvajbvnalegb ejnaojbpaoebnoarqgb","category":"Tourism","district":"Mbombela","address":"111 Cornelis Street","phone":"+27733685971","website":"https://ghcons.com"}
+2025-04-10 17:23:52 - /debug-api.php?action=register - {"email":"sthwaloe@gmail.com","password":"asdf1234","businessName":"Global Hope Consortium","description":"sdnldsjnv;as jfnv;aljvn; ADJFN;AJLVNSOVANDOVA JAND;FJVNA;FDA","category":"Tourism","district":"Mbombela","address":"111 Cornelis Street","phone":"+27733685971","website":"https://ghcons.com"}
+2025-04-10 17:35:16 - /debug-api.php/businesses?category=Events - 
+2025-04-10 17:35:16 - /debug-api.php/businesses?category=Events - 
+2025-04-10 17:36:19 - /debug-api.php/businesses?category=Events - 
+2025-04-10 17:36:19 - /debug-api.php/businesses?category=Events - 
+2025-04-10 19:25:09 - /debug-api.php/businesses?category=Events - 
+2025-04-10 19:25:09 - /debug-api.php/businesses?category=Events - 
+2025-04-10 19:34:09 - /debug-api.php/businesses?category=Events - 
+2025-04-10 19:34:09 - /debug-api.php/businesses?category=Events - 
+2025-04-10 19:34:10 - /debug-api.php/businesses?category=Events - 
+2025-04-10 19:34:10 - /debug-api.php/businesses?category=Events - 
+2025-04-10 19:34:59 - /debug-api.php/businesses?category=Tourism - 
+2025-04-10 19:34:59 - /debug-api.php/businesses?category=Tourism - 
+2025-04-10 19:35:15 - /debug-api.php/businesses?category=Tourism&district=Mbombela - 
+2025-04-10 19:35:16 - /debug-api.php/businesses?category=Tourism&district=Emalahleni - 
+2025-04-10 20:31:36 - /debug-api.php/businesses? - 
+2025-04-10 20:31:36 - /debug-api.php/businesses? - 
+2025-04-10 20:31:51 - /debug-api.php/businesses?category=Tourism - 
+2025-04-10 20:31:52 - /debug-api.php/businesses?category=Agriculture - 
+2025-04-10 20:34:14 - /debug-api.php/businesses?category=Construction - 
+2025-04-10 20:34:14 - /debug-api.php/businesses?category=Construction - 
+2025-04-10 20:35:28 - /debug-api.php/businesses?category=Tourism - 
+2025-04-10 20:35:28 - /debug-api.php/businesses?category=Tourism - 
+2025-04-10 20:35:43 - /debug-api.php/businesses? - 
+2025-04-10 20:35:43 - /debug-api.php/businesses? - 
+2025-04-10 20:35:47 - /debug-api.php/businesses?category=Tourism - 
+2025-04-10 20:35:59 - /debug-api.php/businesses?category=Tourism&district=Emalahleni - 

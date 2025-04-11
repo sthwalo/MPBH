@@ -12,96 +12,102 @@ function BusinessDetails() {
     const fetchBusinessDetails = async () => {
       try {
         setLoading(true)
-        // In production, this would fetch from the API
-        // const response = await fetch(`/api/businesses/${id}`)
-        // if (!response.ok) throw new Error('Business not found')
-        // const data = await response.json()
-        
-        // Mock data for development
-        setTimeout(() => {
-          const mockData = {
-            id: parseInt(id),
-            name: "Kruger Gateway Lodge",
-            category: "Tourism",
-            district: "Mbombela",
-            package_type: "Gold",
-            rating: 4.8,
-            description: "Luxury accommodation near Kruger National Park with guided safari tours. Our lodge offers comfortable rooms, a restaurant serving local cuisine, and a pool overlooking the bush. We organize daily game drives into Kruger National Park with experienced guides who know where to find the Big Five. Our location just 10 minutes from Numbi Gate makes us the ideal base for your safari adventure.",
-            contact: { 
-              phone: "+27123456789", 
-              email: "info@krugergateway.co.za", 
-              website: "https://krugergateway.co.za",
-              address: "123 Safari Road, Hazyview, Mpumalanga",
-              whatsapp: "+27123456789"
-            },
-            images: [
-              "/assets/images/tourism-1.jpg",
-              "/assets/images/tourism-2.jpg",
-              "/assets/images/tourism-3.jpg"
-            ],
-            products: [
-              {
-                id: 1,
-                name: "Safari Day Trip",
-                price: 1200,
-                description: "Full day game drive in Kruger National Park with lunch included."
-              },
-              {
-                id: 2,
-                name: "Panorama Route Tour",
-                price: 950,
-                description: "Guided tour of Blyde River Canyon, God's Window, and waterfalls."
-              },
-              {
-                id: 3,
-                name: "Bush Dinner Experience",
-                price: 650,
-                description: "Evening dinner in the bush with traditional music and dancing."
-              }
-            ],
-            hours: {
-              monday: "8:00 - 18:00",
-              tuesday: "8:00 - 18:00",
-              wednesday: "8:00 - 18:00",
-              thursday: "8:00 - 18:00",
-              friday: "8:00 - 18:00",
-              saturday: "9:00 - 17:00",
-              sunday: "9:00 - 16:00"
-            },
-            reviews: [
-              {
-                id: 1,
-                user: "Sarah M.",
-                rating: 5,
-                comment: "Amazing experience! The safari guides were knowledgeable and we saw all the Big Five.",
-                date: "2023-08-15"
-              },
-              {
-                id: 2,
-                user: "David K.",
-                rating: 4,
-                comment: "Great accommodation and friendly staff. The food was excellent.",
-                date: "2023-07-22"
-              },
-              {
-                id: 3,
-                user: "Thabo N.",
-                rating: 5,
-                comment: "Perfect location near Kruger. The rooms were clean and comfortable.",
-                date: "2023-06-30"
-              }
-            ],
-            location: {
-              lat: -25.052,
-              lng: 31.132
-            }
+        // Update fetch URL to use /api prefix
+        const response = await fetch(`/api/businesses/${id}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           }
-          setBusiness(mockData)
-          setLoading(false)
-        }, 1000) // Simulate API delay
+        })
         
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        setBusiness(data)
       } catch (err) {
-        setError(err.message)
+        console.error("Error fetching business details:", err)
+        // Fallback to mock data
+        const mockData = {
+          id: parseInt(id),
+          name: "Kruger Gateway Lodge",
+          category: "Tourism",
+          district: "Mbombela",
+          package_type: "Gold",
+          rating: 4.8,
+          description: "Luxury accommodation near Kruger National Park with guided safari tours. Our lodge offers comfortable rooms, a restaurant serving local cuisine, and a pool overlooking the bush. We organize daily game drives into Kruger National Park with experienced guides who know where to find the Big Five. Our location just 10 minutes from Numbi Gate makes us the ideal base for your safari adventure.",
+          contact: { 
+            phone: "+27123456789", 
+            email: "info@krugergateway.co.za", 
+            website: "https://krugergateway.co.za",
+            address: "123 Safari Road, Hazyview, Mpumalanga",
+            whatsapp: "+27123456789"
+          },
+          images: [
+            "/assets/images/tourism-1.jpg",
+            "/assets/images/tourism-2.jpg",
+            "/assets/images/tourism-3.jpg"
+          ],
+          products: [
+            {
+              id: 1,
+              name: "Safari Day Trip",
+              price: 1200,
+              description: "Full day game drive in Kruger National Park with lunch included."
+            },
+            {
+              id: 2,
+              name: "Panorama Route Tour",
+              price: 950,
+              description: "Guided tour of Blyde River Canyon, God's Window, and waterfalls."
+            },
+            {
+              id: 3,
+              name: "Bush Dinner Experience",
+              price: 650,
+              description: "Evening dinner in the bush with traditional music and dancing."
+            }
+          ],
+          hours: {
+            monday: "8:00 - 18:00",
+            tuesday: "8:00 - 18:00",
+            wednesday: "8:00 - 18:00",
+            thursday: "8:00 - 18:00",
+            friday: "8:00 - 18:00",
+            saturday: "9:00 - 17:00",
+            sunday: "9:00 - 16:00"
+          },
+          reviews: [
+            {
+              id: 1,
+              user: "Sarah M.",
+              rating: 5,
+              comment: "Amazing experience! The safari guides were knowledgeable and we saw all the Big Five.",
+              date: "2023-08-15"
+            },
+            {
+              id: 2,
+              user: "David K.",
+              rating: 4,
+              comment: "Great accommodation and friendly staff. The food was excellent.",
+              date: "2023-07-22"
+            },
+            {
+              id: 3,
+              user: "Thabo N.",
+              rating: 5,
+              comment: "Perfect location near Kruger. The rooms were clean and comfortable.",
+              date: "2023-06-30"
+            }
+          ],
+          location: {
+            lat: -25.052,
+            lng: 31.132
+          }
+        }
+        setBusiness(mockData)
+      } finally {
         setLoading(false)
       }
     }

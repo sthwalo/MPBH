@@ -245,3 +245,207 @@ Stack trace:
 [05-Apr-2025 15:50:25 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
 [05-Apr-2025 15:50:25 UTC] PostgreSQL database connection established successfully
 [05-Apr-2025 15:50:25 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 17:20:44 UTC] Environment variables loaded for development environment
+[10-Apr-2025 17:20:44 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 17:20:44 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 17:20:44 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 17:20:44 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 17:20:44 UTC] ===== REGISTRATION ATTEMPT =====
+[10-Apr-2025 17:20:44 UTC] Data received: {"email":"sthwaloe@gmail.com","password":"12345678","businessName":"Global Hope Consortium","description":"sfsfslfms;ka afkjgnaljbve ajngfvajbvnalegb ejnaojbpaoebnoarqgb","category":"Tourism","district":"Mbombela","address":"111 Cornelis Street","phone":"+27733685971","website":"https:\/\/ghcons.com"}
+[10-Apr-2025 17:20:44 UTC] Starting database transaction
+[10-Apr-2025 17:20:44 UTC] Creating User object
+[10-Apr-2025 17:20:44 UTC] Checking if email exists: sthwaloe@gmail.com
+[10-Apr-2025 17:20:44 UTC] Email already exists: sthwaloe@gmail.com
+[10-Apr-2025 17:23:52 UTC] Environment variables loaded for development environment
+[10-Apr-2025 17:23:52 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 17:23:52 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 17:23:52 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 17:23:52 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 17:23:52 UTC] ===== REGISTRATION ATTEMPT =====
+[10-Apr-2025 17:23:52 UTC] Data received: {"email":"sthwaloe@gmail.com","password":"asdf1234","businessName":"Global Hope Consortium","description":"sdnldsjnv;as jfnv;aljvn; ADJFN;AJLVNSOVANDOVA JAND;FJVNA;FDA","category":"Tourism","district":"Mbombela","address":"111 Cornelis Street","phone":"+27733685971","website":"https:\/\/ghcons.com"}
+[10-Apr-2025 17:23:52 UTC] Starting database transaction
+[10-Apr-2025 17:23:52 UTC] Creating User object
+[10-Apr-2025 17:23:52 UTC] Checking if email exists: sthwaloe@gmail.com
+[10-Apr-2025 17:23:52 UTC] Email already exists: sthwaloe@gmail.com
+[10-Apr-2025 17:35:16 UTC] Environment variables loaded for development environment
+[10-Apr-2025 17:35:16 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 17:35:16 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 17:35:16 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 17:35:16 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 17:35:16 UTC] Environment variables loaded for development environment
+[10-Apr-2025 17:35:16 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 17:35:16 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 17:35:16 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 17:35:16 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 17:36:19 UTC] Environment variables loaded for development environment
+[10-Apr-2025 17:36:19 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 17:36:19 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 17:36:19 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 17:36:19 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 17:36:19 UTC] Environment variables loaded for development environment
+[10-Apr-2025 17:36:19 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 17:36:19 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 17:36:19 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 17:36:19 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:25:09 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:25:09 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:25:09 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:25:09 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:25:09 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:25:09 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:25:09 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:25:09 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:25:09 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:25:09 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:34:09 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:34:09 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:34:09 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:34:09 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:34:09 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:34:09 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:34:09 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:34:09 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:34:09 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:34:09 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:34:10 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:34:10 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:34:10 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:34:10 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:34:10 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:34:10 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:34:10 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:34:10 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:34:10 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:34:10 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:34:59 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:34:59 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:34:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:34:59 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:34:59 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 19:34:59 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:34:59 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:34:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:34:59 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:34:59 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 19:34:59 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 19:35:15 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:35:15 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:35:15 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:35:15 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:35:15 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 19:35:15 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 19:35:15 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 19:35:15 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 19:35:15 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 19:35:16 UTC] Environment variables loaded for development environment
+[10-Apr-2025 19:35:16 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 19:35:16 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 19:35:16 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 19:35:16 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:31:36 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:31:36 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:31:36 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:31:36 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:31:36 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:36 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:31:36 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:31:36 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:31:36 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:31:36 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:36 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:51 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:31:51 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:31:51 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:31:51 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:31:51 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:31:51 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:51 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:51 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:31:51 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:31:52 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:31:52 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:31:52 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:31:52 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:31:52 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:34:14 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:34:14 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:34:14 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:34:14 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:34:14 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:34:14 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:34:14 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:34:14 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:34:14 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:34:14 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:35:28 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:35:28 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:35:28 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:35:28 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:35:28 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:28 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:35:28 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:35:28 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:35:28 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:35:28 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:28 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:43 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:35:43 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:35:43 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:35:43 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:35:43 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:43 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:35:43 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:35:43 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:35:43 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:35:43 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:43 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:47 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:35:47 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:35:47 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:35:47 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:35:47 UTC] Successfully connected to PostgreSQL database
+[10-Apr-2025 20:35:47 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:47 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:47 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 274
+[10-Apr-2025 20:35:47 UTC] PHP Deprecated:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/sthwalonyoni/MPBH/server/src/Models/Business.php on line 275
+[10-Apr-2025 20:35:59 UTC] Environment variables loaded for development environment
+[10-Apr-2025 20:35:59 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[10-Apr-2025 20:35:59 UTC] Connecting to PostgreSQL database with DSN: pgsql:host=localhost;dbname=postgres;port=5432
+[10-Apr-2025 20:35:59 UTC] PostgreSQL database connection established successfully
+[10-Apr-2025 20:35:59 UTC] Successfully connected to PostgreSQL database
