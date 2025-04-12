@@ -122,9 +122,6 @@ return function (App $app) {
     $app->post('/api/payments/notify', [PaymentController::class, 'processWebhook']);
     $app->post('/api/statistics/log/{id}', [StatisticsController::class, 'logInteraction']);
     
-    // Direct route for categories (in addition to the /api/search/categories route)
-    $app->get('/api/categories', [SearchController::class, 'getCategories']);
-    
     // System endpoints for monitoring and health checks
     $app->get('/health', [SystemController::class, 'healthCheck']);
     $app->get('/metrics', [SystemController::class, 'metrics'])->add(new AuthMiddleware()); // Protected metrics endpoint

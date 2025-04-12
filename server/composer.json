@@ -11,7 +11,8 @@
         "firebase/php-jwt": "^6.4",
         "respect/validation": "^2.2",
         "monolog/monolog": "^3.3",
-        "ext-pdo_pgsql": "*"
+        "ext-pdo_pgsql": "*",
+        "cboden/ratchet": "^0.4.4"
     },
     "autoload": {
         "psr-4": {

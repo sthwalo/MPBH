@@ -70,26 +70,24 @@ class AuthController
         try {
             $this->db->beginTransaction();
             
-            // Create user
+            // Create user with proper password hashing
             $user->email = $data['email'];
-            $user->password = $data['password'];
+            $user->password = password_hash($data['password'], PASSWORD_DEFAULT);
             
             if (!$user->create()) {
                 throw new \Exception('Failed to create user');
             }
             
-            // Create business
+            // Create business with verification status
             $business = new Business($this->db);
             $business->user_id = $user->id;
             $business->name = $data['businessName'];
-            $business->description = $data['description'] ?? null;
             $business->category = $data['category'];
             $business->district = $data['district'];
             $business->address = $data['address'] ?? null;
             $business->phone = $data['phone'] ?? null;
-            $business->email = $data['email']; // Use same email as user
             $business->website = $data['website'] ?? null;
-            $business->package_type = $data['packageType'] ?? 'Basic';
+            $business->verification_status = 'verified'; // Set to verified for testing
             
             if (!$business->create()) {
                 throw new \Exception('Failed to create business');
@@ -119,8 +117,7 @@ class AuthController
             
         } catch (\Exception $e) {
             $this->db->rollBack();
-            $this->logger->error('Registration failed', ['error' => $e->getMessage()]);
-            throw $e;
+            throw new \Exception('Registration failed: ' . $e->getMessage());
         }
     }
     

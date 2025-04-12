@@ -39,7 +39,6 @@ function BusinessDirectory() {
       } catch (err) {
         setError(err.message)
         // Move mock data inside the catch block
-        console.log("Falling back to mock data...")
         const mockData = [
           {
             id: 1,
@@ -108,6 +107,7 @@ function BusinessDirectory() {
           }
         ]
         
+        console.log('Loading mock data:', mockData) // Debug log
         setBusinesses(mockData)
         setFilteredBusinesses(mockData)
       } finally {
@@ -293,9 +293,10 @@ function BusinessDirectory() {
           </div>
         ) : (
           // Business cards
-          Array.isArray(filteredBusinesses) && filteredBusinesses.map(business => (
-            <BusinessCard key={business.id} business={business} />
-          ))
+          filteredBusinesses.map(business => {
+            console.log('Rendering business:', business) // Debug log
+            return <BusinessCard key={business.id} business={business} />
+          })
         )}
       </div>
     </div>

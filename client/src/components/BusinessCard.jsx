@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 function BusinessCard({ business }) {
+  console.log('BusinessCard props:', business) // Debug log
   const { id, name, category, district, package_type, rating, description, contact, image } = business
 
   // Define tier badge styles in elegant black and white theme

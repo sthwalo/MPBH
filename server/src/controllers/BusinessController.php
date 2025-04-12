@@ -47,7 +47,8 @@ class BusinessController
         $filters = [
             'category' => $params['category'] ?? null,
             'district' => $params['district'] ?? null,
-            'search' => $params['search'] ?? null
+            'search' => $params['search'] ?? null,
+            'verification_status' => 'verified' // Only show verified businesses
         ];
         
         // Clean up filters (remove null values)
@@ -76,11 +77,9 @@ class BusinessController
         ];
         
         // Add cache headers for improved performance
-        // Cache for 1 hour (3600 seconds) for public consumption
-        // Use stale-while-revalidate for 600 seconds to reduce backend load
         $headers = [
             'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=600',
-            'Vary' => 'Accept, Accept-Encoding' // Vary header for proper caching
+            'Vary' => 'Accept, Accept-Encoding'
         ];
         
         return ResponseHelper::success($response, $responseData, 200, $headers);
@@ -272,41 +271,39 @@ class BusinessController
         // Get request data
         $data = $request->getParsedBody();
         
-        // Update only the fields that are allowed to be updated
-        if (isset($data['name'])) $business->name = $data['name'];
-        if (isset($data['description'])) $business->description = $data['description'];
-        if (isset($data['category'])) $business->category = $data['category'];
-        if (isset($data['district'])) $business->district = $data['district'];
-        if (isset($data['address'])) $business->address = $data['address'];
-        if (isset($data['phone'])) $business->phone = $data['phone'];
-        if (isset($data['email'])) $business->email = $data['email'];
-        if (isset($data['website'])) $business->website = $data['website'];
+        // Update business fields
+        $updatableFields = [
+            'name',
+            'category',
+            'district',
+            'address',
+            'phone',
+            'website',
+            'description',
+            'social_media',
+            'business_hours',
+            'longitude',
+            'latitude'
+        ];
         
-        // Handle JSON fields
-        if (isset($data['social_media'])) {
-            $business->social_media = json_encode($data['social_media']);
+        foreach ($updatableFields as $field) {
+            if (isset($data[$field])) {
+                $business->$field = $data[$field];
+            }
         }
-        
-        if (isset($data['business_hours'])) {
-            $business->business_hours = json_encode($data['business_hours']);
-        }
-        
-        // Handle coordinates
-        if (isset($data['longitude'])) $business->longitude = $data['longitude'];
-        if (isset($data['latitude'])) $business->latitude = $data['latitude'];
         
         // Update business
         if (!$business->update()) {
             throw new \Exception('Failed to update business');
         }
         
-        $this->logger->info('Business updated', ['business_id' => $business->id]);
+        $this->logger->info('Business updated', ['business_id' => $businessId]);
         
         // Prepare response
         $responseData = [
             'status' => 'success',
             'message' => 'Business updated successfully',
-            'data' => $business->toArray(true)
+            'data' => $business->toArray()
         ];
         
         return ResponseHelper::success($response, $responseData, 200);
