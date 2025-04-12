@@ -16,6 +16,12 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface;
 
+/**
+ * @OA\Tag(
+ *     name="Business",
+ *     description="Business management endpoints"
+ * )
+ */
 class BusinessController
 {
     private PDO $db;
@@ -30,9 +36,70 @@ class BusinessController
     /**
      * Get all businesses with filters, sorting, and pagination
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @return Response JSON response
+     * @OA\Get(
+     *     path="/businesses",
+     *     tags={"Business"},
+     *     summary="Get list of businesses",
+     *     description="Retrieve a paginated list of businesses with optional filters",
+     *     @OA\Parameter(
+     *         name="category",
+     *         in="query",
+     *         description="Filter by category",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="district",
+     *         in="query",
+     *         description="Filter by district",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search term",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Number of items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort",
+     *         in="query",
+     *         description="Field to sort by",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="query",
+     *         description="Sort order (asc/desc)",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of businesses",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Business")
+     *         )
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function getAllBusinesses(Request $request, Response $response): Response
     {
@@ -88,10 +155,29 @@ class BusinessController
     /**
      * Get a specific business by ID
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @param array $args Route arguments
-     * @return Response JSON response
+     * @OA\Get(
+     *     path="/businesses/{id}",
+     *     tags={"Business"},
+     *     summary="Get a business by ID",
+     *     description="Retrieve a business by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Business ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Business details",
+     *         @OA\JsonContent(ref="#/components/schemas/Business")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Business not found"
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function getBusinessById(Request $request, Response $response, array $args): Response
     {
@@ -134,10 +220,32 @@ class BusinessController
     /**
      * Get products for a specific business
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @param array $args Route arguments
-     * @return Response JSON response
+     * @OA\Get(
+     *     path="/businesses/{id}/products",
+     *     tags={"Business"},
+     *     summary="Get products for a business",
+     *     description="Retrieve a list of products for a business",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Business ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of products",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Product")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Business not found"
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function getBusinessProducts(Request $request, Response $response, array $args): Response
     {
@@ -175,10 +283,32 @@ class BusinessController
     /**
      * Get reviews for a specific business
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @param array $args Route arguments
-     * @return Response JSON response
+     * @OA\Get(
+     *     path="/businesses/{id}/reviews",
+     *     tags={"Business"},
+     *     summary="Get reviews for a business",
+     *     description="Retrieve a list of reviews for a business",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Business ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of reviews",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Review")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Business not found"
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function getBusinessReviews(Request $request, Response $response, array $args): Response
     {
@@ -205,9 +335,18 @@ class BusinessController
     /**
      * Get authenticated user's business
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @return Response JSON response
+     * @OA\Get(
+     *     path="/my-business",
+     *     tags={"Business"},
+     *     summary="Get authenticated user's business",
+     *     description="Retrieve the business associated with the authenticated user",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Business details",
+     *         @OA\JsonContent(ref="#/components/schemas/Business")
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function getMyBusiness(Request $request, Response $response): Response
     {
@@ -252,9 +391,22 @@ class BusinessController
     /**
      * Update authenticated user's business details
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @return Response JSON response
+     * @OA\Patch(
+     *     path="/my-business",
+     *     tags={"Business"},
+     *     summary="Update authenticated user's business details",
+     *     description="Update the business associated with the authenticated user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/BusinessUpdate")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Business updated",
+     *         @OA\JsonContent(ref="#/components/schemas/Business")
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function updateMyBusiness(Request $request, Response $response): Response
     {
@@ -312,9 +464,39 @@ class BusinessController
     /**
      * Upload business logo
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @return Response JSON response
+     * @OA\Post(
+     *     path="/my-business/logo",
+     *     tags={"Business"},
+     *     summary="Upload business logo",
+     *     description="Upload a logo for the business",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"image"},
+     *                 @OA\Property(
+     *                     property="image",
+     *                     type="string",
+     *                     format="binary"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logo uploaded",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="logo",
+     *                 type="string",
+     *                 format="uri"
+     *             )
+     *         )
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function uploadLogo(Request $request, Response $response): Response
     {
@@ -324,9 +506,39 @@ class BusinessController
     /**
      * Upload business cover image
      * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @return Response JSON response
+     * @OA\Post(
+     *     path="/my-business/cover",
+     *     tags={"Business"},
+     *     summary="Upload business cover image",
+     *     description="Upload a cover image for the business",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"image"},
+     *                 @OA\Property(
+     *                     property="image",
+     *                     type="string",
+     *                     format="binary"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cover image uploaded",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="cover_image",
+     *                 type="string",
+     *                 format="uri"
+     *             )
+     *         )
+     *     ),
+     *     security={"bearerAuth": {}}
+     * )
      */
     public function uploadCover(Request $request, Response $response): Response
     {

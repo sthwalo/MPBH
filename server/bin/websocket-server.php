@@ -24,7 +24,7 @@ $server = IoServer::factory(
             new WebSocketHandler($logger)
         )
     ),
-    3001, // Changed from 3000 to 3001
+    3000, // Changed from 3001 to 3000
     '0.0.0.0' // Listen on all interfaces
 );
 

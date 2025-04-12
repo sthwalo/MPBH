@@ -12,7 +12,9 @@
         "respect/validation": "^2.2",
         "monolog/monolog": "^3.3",
         "ext-pdo_pgsql": "*",
-        "cboden/ratchet": "^0.4.4"
+        "cboden/ratchet": "^0.4.4",
+        "zircote/swagger-php": "^5.0",
+        "swagger-api/swagger-ui": "^5.20"
     },
     "autoload": {
         "psr-4": {
@@ -20,6 +22,7 @@
         }
     },
     "scripts": {
-        "start": "php -S localhost:8080 -t public"
+        "start": "php -S localhost:8080 -t public",
+        "generate-docs": "php scripts/generate-docs.php"
     }
 }

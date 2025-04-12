@@ -116,3 +116,12 @@ Comprehensive documentation is available in the [docs](./docs) directory:
 - [Database Schema](./docs/database-schema.md)
 - [Deployment Guide](./docs/deployment.md)
 - [Membership Tiers](./docs/membership-tiers.md)
+
+Frontend:
+User Form → React State → Axios POST → Backend API
+
+Backend:
+API Route → Middleware → AuthController → User Model → Database
+
+Response:
+Database → User Model → AuthController → JSON Response → Frontend

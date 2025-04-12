@@ -131,5 +131,16 @@ return function (App $app) {
         return $response
             ->withHeader('Location', $_ENV['FRONTEND_URL'])
             ->withStatus(302);
+
+            $app->get('/docs', function ($request, $response) {
+                $html = file_get_contents(__DIR__ . '/../vendor/swagger-api/swagger-ui/dist/index.html');
+                return $response->withHeader('Content-Type', 'text/html')->write($html);
+            });
+            
+            $app->get('/docs/spec', function ($request, $response) {
+                $yamlFile = __DIR__ . '/../public/docs/openapi.yaml';
+                $yaml = file_get_contents($yamlFile);
+                return $response->withHeader('Content-Type', 'text/yaml')->write($yaml);
+            });
     });
 };

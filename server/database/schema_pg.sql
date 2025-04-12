@@ -7,7 +7,62 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Mpumalanga Business Hub Database Schema
+-- Create ENUM replacements as custom types
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'package_type_enum') THEN
+        CREATE TYPE package_type_enum AS ENUM ('Basic', 'Silver', 'Gold');
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'verification_status_enum') THEN
+        CREATE TYPE verification_status_enum AS ENUM ('pending', 'verified', 'rejected');
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'product_status_enum') THEN
+        CREATE TYPE product_status_enum AS ENUM ('active', 'inactive');
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'review_status_enum') THEN
+        CREATE TYPE review_status_enum AS ENUM ('pending', 'approved', 'rejected');
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'advert_status_enum') THEN
+        CREATE TYPE advert_status_enum AS ENUM ('pending', 'active', 'rejected', 'expired');
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'advert_placement_enum') THEN
+        CREATE TYPE advert_placement_enum AS ENUM ('sidebar', 'banner', 'featured');
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_type_enum') THEN
+        CREATE TYPE payment_type_enum AS ENUM ('upgrade', 'advert');
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status_enum') THEN
+        CREATE TYPE payment_status_enum AS ENUM ('pending', 'completed', 'failed');
+    END IF;
+END $$;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
@@ -21,19 +76,9 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Add trigger for users
-CREATE TRIGGER update_users_timestamp
+CREATE OR REPLACE TRIGGER update_users_timestamp
 BEFORE UPDATE ON users
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
-
--- Create ENUM replacements as custom types
-CREATE TYPE package_type_enum AS ENUM ('Basic', 'Silver', 'Gold');
-CREATE TYPE verification_status_enum AS ENUM ('pending', 'verified', 'rejected');
-CREATE TYPE product_status_enum AS ENUM ('active', 'inactive');
-CREATE TYPE review_status_enum AS ENUM ('pending', 'approved', 'rejected');
-CREATE TYPE advert_status_enum AS ENUM ('pending', 'active', 'rejected', 'expired');
-CREATE TYPE advert_placement_enum AS ENUM ('sidebar', 'banner', 'featured');
-CREATE TYPE payment_type_enum AS ENUM ('upgrade', 'advert');
-CREATE TYPE payment_status_enum AS ENUM ('pending', 'completed', 'failed');
 
 -- Businesses table
 CREATE TABLE IF NOT EXISTS businesses (
@@ -63,7 +108,7 @@ CREATE TABLE IF NOT EXISTS businesses (
 );
 
 -- Add trigger for businesses
-CREATE TRIGGER update_businesses_timestamp
+CREATE OR REPLACE TRIGGER update_businesses_timestamp
 BEFORE UPDATE ON businesses
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
@@ -82,7 +127,7 @@ CREATE TABLE IF NOT EXISTS products (
 );
 
 -- Add trigger for products
-CREATE TRIGGER update_products_timestamp
+CREATE OR REPLACE TRIGGER update_products_timestamp
 BEFORE UPDATE ON products
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
@@ -102,7 +147,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 );
 
 -- Add trigger for reviews
-CREATE TRIGGER update_reviews_timestamp
+CREATE OR REPLACE TRIGGER update_reviews_timestamp
 BEFORE UPDATE ON reviews
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
@@ -124,7 +169,7 @@ CREATE TABLE IF NOT EXISTS adverts (
 );
 
 -- Add trigger for adverts
-CREATE TRIGGER update_adverts_timestamp
+CREATE OR REPLACE TRIGGER update_adverts_timestamp
 BEFORE UPDATE ON adverts
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
@@ -145,7 +190,7 @@ CREATE TABLE IF NOT EXISTS payments (
 );
 
 -- Add trigger for payments
-CREATE TRIGGER update_payments_timestamp
+CREATE OR REPLACE TRIGGER update_payments_timestamp
 BEFORE UPDATE ON payments
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
@@ -193,13 +238,12 @@ CREATE TABLE IF NOT EXISTS analytics_inquiries (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_businesses_category ON businesses(category);
-CREATE INDEX idx_businesses_district ON businesses(district);
-CREATE INDEX idx_businesses_package_type ON businesses(package_type);
-CREATE INDEX idx_products_business_id ON products(business_id);
-CREATE INDEX idx_reviews_business_id ON reviews(business_id);
-CREATE INDEX idx_adverts_business_id ON adverts(business_id);
-CREATE INDEX idx_adverts_placement ON adverts(placement);
-CREATE INDEX idx_payments_business_id ON payments(business_id);
-CREATE INDEX idx_payments_reference ON payments(reference);cd /Users/sthwalonyoni/MPBH/client
-npm run dev
+CREATE INDEX IF NOT EXISTS idx_businesses_category ON businesses(category);
+CREATE INDEX IF NOT EXISTS idx_businesses_district ON businesses(district);
+CREATE INDEX IF NOT EXISTS idx_businesses_package_type ON businesses(package_type);
+CREATE INDEX IF NOT EXISTS idx_products_business_id ON products(business_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_business_id ON reviews(business_id);
+CREATE INDEX IF NOT EXISTS idx_adverts_business_id ON adverts(business_id);
+CREATE INDEX IF NOT EXISTS idx_adverts_placement ON adverts(placement);
+CREATE INDEX IF NOT EXISTS idx_payments_business_id ON payments(business_id);
+CREATE INDEX IF NOT EXISTS idx_payments_reference ON payments(reference);
