@@ -7,16 +7,16 @@ use App\Models\Business;
 use App\Models\Review;
 use App\Models\Product;
 use App\Models\Advert;
-use App\Models\ImageService;
+use App\Services\ImageService;
 use InvalidArgumentException;
 
 class BusinessService {
-    private $db;
-    private $business;
-    private $review;
-    private $product;
-    private $advert;
-    private $imageService;
+    private PDO $db;
+    private ImageService $imageService;
+    private Business $business;
+    private Review $review;
+    private Product $product;
+    private Advert $advert;
     
     public function __construct(PDO $db) {
         $this->db = $db;
@@ -24,7 +24,7 @@ class BusinessService {
         $this->review = new Review($db);
         $this->product = new Product($db);
         $this->advert = new Advert($db);
-        $this->imageService = new ImageService();
+        $this->imageService = new ImageService($db);//Pass the database connection
     }
     
     /**

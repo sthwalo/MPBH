@@ -15,6 +15,8 @@ use PDO;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface;
+use App\Services\BusinessService;
+use App\Services\ImageService;
 
 /**
  * @OA\Tag(
@@ -27,12 +29,14 @@ class BusinessController
     private PDO $db;
     private Logger $logger;
     private BusinessService $businessService;
+    private ImageService $imageService;
     
     public function __construct(PDO $db, Logger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;
         $this->businessService = new BusinessService($db);
+        $this->imageService = new ImageService();
     }
     
     /**
