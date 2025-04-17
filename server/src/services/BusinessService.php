@@ -449,4 +449,151 @@ class BusinessService {
         
         return (int)$result['count'];
     }
+
+    /**
+     * Get all businesses with filtering and pagination
+     * 
+     * @param array $filters Search filters (category, district, search, etc.)
+     * @param int $page Page number
+     * @param int $limit Items per page
+     * @param string $sortBy Field to sort by
+     * @param string $order Sort order (asc/desc)
+     * @return array Businesses with pagination data
+     */
+    public function getAllBusinesses(
+        array $filters = [],
+        int $page = 1,
+        int $limit = 20,
+        string $sortBy = 'name',
+        string $order = 'asc'
+    ): array {
+        // Get paginated businesses from model
+        $result = $this->business->readAll($filters, $page, $limit, $sortBy, $order);
+        
+        // Process each business
+        foreach ($result['businesses'] as &$business) {
+            // Parse JSON fields
+            if (!empty($business['social_media'])) {
+                $business['social_media'] = json_decode($business['social_media'], true);
+            }
+            if (!empty($business['business_hours'])) {
+                $business['business_hours'] = json_decode($business['business_hours'], true);
+            }
+            
+            // Add tier badge data
+            $business['tier_badge'] = $this->getTierBadgeData($business['package_type']);
+            
+            // Calculate rating
+            $reviews = $this->review->getApprovedReviewsByBusinessId($business['id']);
+            $reviewCount = count($reviews);
+            $avgRating = 0;
+            
+            if ($reviewCount > 0) {
+                $totalRating = array_sum(array_column($reviews, 'rating'));
+                $avgRating = round($totalRating / $reviewCount, 1);
+            }
+            
+            $business['rating'] = [
+                'average' => $avgRating,
+                'count' => $reviewCount
+            ];
+        }
+        
+        return $result;
+    }
+
+    /**
+     * Get featured businesses
+     * 
+     * @param int $limit Number of businesses to return
+     * @return array Featured businesses
+     */
+    public function getFeaturedBusinesses(int $limit = 6): array {
+        // First get Gold package businesses
+        $filters = [
+            'package_type' => 'Gold',
+            'verification_status' => 'verified'
+        ];
+        
+        $goldBusinesses = $this->business->readAll($filters, 1, $limit)['businesses'];
+        
+        // If we need more businesses, get Silver package ones
+        if (count($goldBusinesses) < $limit) {
+            $remainingLimit = $limit - count($goldBusinesses);
+            $filters['package_type'] = 'Silver';
+            
+            $silverBusinesses = $this->business->readAll($filters, 1, $remainingLimit)['businesses'];
+            $goldBusinesses = array_merge($goldBusinesses, $silverBusinesses);
+        }
+        
+        // Process each business
+        foreach ($goldBusinesses as &$business) {
+            // Parse JSON fields
+            if (!empty($business['social_media'])) {
+                $business['social_media'] = json_decode($business['social_media'], true);
+            }
+            if (!empty($business['business_hours'])) {
+                $business['business_hours'] = json_decode($business['business_hours'], true);
+            }
+            
+            // Add tier badge
+            $business['tier_badge'] = $this->getTierBadgeData($business['package_type']);
+        }
+        
+        return $goldBusinesses;
+    }
+
+    /**
+     * Search businesses
+     * 
+     * @param string $query Search query
+     * @param array $filters Additional filters
+     * @param int $page Page number
+     * @param int $limit Items per page
+     * @return array Search results with pagination
+     */
+    public function searchBusinesses(
+        string $query,
+        array $filters = [],
+        int $page = 1,
+        int $limit = 20
+    ): array {
+        // Add search query to filters
+        $filters['search'] = $query;
+        $filters['verification_status'] = 'verified'; // Only show verified businesses
+        
+        // Get paginated results
+        $result = $this->business->readAll($filters, $page, $limit);
+        
+        // Process each business in results
+        foreach ($result['businesses'] as &$business) {
+            // Parse JSON fields
+            if (!empty($business['social_media'])) {
+                $business['social_media'] = json_decode($business['social_media'], true);
+            }
+            if (!empty($business['business_hours'])) {
+                $business['business_hours'] = json_decode($business['business_hours'], true);
+            }
+            
+            // Add tier badge
+            $business['tier_badge'] = $this->getTierBadgeData($business['package_type']);
+            
+            // Get rating
+            $reviews = $this->review->getApprovedReviewsByBusinessId($business['id']);
+            $reviewCount = count($reviews);
+            $avgRating = 0;
+            
+            if ($reviewCount > 0) {
+                $totalRating = array_sum(array_column($reviews, 'rating'));
+                $avgRating = round($totalRating / $reviewCount, 1);
+            }
+            
+            $business['rating'] = [
+                'average' => $avgRating,
+                'count' => $reviewCount
+            ];
+        }
+        
+        return $result;
+    }
 }

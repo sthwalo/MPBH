@@ -26,11 +26,13 @@ class BusinessController
 {
     private PDO $db;
     private Logger $logger;
+    private BusinessService $businessService;
     
     public function __construct(PDO $db, Logger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;
+        $this->businessService = new BusinessService($db);
     }
     
     /**
@@ -102,55 +104,42 @@ class BusinessController
      * )
      */
     public function getAllBusinesses(Request $request, Response $response): Response
-    {
+{
+    try {
         $this->logger->info('Fetching businesses', [
             'query' => $request->getQueryParams()
         ]);
         
-        // Get query parameters
         $params = $request->getQueryParams();
-        
-        // Extract filters
         $filters = [
             'category' => $params['category'] ?? null,
             'district' => $params['district'] ?? null,
             'search' => $params['search'] ?? null,
-            'verification_status' => 'verified' // Only show verified businesses
+            'verification_status' => 'verified'
         ];
         
-        // Clean up filters (remove null values)
         $filters = array_filter($filters);
-        
-        // Set pagination params
-        $page = isset($params['page']) ? (int) $params['page'] : 1;
-        $limit = isset($params['limit']) ? (int) $params['limit'] : 20;
-        
-        // Validate pagination params
-        if ($page < 1) $page = 1;
-        if ($limit < 1 || $limit > 100) $limit = 20;
-        
-        // Set sorting params
+        $page = max(1, (int)($params['page'] ?? 1));
+        $limit = min(max(1, (int)($params['limit'] ?? 20)), 100); // Fixed the syntax here
         $sortBy = $params['sort'] ?? 'name';
         $order = $params['order'] ?? 'asc';
         
-        // Get businesses
         $business = new Business($this->db);
         $result = $business->readAll($filters, $page, $limit, $sortBy, $order);
         
-        // Prepare response
-        $responseData = [
+        return ResponseHelper::success($response, [
             'status' => 'success',
             'data' => $result
-        ];
-        
-        // Add cache headers for improved performance
-        $headers = [
+        ], 200, [
             'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=600',
             'Vary' => 'Accept, Accept-Encoding'
-        ];
+        ]);
         
-        return ResponseHelper::success($response, $responseData, 200, $headers);
+    } catch (\Exception $e) {
+        $this->logger->error('Error fetching businesses: ' . $e->getMessage());
+        throw $e;
     }
+}
     
     /**
      * Get a specific business by ID
@@ -179,42 +168,52 @@ class BusinessController
      *     security={"bearerAuth": {}}
      * )
      */
-    public function getBusinessById(Request $request, Response $response, array $args): Response
-    {
-        $id = (int) $args['id'];
-        
-        // Get business
-        $business = new Business($this->db);
-        if (!$business->readOne($id)) {
-            throw new NotFoundException('Business not found');
+    public function getBusinessById(Request $request, Response $response, array $args): Response {
+        try {
+            $id = (int) $args['id'];
+            $cacheKey = "business:{$id}";
+            
+            // Check cache first
+            if ($cached = $this->cache->get($cacheKey)) {
+                return ResponseHelper::success($response, [
+                    'status' => 'success',
+                    'data' => $cached,
+                    'from_cache' => true
+                ]);
+            }
+            
+            $business = new Business($this->db);
+            
+            if (!$business->readOne($id)) {
+                throw new NotFoundException('Business not found');
+            }
+            
+            $this->logPageView($id);
+            $businessData = $business->toArray();
+            $queryParams = $request->getQueryParams();
+            
+            if (($queryParams['include_reviews'] ?? '') === 'true') {
+                $review = new Review($this->db);
+                $businessData['reviews'] = $review->getBusinessReviews($id);
+            }
+            
+            if (($queryParams['include_products'] ?? '') === 'true' && in_array($business->package_type, ['Silver', 'Gold'])) {
+                $product = new Product($this->db);
+                $businessData['products'] = $product->getBusinessProducts($id);
+            }
+            
+            // Cache the result
+            $this->cache->set($cacheKey, $businessData, 3600);
+            
+            return ResponseHelper::success($response, [
+                'status' => 'success',
+                'data' => $businessData
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logger->error("Error fetching business {$id}: " . $e->getMessage());
+            throw $e;
         }
-        
-        // Track page view (in a real app, we would add analytics)
-        $this->logPageView($id);
-        
-        // Prepare response
-        $businessData = $business->toArray();
-        
-        // Get additional data (reviews, products) if needed
-        $includeReviews = isset($request->getQueryParams()['include_reviews']) && $request->getQueryParams()['include_reviews'] === 'true';
-        $includeProducts = isset($request->getQueryParams()['include_products']) && $request->getQueryParams()['include_products'] === 'true';
-        
-        if ($includeReviews) {
-            $review = new Review($this->db);
-            $businessData['reviews'] = $review->getBusinessReviews($id);
-        }
-        
-        if ($includeProducts && in_array($business->package_type, ['Silver', 'Gold'])) {
-            $product = new Product($this->db);
-            $businessData['products'] = $product->getBusinessProducts($id);
-        }
-        
-        $responseData = [
-            'status' => 'success',
-            'data' => $businessData
-        ];
-        
-        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -249,35 +248,33 @@ class BusinessController
      */
     public function getBusinessProducts(Request $request, Response $response, array $args): Response
     {
-        $id = (int) $args['id'];
-        
-        // Get business
-        $business = new Business($this->db);
-        if (!$business->readOne($id)) {
-            throw new NotFoundException('Business not found');
-        }
-        
-        // Check if business has products feature
-        if (!in_array($business->package_type, ['Silver', 'Gold'])) {
-            // Return empty products array rather than an error
-            $responseData = [
-                'status' => 'success',
-                'data' => []
-            ];
+        try {
+            $id = (int) $args['id'];
+            $business = new Business($this->db);
             
-            return ResponseHelper::success($response, $responseData, 200);
+            if (!$business->readOne($id)) {
+                throw new NotFoundException('Business not found');
+            }
+            
+            if (!in_array($business->package_type, ['Silver', 'Gold'])) {
+                return ResponseHelper::success($response, [
+                    'status' => 'success',
+                    'data' => []
+                ]);
+            }
+            
+            $product = new Product($this->db);
+            $products = $product->getBusinessProducts($id);
+            
+            return ResponseHelper::success($response, [
+                'status' => 'success',
+                'data' => $products
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logger->error("Error fetching products for business {$id}: " . $e->getMessage());
+            throw $e;
         }
-        
-        // Get products
-        $product = new Product($this->db);
-        $products = $product->getBusinessProducts($id);
-        
-        $responseData = [
-            'status' => 'success',
-            'data' => $products
-        ];
-        
-        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -312,24 +309,26 @@ class BusinessController
      */
     public function getBusinessReviews(Request $request, Response $response, array $args): Response
     {
-        $id = (int) $args['id'];
-        
-        // Get business
-        $business = new Business($this->db);
-        if (!$business->readOne($id)) {
-            throw new NotFoundException('Business not found');
+        try {
+            $id = (int) $args['id'];
+            $business = new Business($this->db);
+            
+            if (!$business->readOne($id)) {
+                throw new NotFoundException('Business not found');
+            }
+            
+            $review = new Review($this->db);
+            $reviews = $review->getBusinessReviews($id);
+            
+            return ResponseHelper::success($response, [
+                'status' => 'success',
+                'data' => $reviews
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logger->error("Error fetching reviews for business {$id}: " . $e->getMessage());
+            throw $e;
         }
-        
-        // Get reviews
-        $review = new Review($this->db);
-        $reviews = $review->getBusinessReviews($id);
-        
-        $responseData = [
-            'status' => 'success',
-            'data' => $reviews
-        ];
-        
-        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -350,42 +349,39 @@ class BusinessController
      */
     public function getMyBusiness(Request $request, Response $response): Response
     {
-        // Get authenticated user from token
-        $userData = $request->getAttribute('user');
-        $businessId = $userData->business_id;
-        
-        // Get business
-        $business = new Business($this->db);
-        if (!$business->readOne($businessId)) {
-            throw new NotFoundException('Business not found');
+        try {
+            $userData = $request->getAttribute('user');
+            $businessId = $userData->business_id;
+            $business = new Business($this->db);
+            
+            if (!$business->readOne($businessId)) {
+                throw new NotFoundException('Business not found');
+            }
+            
+            $stats = $business->getStatistics();
+            $subscriptionInfo = null;
+            
+            if ($business->subscription_id) {
+                $subscriptionInfo = [
+                    'status' => 'active',
+                    'amount' => $business->package_type === 'Gold' ? 1000 : ($business->package_type === 'Silver' ? 500 : 200),
+                    'next_billing_date' => date('Y-m-d', strtotime('+1 month'))
+                ];
+            }
+            
+            $businessData = $business->toArray(true);
+            $businessData['statistics'] = $stats;
+            $businessData['subscription'] = $subscriptionInfo;
+            
+            return ResponseHelper::success($response, [
+                'status' => 'success',
+                'data' => $businessData
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logger->error("Error fetching user's business: " . $e->getMessage());
+            throw $e;
         }
-        
-        // Get statistics
-        $stats = $business->getStatistics();
-        
-        // Get subscription info (if any)
-        $subscriptionInfo = null;
-        if ($business->subscription_id) {
-            // In a real app, this would retrieve subscription details
-            // For now, we'll use a placeholder
-            $subscriptionInfo = [
-                'status' => 'active',
-                'amount' => $business->package_type === 'Gold' ? 1000 : ($business->package_type === 'Silver' ? 500 : 200),
-                'next_billing_date' => date('Y-m-d', strtotime('+1 month'))
-            ];
-        }
-        
-        // Prepare response
-        $businessData = $business->toArray(true); // Include private fields
-        $businessData['statistics'] = $stats;
-        $businessData['subscription'] = $subscriptionInfo;
-        
-        $responseData = [
-            'status' => 'success',
-            'data' => $businessData
-        ];
-        
-        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -410,55 +406,53 @@ class BusinessController
      */
     public function updateMyBusiness(Request $request, Response $response): Response
     {
-        // Get authenticated user from token
-        $userData = $request->getAttribute('user');
-        $businessId = $userData->business_id;
-        
-        // Get business
-        $business = new Business($this->db);
-        if (!$business->readOne($businessId)) {
-            throw new NotFoundException('Business not found');
-        }
-        
-        // Get request data
-        $data = $request->getParsedBody();
-        
-        // Update business fields
-        $updatableFields = [
-            'name',
-            'category',
-            'district',
-            'address',
-            'phone',
-            'website',
-            'description',
-            'social_media',
-            'business_hours',
-            'longitude',
-            'latitude'
-        ];
-        
-        foreach ($updatableFields as $field) {
-            if (isset($data[$field])) {
-                $business->$field = $data[$field];
+        try {
+            $data = $request->getParsedBody();
+            
+            // Add validation
+            $validator = new BusinessValidator();
+            $errors = $validator->validate($data);
+            if (!empty($errors)) {
+                throw new ValidationException('Invalid input', $errors);
             }
+
+            $userData = $request->getAttribute('user');
+            $businessId = $userData->business_id;
+            $business = new Business($this->db);
+            
+            if (!$business->readOne($businessId)) {
+                throw new NotFoundException('Business not found');
+            }
+            
+            $data = $request->getParsedBody();
+            $updatableFields = [
+                'name', 'category', 'district', 'address', 'phone', 
+                'website', 'description', 'social_media', 'business_hours',
+                'longitude', 'latitude'
+            ];
+            
+            foreach ($updatableFields as $field) {
+                if (isset($data[$field])) {
+                    $business->$field = $data[$field];
+                }
+            }
+            
+            if (!$business->update()) {
+                throw new \Exception('Failed to update business');
+            }
+            
+            $this->logger->info('Business updated', ['business_id' => $businessId]);
+            
+            return ResponseHelper::success($response, [
+                'status' => 'success',
+                'message' => 'Business updated successfully',
+                'data' => $business->toArray()
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logger->error("Error updating business: " . $e->getMessage());
+            throw $e;
         }
-        
-        // Update business
-        if (!$business->update()) {
-            throw new \Exception('Failed to update business');
-        }
-        
-        $this->logger->info('Business updated', ['business_id' => $businessId]);
-        
-        // Prepare response
-        $responseData = [
-            'status' => 'success',
-            'message' => 'Business updated successfully',
-            'data' => $business->toArray()
-        ];
-        
-        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
@@ -547,109 +541,102 @@ class BusinessController
     
     /**
      * Handle image upload for logo or cover
-     * 
-     * @param Request $request Request object
-     * @param Response $response Response object
-     * @param string $type Image type ('logo' or 'cover_image')
-     * @return Response JSON response
      */
     private function handleImageUpload(Request $request, Response $response, string $type): Response
     {
-        // Get authenticated user from token
-        $userData = $request->getAttribute('user');
-        $businessId = $userData->business_id;
-        
-        // Get business
-        $business = new Business($this->db);
-        if (!$business->readOne($businessId)) {
-            throw new NotFoundException('Business not found');
-        }
-        
-        // Get uploaded file
-        $uploadedFiles = $request->getUploadedFiles();
-        
-        if (empty($uploadedFiles['image'])) {
-            throw new BadRequestException('No image file uploaded');
-        }
-        
-        /** @var UploadedFileInterface $uploadedFile */
-        $uploadedFile = $uploadedFiles['image'];
-        
-        // Validate file
-        if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
-            throw new BadRequestException('Upload failed with error code ' . $uploadedFile->getError());
-        }
-        
-        // Validate file type
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (!in_array($uploadedFile->getClientMediaType(), $allowedTypes)) {
-            throw new ValidationException('Validation failed', [
-                'image' => 'File must be an image (JPEG, PNG, or GIF)'
+        try {
+            $userData = $request->getAttribute('user');
+            $businessId = $userData->business_id;
+            $business = new Business($this->db);
+            
+            if (!$business->readOne($businessId)) {
+                throw new NotFoundException('Business not found');
+            }
+            
+            $uploadedFiles = $request->getUploadedFiles();
+            
+            if (empty($uploadedFiles['image'])) {
+                throw new BadRequestException('No image file uploaded');
+            }
+            
+            /** @var UploadedFileInterface $uploadedFile */
+            $uploadedFile = $uploadedFiles['image'];
+            
+            if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+                throw new BadRequestException('Upload failed with error code ' . $uploadedFile->getError());
+            }
+            
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!in_array($uploadedFile->getClientMediaType(), $allowedTypes)) {
+                throw new ValidationException('Validation failed', [
+                    'image' => 'File must be an image (JPEG, PNG, or GIF)'
+                ]);
+            }
+            
+            $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+            $basename = bin2hex(random_bytes(8));
+            $filename = sprintf('%s_%s.%s', $type, $basename, $extension);
+            $directory = __DIR__ . '/../../public/uploads/businesses/' . $businessId;
+            
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            $uploadedFile->moveTo($directory . '/' . $filename);
+            $imagePath = '/uploads/businesses/' . $businessId . '/' . $filename;
+            $business->updateImage($type, $imagePath);
+            
+            $this->logger->info('Business image uploaded', [
+                'business_id' => $business->id, 
+                'type' => $type
             ]);
+            
+            return ResponseHelper::success($response, [
+                'status' => 'success',
+                'message' => ucfirst($type) . ' uploaded successfully',
+                'data' => [$type => $imagePath]
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logger->error("Error uploading {$type}: " . $e->getMessage());
+            throw $e;
         }
-        
-        // Generate unique filename
-        $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
-        $basename = bin2hex(random_bytes(8));
-        $filename = sprintf('%s_%s.%s', $type, $basename, $extension);
-        
-        // Create uploads directory if it doesn't exist
-        $directory = __DIR__ . '/../../public/uploads/businesses/' . $businessId;
-        if (!file_exists($directory)) {
-            mkdir($directory, 0755, true);
-        }
-        
-        // Move the uploaded file to the uploads directory
-        $uploadedFile->moveTo($directory . '/' . $filename);
-        
-        // Update business with new image path
-        $imagePath = '/uploads/businesses/' . $businessId . '/' . $filename;
-        $business->updateImage($type, $imagePath);
-        
-        $this->logger->info('Business image uploaded', ['business_id' => $business->id, 'type' => $type]);
-        
-        // Prepare response
-        $responseData = [
-            'status' => 'success',
-            'message' => ucfirst($type) . ' uploaded successfully',
-            'data' => [
-                $type => $imagePath
-            ]
-        ];
-        
-        return ResponseHelper::success($response, $responseData, 200);
     }
     
     /**
      * Log a page view for analytics
-     * 
-     * @param int $businessId Business ID
-     * @return void
      */
     private function logPageView(int $businessId): void
     {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO analytics_page_views (business_id, ip_address, user_agent, referrer) 
-                 VALUES (:business_id, :ip_address, :user_agent, :referrer)"
+                "INSERT INTO analytics_page_views 
+                (business_id, ip_address, user_agent, referrer) 
+                VALUES (:business_id, :ip_address, :user_agent, :referrer)"
             );
             
-            $ipAddress = $_SERVER['REMOTE_ADDR'] ?? null;
-            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
-            $referrer = $_SERVER['HTTP_REFERER'] ?? null;
+            $stmt->execute([
+                ':business_id' => $businessId,
+                ':ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                ':user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                ':referrer' => $_SERVER['HTTP_REFERER'] ?? null
+            ]);
             
-            $stmt->bindParam(':business_id', $businessId);
-            $stmt->bindParam(':ip_address', $ipAddress);
-            $stmt->bindParam(':user_agent', $userAgent);
-            $stmt->bindParam(':referrer', $referrer);
-            
-            $stmt->execute();
         } catch (\Exception $e) {
-            // Log the error but don't expose it to the user
             $this->logger->error('Failed to log page view', [
                 'business_id' => $businessId,
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+    // Add rate limiting middleware
+    private function checkRateLimit(string $ip, string $endpoint): bool {
+        $key = "rate_limit:{$ip}:{$endpoint}";
+        $limit = 100; // requests
+        $window = 3600; // seconds
+        
+        // Implement rate limiting logic
+        return true;
     }
 }

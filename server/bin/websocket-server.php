@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -17,6 +18,9 @@ $dotenv->load();
 $logger = new Logger('websocket');
 $logger->pushHandler(new StreamHandler(dirname(__DIR__) . '/logs/websocket.log', Logger::DEBUG));
 
+// Get port from environment variable or use default
+$port = getenv('WEBSOCKET_PORT') ?? 3001;
+
 // Create WebSocket server
 $server = IoServer::factory(
     new HttpServer(
@@ -24,11 +28,11 @@ $server = IoServer::factory(
             new WebSocketHandler($logger)
         )
     ),
-    3000, // Changed from 3001 to 3000
-    '0.0.0.0' // Listen on all interfaces
+    $port,
+    '0.0.0.0'
 );
 
-$logger->info('WebSocket server starting on ws://' . '0.0.0.0' . ':' . 3001);
+$logger->info('WebSocket server starting on ws://0.0.0.0:' . $port);
 
 // Run the server
 $server->run();
