@@ -10,20 +10,21 @@ use App\Services\AnalyticsService;
 use App\Services\EmailService;
 use App\Services\ImageService;
 
-return function (ContainerBuilder $containerBuilder) {
-    // Load configuration
-    $containerBuilder->addDefinitions([
-        Config::class => function () {
-            return require __DIR__ . '/config.php';
-        },
-        
-        // Services
-        AuthService::class => DI\autowire(),
-        BusinessService::class => DI\autowire(),
-        PaymentService::class => DI\autowire(),
-        SearchService::class => DI\autowire(),
-        AnalyticsService::class => DI\autowire(),
-        EmailService::class => DI\autowire(),
-        ImageService::class => DI\autowire(),
-    ]);
-};
+// Load configuration
+$containerBuilder = new ContainerBuilder();
+$containerBuilder->addDefinitions([
+    Config::class => function () {
+        return require __DIR__ . '/config.php';
+    },
+    
+    // Services
+    AuthService::class => DI\autowire(),
+    BusinessService::class => DI\autowire(),
+    PaymentService::class => DI\autowire(),
+    SearchService::class => DI\autowire(),
+    AnalyticsService::class => DI\autowire(),
+    EmailService::class => DI\autowire(),
+    ImageService::class => DI\autowire(),
+]);
+
+return $containerBuilder->build();

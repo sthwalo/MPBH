@@ -34,87 +34,21 @@ function BusinessDirectory() {
         }
         
         const data = await response.json()
-        setBusinesses(data)
-        setFilteredBusinesses(data)
+        // The API returns data in this format: { status: 'success', data: [] }
+        if (data.status === 'success') {
+          setBusinesses(data.data)
+          setFilteredBusinesses(data.data)
+        } else {
+          throw new Error('Invalid API response format')
+        }
       } catch (err) {
         setError(err.message)
-        // Move mock data inside the catch block
-        const mockData = [
-          {
-            id: 1,
-            name: "Kruger Gateway Lodge",
-            category: "Tourism",
-            district: "Mbombela",
-            package_type: "Gold",
-            rating: 4.8,
-            description: "Luxury accommodation near Kruger National Park with guided safari tours.",
-            contact: { phone: "+27123456789", email: "info@krugergateway.co.za", website: "https://krugergateway.co.za" },
-            image: "/assets/images/tourism-1.jpg"
-          },
-          {
-            id: 2,
-            name: "Mpumalanga Organic Farms",
-            category: "Agriculture",
-            district: "Bushbuckridge",
-            package_type: "Silver",
-            rating: 4.5,
-            description: "Certified organic produce supplier with distribution across the province.",
-            contact: { phone: "+27123456790", email: "sales@mpumalangaorganic.co.za" },
-            image: "/assets/images/agriculture-1.jpg"
-          },
-          {
-            id: 3,
-            name: "BuildRight Construction",
-            category: "Construction",
-            district: "Emalahleni",
-            package_type: "Bronze",
-            rating: 4.2,
-            description: "Commercial and residential construction specialists with 15 years experience.",
-            contact: { phone: "+27123456791" },
-            image: "/assets/images/construction-1.jpg"
-          },
-          {
-            id: 4,
-            name: "Celebration Events",
-            category: "Events",
-            district: "Mbombela",
-            package_type: "Gold",
-            rating: 4.9,
-            description: "Full-service event planning for corporate and private functions.",
-            contact: { phone: "+27123456792", email: "bookings@celebrationevents.co.za", website: "https://celebrationevents.co.za" },
-            image: "/assets/images/events-1.jpg"
-          },
-          {
-            id: 5,
-            name: "Panorama Tours",
-            category: "Tourism",
-            district: "Mbombela",
-            package_type: "Silver",
-            rating: 4.6,
-            description: "Guided tours of the Panorama Route, Blyde River Canyon and surrounding attractions.",
-            contact: { phone: "+27123456793", email: "tours@panorama.co.za" },
-            image: "/assets/images/tourism-2.jpg"
-          },
-          {
-            id: 6,
-            name: "Lowveld Farm Supply",
-            category: "Agriculture",
-            district: "Bushbuckridge",
-            package_type: "Basic",
-            rating: 3.9,
-            description: "Agricultural equipment and supplies for small and large-scale farmers.",
-            image: "/assets/images/agriculture-2.jpg"
-          }
-        ]
-        
-        console.log('Loading mock data:', mockData) // Debug log
-        setBusinesses(mockData)
-        setFilteredBusinesses(mockData)
+        console.error('Error fetching businesses:', err)
+        // In production, you might want to show an error message to the user
       } finally {
         setLoading(false)
       }
     }
-    
     fetchBusinesses()
   }, [selectedCategory, selectedDistrict])
 
