@@ -31,12 +31,12 @@ class BusinessController
     private BusinessService $businessService;
     private ImageService $imageService;
     
-    public function __construct(PDO $db, Logger $logger)
+    public function __construct(PDO $db, Logger $logger, BusinessService $businessService, ImageService $imageService)
     {
         $this->db = $db;
         $this->logger = $logger;
-        $this->businessService = new BusinessService($db);
-        $this->imageService = new ImageService();
+        $this->businessService = $businessService;
+        $this->imageService = $imageService;
     }
     
     /**
