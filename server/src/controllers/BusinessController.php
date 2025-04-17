@@ -553,6 +553,8 @@ class BusinessController
             $businessId = $userData->business_id;
             $business = new Business($this->db);
             
+            $business = $this->db;
+            
             if (!$business->readOne($businessId)) {
                 throw new NotFoundException('Business not found');
             }

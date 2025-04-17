@@ -89,5 +89,10 @@ return [
     SearchService::class => DI\autowire(),
     AnalyticsService::class => DI\autowire(),
     EmailService::class => DI\autowire(),
-    ImageService::class => DI\autowire(),
+    ImageService::class => function (PDO $db) {
+        return new ImageService($db);
+    },
+    Business::class => function (PDO $db, ImageService $imageService) {
+        return new Business($db, $imageService);
+    },
 ];

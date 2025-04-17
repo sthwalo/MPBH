@@ -7,7 +7,7 @@ use PDO;
 class Business
 {
     private PDO $db;
-    
+    private ImageService $imageService;    
     // Database table name
     private string $table = 'businesses';
     
@@ -39,10 +39,12 @@ class Business
      * Constructor with database dependency
      * 
      * @param PDO $db Database connection
+     * @param ImageService $imageService Image service dependency
      */
-    public function __construct(PDO $db)
+    public function __construct(PDO $db, ImageService $imageService)
     {
         $this->db = $db;
+        $this->imageService = $imageService;
     }
     
     /**

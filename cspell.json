@@ -16,6 +16,7 @@
     "Hazyview",
     "HTTPGET",
     "HTTPHEADER",
+    "IFNULL",
     "krugersafari",
     "LOGFILE",
     "Lowveld",
