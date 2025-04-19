@@ -146,6 +146,9 @@ class BusinessController
             ? $params['order'] 
             : 'asc';
 
+        // Ensure sortBy is always a string
+        $sortBy = (string)($sortBy ?? 'name');
+        
         // Fetch businesses with proper error handling
         $result = $this->businessService->readAll(
             $filters, 
