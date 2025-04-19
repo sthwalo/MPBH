@@ -20,11 +20,41 @@ class BusinessService {
     
     public function __construct(PDO $db) {
         $this->db = $db;
-        $this->business = new Business($db);
+        $this->imageService = new ImageService($db);
+        $this->business = new Business($db, $this->imageService);
         $this->review = new Review($db);
         $this->product = new Product($db);
         $this->advert = new Advert($db);
-        $this->imageService = new ImageService($db);//Pass the database connection
+    }
+
+    /**
+     * Get all businesses with optional filtering and pagination
+     * 
+     * @param array $filters Search filters (category, district, search, etc.)
+     * @param int $page Page number
+     * @param int $limit Items per page
+     * @param string $sortBy Field to sort by
+     * @param string $order Sort order (asc/desc)
+     * @return array Businesses data and pagination info
+     */
+    public function readAll(
+        array $filters = [], 
+        int $page = 1, 
+        int $limit = 20, 
+        string $sortBy = 'name', 
+        string $order = 'asc'
+    ) {
+        try {
+            return $this->business->readAll(
+                $filters,
+                $page,
+                $limit,
+                $sortBy,
+                $order
+            );
+        } catch (Exception $e) {
+            throw new Exception('Failed to fetch businesses: ' . $e->getMessage());
+        }
     }
     
     /**

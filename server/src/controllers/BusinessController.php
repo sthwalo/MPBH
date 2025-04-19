@@ -110,11 +110,25 @@ class BusinessController
     public function getAllBusinesses(Request $request, Response $response): Response
 {
     try {
-        $this->logger->info('Fetching businesses', [
-            'query' => $request->getQueryParams()
-        ]);
-        
+        // Log request parameters for debugging
         $params = $request->getQueryParams();
+        $this->logger->info('Fetching businesses with parameters:', [
+            'filters' => [
+                'category' => $params['category'] ?? null,
+                'district' => $params['district'] ?? null,
+                'search' => $params['search'] ?? null
+            ],
+            'pagination' => [
+                'page' => $params['page'] ?? 1,
+                'limit' => $params['limit'] ?? 20
+            ],
+            'sorting' => [
+                'sortBy' => $params['sort'] ?? 'name',
+                'order' => $params['order'] ?? 'asc'
+            ]
+        ]);
+
+        // Validate and sanitize input parameters
         $filters = [
             'category' => $params['category'] ?? null,
             'district' => $params['district'] ?? null,
@@ -124,13 +138,30 @@ class BusinessController
         
         $filters = array_filter($filters);
         $page = max(1, (int)($params['page'] ?? 1));
-        $limit = min(max(1, (int)($params['limit'] ?? 20)), 100); // Fixed the syntax here
-        $sortBy = $params['sort'] ?? 'name';
-        $order = $params['order'] ?? 'asc';
-        
-        $business = new Business($this->db);
-        $result = $business->readAll($filters, $page, $limit, $sortBy, $order);
-        
+        $limit = min(max(1, (int)($params['limit'] ?? 20)), 100);
+        $sortBy = in_array($params['sort'] ?? 'name', ['name', 'category', 'district', 'created_at']) 
+            ? $params['sort'] 
+            : 'name';
+        $order = in_array($params['order'] ?? 'asc', ['asc', 'desc']) 
+            ? $params['order'] 
+            : 'asc';
+
+        // Fetch businesses with proper error handling
+        $result = $this->businessService->readAll(
+            $filters, 
+            $page, 
+            $limit, 
+            $sortBy, 
+            $order
+        );
+
+        // Log successful response
+        $this->logger->info('Successfully fetched businesses:', [
+            'total' => $result['pagination']['total'],
+            'page' => $page,
+            'businesses' => count($result['businesses'])
+        ]);
+
         return ResponseHelper::success($response, [
             'status' => 'success',
             'data' => $result
@@ -138,10 +169,20 @@ class BusinessController
             'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=600',
             'Vary' => 'Accept, Accept-Encoding'
         ]);
-        
-    } catch (\Exception $e) {
-        $this->logger->error('Error fetching businesses: ' . $e->getMessage());
-        throw $e;
+
+    } catch (Exception $e) {
+        // Log detailed error information
+        $this->logger->error('Error fetching businesses:', [
+            'message' => $e->getMessage(),
+            'code' => $e->getCode(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        // Return a more user-friendly error response
+        return ResponseHelper::error($response, [
+            'status' => 'error',
+            'message' => 'Failed to fetch businesses. Please try again later.'
+        ], 500);
     }
 }
     

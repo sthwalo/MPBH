@@ -3,30 +3,35 @@ import { useSearchParams } from 'react-router-dom'
 import Fuse from 'fuse.js'
 import BusinessCard from '../components/BusinessCard'
 
+// Main Business Directory component
 function BusinessDirectory() {
+  // State management
   const [searchParams, setSearchParams] = useSearchParams()
-  const [businesses, setBusinesses] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '')
-  const [selectedDistrict, setSelectedDistrict] = useState(searchParams.get('district') || '')
-  const [filteredBusinesses, setFilteredBusinesses] = useState([])
+  const [businesses, setBusinesses] = useState([]) // All businesses from API
+  const [loading, setLoading] = useState(true) // Loading state
+  const [error, setError] = useState(null) // Error state
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '') // Search input
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '') // Selected category filter
+  const [selectedDistrict, setSelectedDistrict] = useState(searchParams.get('district') || '') // Selected district filter
+  const [filteredBusinesses, setFilteredBusinesses] = useState([]) // Filtered businesses based on search and filters
+  const [debugMode, setDebugMode] = useState(false) // Debug mode toggle
 
-  // Categories and districts from the database schema
+  // Predefined categories and districts from database schema
   const categories = ['Tourism', 'Agriculture', 'Construction', 'Events']
   const districts = ['Mbombela', 'Emalahleni', 'Bushbuckridge']
 
-  // Fetch businesses from the API
+  // Fetch businesses from API with filters
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
         setLoading(true)
-        let queryParams = new URLSearchParams()
+        const queryParams = new URLSearchParams()
+        
+        // Add filters to query parameters
         if (selectedCategory) queryParams.append('category', selectedCategory)
         if (selectedDistrict) queryParams.append('district', selectedDistrict)
         
-        // Update the fetch URL to include /api prefix
+        // Fetch data from API
         const response = await fetch(`/api/businesses?${queryParams.toString()}`)
         
         if (!response.ok) {
@@ -34,25 +39,30 @@ function BusinessDirectory() {
         }
         
         const data = await response.json()
-        // The API returns data in this format: { status: 'success', data: [] }
-        if (data.status === 'success') {
-          setBusinesses(data.data)
-          setFilteredBusinesses(data.data)
-        } else {
+        
+        // Validate API response
+        if (data.status !== 'success') {
           throw new Error('Invalid API response format')
         }
+        
+        // Update state with fetched data
+        setBusinesses(data.data)
+        setFilteredBusinesses(data.data)
+        
       } catch (err) {
-        setError(err.message)
+        // Log error for debugging
         console.error('Error fetching businesses:', err)
-        // In production, you might want to show an error message to the user
+        setError(err.message)
       } finally {
         setLoading(false)
       }
     }
+    
+    // Execute the fetch function
     fetchBusinesses()
-  }, [selectedCategory, selectedDistrict])
+  }, [selectedCategory, selectedDistrict]) // Re-fetch when filters change
 
-  // Update URL when filters change
+  // Update URL parameters when filters change
   useEffect(() => {
     const params = new URLSearchParams()
     if (searchTerm) params.set('search', searchTerm)
@@ -61,7 +71,7 @@ function BusinessDirectory() {
     setSearchParams(params)
   }, [searchTerm, selectedCategory, selectedDistrict, setSearchParams])
 
-  // Client-side search with Fuse.js
+  // Handle search functionality using Fuse.js
   useEffect(() => {
     if (searchTerm) {
       const fuse = new Fuse(businesses, {
@@ -86,7 +96,7 @@ function BusinessDirectory() {
     }
   }, [searchTerm, businesses, selectedCategory, selectedDistrict])
 
-  // Handle search input
+  // Handle search input changes
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value)
   }
@@ -112,7 +122,7 @@ function BusinessDirectory() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Business Directory</h1>
       
-      {/* Search and Filters */}
+      {/* Search and Filters section */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <div className="mb-6">
           <label htmlFor="search" className="sr-only">Search businesses</label>
@@ -133,8 +143,37 @@ function BusinessDirectory() {
           </div>
         </div>
         
+        {/* Debug toggle button */}
+        <div className="mb-6">
+          <button onClick={() => setDebugMode(!debugMode)}>
+            {debugMode ? 'Hide Debug' : 'Show Debug'}
+          </button>
+        </div>
+      
+        {/* Debug information display */}
+        {debugMode && (
+          <pre style={{ 
+            whiteSpace: 'pre-wrap', 
+            backgroundColor: '#f0f0f0', 
+            padding: '1rem', 
+            borderRadius: '4px',
+            overflow: 'auto'
+          }}>
+            {JSON.stringify({
+              businesses: businesses.length,
+              filtered: filteredBusinesses.length,
+              error,
+              loading,
+              searchTerm,
+              selectedCategory,
+              selectedDistrict
+            }, null, 2)}
+          </pre>
+        )}
+        
+        {/* Filters grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Categories */}
+          {/* Categories filter */}
           <div>
             <h3 className="font-semibold mb-3">Categories</h3>
             <div className="flex flex-wrap gap-2">
@@ -152,7 +191,7 @@ function BusinessDirectory() {
             </div>
           </div>
           
-          {/* Districts */}
+          {/* Districts filter */}
           <div>
             <h3 className="font-semibold mb-3">Districts</h3>
             <div className="flex flex-wrap gap-2">
@@ -171,7 +210,7 @@ function BusinessDirectory() {
           </div>
         </div>
         
-        {/* Active filters */}
+        {/* Active filters display */}
         {(searchTerm || selectedCategory || selectedDistrict) && (
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
@@ -187,22 +226,22 @@ function BusinessDirectory() {
         )}
       </div>
       
-      {/* Business Listings */}
+      {/* Business Listings section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {loading ? (
-          // Loading skeleton
+          // Loading state - show skeleton cards
           Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="h-48 bg-gray-200 animate-pulse"></div>
+            <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
+              <div className="h-48 bg-gray-200"></div>
               <div className="p-4">
-                <div className="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded animate-pulse mb-2 w-2/3"></div>
-                <div className="h-4 bg-gray-200 rounded animate-pulse mb-2 w-1/2"></div>
+                <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded mb-2 w-2/3"></div>
+                <div className="h-4 bg-gray-200 rounded mb-2 w-1/2"></div>
               </div>
             </div>
           ))
         ) : error ? (
-          // Error message
+          // Error state - show error message
           <div className="col-span-3 text-center py-8">
             <svg className="mx-auto h-12 w-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -211,7 +250,7 @@ function BusinessDirectory() {
             <p className="mt-1 text-gray-500">Using mock data instead. In production, this would connect to the backend API.</p>
           </div>
         ) : filteredBusinesses.length === 0 ? (
-          // No results
+          // No results state - show empty state message
           <div className="col-span-3 text-center py-8">
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -226,11 +265,10 @@ function BusinessDirectory() {
             </button>
           </div>
         ) : (
-          // Business cards
-          filteredBusinesses.map(business => {
-            console.log('Rendering business:', business) // Debug log
-            return <BusinessCard key={business.id} business={business} />
-          })
+          // Success state - render business cards
+          filteredBusinesses.map(business => (
+            <BusinessCard key={business.id} business={business} />
+          ))
         )}
       </div>
     </div>

@@ -24,7 +24,7 @@ class PaymentGatewayService {
         $this->testMode = $_ENV['PAYFAST_TEST_MODE'] ?? 'true';
         
         // Set URLs
-        $apiUrl = $_ENV['API_URL'] ?? 'http://localhost:8000';
+        $apiUrl = $_ENV['API_URL'] ?? 'http://localhost:8080';
         $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:3000';
         
         $this->returnUrl = $frontendUrl . '/payment/success';

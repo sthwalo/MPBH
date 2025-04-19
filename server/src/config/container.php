@@ -49,13 +49,10 @@ return [
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
-                    PDO::ATTR_PERSISTENT => true
                 ]
             );
         } catch (PDOException $e) {
-            error_log("PDO Connection Error: " . $e->getMessage());
-            error_log("DSN: " . $dsn);
+            error_log("Database connection error: " . $e->getMessage());
             throw $e;
         }
     },
@@ -84,7 +81,6 @@ return [
     
     // Services
     AuthService::class => DI\autowire(),
-    BusinessService::class => DI\autowire(),
     PaymentService::class => DI\autowire(),
     SearchService::class => DI\autowire(),
     AnalyticsService::class => DI\autowire(),
@@ -94,5 +90,8 @@ return [
     },
     Business::class => function (PDO $db, ImageService $imageService) {
         return new Business($db, $imageService);
+    },
+    BusinessService::class => function (PDO $db, ImageService $imageService, Business $business) {
+        return new BusinessService($db, $imageService, $business);
     },
 ];
