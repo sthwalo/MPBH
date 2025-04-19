@@ -23,6 +23,7 @@
     "preview": "vite preview",
     "test": "vitest run"
   },
+
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.2",
     "@sentry/react": "^9.10.1",

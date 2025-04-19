@@ -17,6 +17,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface;
 use App\Services\BusinessService;
 use App\Services\ImageService;
+use App\Services\ErrorService;
+use InvalidArgumentException;
 
 /**
  * @OA\Tag(
@@ -30,13 +32,20 @@ class BusinessController
     private Logger $logger;
     private BusinessService $businessService;
     private ImageService $imageService;
+    private ErrorService $errorService;
     
-    public function __construct(PDO $db, Logger $logger, BusinessService $businessService, ImageService $imageService)
-    {
+    public function __construct(
+        PDO $db,
+        Logger $logger,
+        BusinessService $businessService,
+        ImageService $imageService,
+        ErrorService $errorService
+    ) {
         $this->db = $db;
         $this->logger = $logger;
         $this->businessService = $businessService;
         $this->imageService = $imageService;
+        $this->errorService = $errorService;
     }
     
     /**
@@ -109,85 +118,125 @@ class BusinessController
      */
     public function getAllBusinesses(Request $request, Response $response): Response
 {
-    try {
-        // Log request parameters for debugging
-        $params = $request->getQueryParams();
-        $this->logger->info('Fetching businesses with parameters:', [
-            'filters' => [
+        try {
+            // Start Sentry transaction
+            $transaction = $this->errorService->startTransaction('businesses.list', 'query');
+            
+            // Add request context
+            $params = $request->getQueryParams();
+            $this->errorService->addBreadcrumb('Request received', [
+                'filters' => [
+                    'category' => $params['category'] ?? null,
+                    'district' => $params['district'] ?? null,
+                    'search' => $params['search'] ?? null
+                ],
+                'pagination' => [
+                    'page' => $params['page'] ?? 1,
+                    'limit' => $params['limit'] ?? 20
+                ],
+                'sorting' => [
+                    'sortBy' => $params['sort'] ?? 'name',
+                    'order' => $params['order'] ?? 'asc'
+                ]
+            ]);
+
+            // Validate and sanitize input parameters
+            $filters = [
                 'category' => $params['category'] ?? null,
                 'district' => $params['district'] ?? null,
-                'search' => $params['search'] ?? null
-            ],
-            'pagination' => [
-                'page' => $params['page'] ?? 1,
-                'limit' => $params['limit'] ?? 20
-            ],
-            'sorting' => [
-                'sortBy' => $params['sort'] ?? 'name',
-                'order' => $params['order'] ?? 'asc'
-            ]
-        ]);
+                'search' => $params['search'] ?? null,
+                'verification_status' => 'verified'
+            ];
+            
+            $filters = array_filter($filters);
+            $page = max(1, (int)($params['page'] ?? 1));
+            $limit = min(max(1, (int)($params['limit'] ?? 20)), 100);
+            $sortBy = in_array($params['sort'] ?? 'name', ['name', 'category', 'district', 'created_at']) 
+                ? $params['sort'] 
+                : 'name';
+            $order = in_array($params['order'] ?? 'asc', ['asc', 'desc']) 
+                ? $params['order'] 
+                : 'asc';
 
-        // Validate and sanitize input parameters
-        $filters = [
-            'category' => $params['category'] ?? null,
-            'district' => $params['district'] ?? null,
-            'search' => $params['search'] ?? null,
-            'verification_status' => 'verified'
-        ];
-        
-        $filters = array_filter($filters);
-        $page = max(1, (int)($params['page'] ?? 1));
-        $limit = min(max(1, (int)($params['limit'] ?? 20)), 100);
-        $sortBy = in_array($params['sort'] ?? 'name', ['name', 'category', 'district', 'created_at']) 
-            ? $params['sort'] 
-            : 'name';
-        $order = in_array($params['order'] ?? 'asc', ['asc', 'desc']) 
-            ? $params['order'] 
-            : 'asc';
+            // Ensure sortBy is always a string
+            $sortBy = (string)($sortBy ?? 'name');
+            
+            // Add business fetch context
+            $this->errorService->addBreadcrumb('Fetching businesses', [
+                'filters' => $filters,
+                'page' => $page,
+                'limit' => $limit,
+                'sort' => $sortBy,
+                'order' => $order
+            ]);
 
-        // Ensure sortBy is always a string
-        $sortBy = (string)($sortBy ?? 'name');
-        
-        // Fetch businesses with proper error handling
-        $result = $this->businessService->readAll(
-            $filters, 
-            $page, 
-            $limit, 
-            $sortBy, 
-            $order
-        );
+            // Fetch businesses with proper error handling
+            $result = $this->businessService->readAll(
+                $filters, 
+                $page, 
+                $limit, 
+                $sortBy, 
+                $order
+            );
 
-        // Log successful response
-        $this->logger->info('Successfully fetched businesses:', [
-            'total' => $result['pagination']['total'],
-            'page' => $page,
-            'businesses' => count($result['businesses'])
-        ]);
+            // Add success breadcrumb
+            $this->errorService->addBreadcrumb('Businesses fetched successfully', [
+                'total' => $result['pagination']['total'] ?? 0
+            ]);
 
-        return ResponseHelper::success($response, [
-            'status' => 'success',
-            'data' => $result
-        ], 200, [
-            'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=600',
-            'Vary' => 'Accept, Accept-Encoding'
-        ]);
+            // Log successful response
+            $this->logger->info('Successfully fetched businesses:', [
+                'total' => $result['pagination']['total'],
+                'page' => $page,
+            ]);
 
-    } catch (Exception $e) {
-        // Log detailed error information
-        $this->logger->error('Error fetching businesses:', [
-            'message' => $e->getMessage(),
-            'code' => $e->getCode(),
-            'trace' => $e->getTraceAsString()
-        ]);
+            // Finish transaction
+            $this->errorService->finishTransaction();
 
-        // Return a more user-friendly error response
-        return ResponseHelper::error($response, [
-            'status' => 'error',
-            'message' => 'Failed to fetch businesses. Please try again later.'
-        ], 500);
+            return ResponseHelper::success($response, [
+                'status' => 'success',
+                'data' => $result
+            ], 200, [
+                'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=600',
+                'Vary' => 'Accept, Accept-Encoding'
+            ]);
+
+        } catch (\Exception $e) {
+            // Capture error with Sentry and context
+            $this->errorService->captureException($e, [
+                'request' => $request->getQueryParams(),
+                'user' => $request->getAttribute('user') ?? null
+            ]);
+
+            // Set user context for Sentry
+            if ($user = $request->getAttribute('user')) {
+                $this->errorService->setUserContext([
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'username' => $user->username
+                ]);
+            }
+
+            // Add error tags
+            $this->errorService->setTags([
+                'endpoint' => '/businesses',
+                'method' => 'GET',
+                'error_type' => get_class($e)
+            ]);
+
+            // Return error response
+            return $response->withJson([
+                'status' => 'error',
+                'message' => 'Failed to fetch businesses',
+                'error' => $e->getMessage()
+            ], 500);
+        } finally {
+            // Ensure transaction is finished even on error
+            if (isset($transaction)) {
+                $this->errorService->finishTransaction();
+            }
+        }
     }
-}
     
     /**
      * Get a specific business by ID

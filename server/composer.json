@@ -14,7 +14,8 @@
         "ext-pdo_pgsql": "*",
         "cboden/ratchet": "^0.4.4",
         "zircote/swagger-php": "^5.0",
-        "swagger-api/swagger-ui": "^5.20"
+        "swagger-api/swagger-ui": "^5.20",
+        "sentry/sentry": "^4.0"
     },
     "autoload": {
         "psr-4": {
