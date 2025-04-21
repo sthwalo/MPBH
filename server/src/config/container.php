@@ -6,6 +6,12 @@ use App\Services\SearchService;
 use App\Services\AnalyticsService;
 use App\Services\EmailService;
 use App\Services\ImageService;
+use App\Services\ErrorService;
+use App\Repositories\Interfaces\BusinessRepositoryInterface;
+use App\Services\Interfaces\BusinessServiceInterface;
+use App\Services\Business\BusinessValidator;
+use App\Services\Business\BusinessService;
+use App\Repositories\Business\BusinessRepository;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Processor\UidProcessor;
@@ -17,6 +23,7 @@ use Monolog\Processor\IntrospectionProcessor;
 use Monolog\Processor\TagProcessor;
 use PDO;
 use PDOException;
+use Psr\Container\ContainerInterface;
 
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
@@ -49,6 +56,7 @@ return [
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
                 ]
             );
         } catch (PDOException $e) {
@@ -57,9 +65,32 @@ return [
         }
     },
 
+    // Business Services
+    App\Repositories\Interfaces\BusinessRepositoryInterface::class => function (ContainerInterface $container) {
+        return new App\Repositories\Business\BusinessRepository($container->get(PDO::class));
+    },
+    
+    App\Services\Interfaces\BusinessServiceInterface::class => function (ContainerInterface $container) {
+        return new App\Services\Business\BusinessService(
+            $container->get(App\Repositories\Interfaces\BusinessRepositoryInterface::class),
+            new App\Services\Business\BusinessValidator(),
+            $container->get(App\Services\AnalyticsService::class)
+        );
+    },
+    
+    // Image Service
+    App\Services\ImageService::class => function () {
+        return new App\Services\ImageService();
+    },
+    
+    // Error Service
+    App\Services\ErrorService::class => function () {
+        return new App\Services\ErrorService();
+    },
+    
     // Logger
     Logger::class => function () {
-        $logger = new Logger('mpbh');
+        $logger = new Logger('app');
         
         // Add processors
         $logger->pushProcessor(new UidProcessor());

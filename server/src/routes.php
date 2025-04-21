@@ -40,9 +40,27 @@ return function (App $app) {
         
         // Business routes (public)
         $group->group('/businesses', function (RouteCollectorProxy $group) {
-            // Public routes - list all businesses
-            $group->get('', [BusinessController::class, 'getAllBusinesses']);
+            // Public routes
+            $group->get('', [BusinessController::class, 'getAll']);
+            $group->get('/{id}', [BusinessController::class, 'getById']);
+            $group->get('/{id}/stats', [BusinessController::class, 'getStats']);
+            $group->get('/{id}/reviews', [BusinessController::class, 'getBusinessReviews']);
             
+            // Protected routes
+            $group->group('', function (RouteCollectorProxy $group) {
+                $group->post('', [BusinessController::class, 'create']);
+                $group->put('/{id}', [BusinessController::class, 'update']);
+                $group->delete('/{id}', [BusinessController::class, 'delete']);
+                $group->post('/{id}/verify', [BusinessController::class, 'verify']);
+                
+                // Image upload
+                $group->post('/{id}/image', [BusinessController::class, 'uploadImage']);
+                
+                // My business routes
+                $group->get('/my', [BusinessController::class, 'getMyBusiness']);
+                $group->put('/my', [BusinessController::class, 'updateMyBusiness']);
+            })->add(new AuthMiddleware());
+        });
             // Protected routes - require authentication
             // IMPORTANT: Specific static routes come BEFORE variable routes
             $group->group('', function (RouteCollectorProxy $group) {
