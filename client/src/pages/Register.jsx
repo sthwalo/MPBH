@@ -212,8 +212,8 @@ function Register() {
       
       try {
         // Use the proper API endpoint
-        //const response = await fetch('/api/businesses/register', {
-        const response = await fetch('http://localhost:8000/api/businesses/register', {
+        const response = await fetch('/api/businesses/register', {
+        //const response = await fetch('http://localhost:8000/api/businesses/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
