@@ -24,6 +24,7 @@ use Monolog\Processor\TagProcessor;
 use PDO;
 use PDOException;
 use Psr\Container\ContainerInterface;
+use App\Services\Business\BusinessRegistrationService;
 
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
@@ -77,7 +78,14 @@ return [
             $container->get(App\Services\AnalyticsService::class)
         );
     },
-    
+    // Business Registration
+    App\Services\Business\BusinessRegistrationService::class => function (ContainerInterface $container) {
+        return new App\Services\Business\BusinessRegistrationService(
+            $container->get(App\Services\Business\BusinessService::class),
+            $container->get(App\Services\ImageService::class),
+            $container->get(App\Services\AnalyticsService::class)
+        );
+    },
     // Image Service
     App\Services\ImageService::class => function () {
         return new App\Services\ImageService();

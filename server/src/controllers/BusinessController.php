@@ -6,11 +6,14 @@ use App\Services\{
     BusinessService,
     ImageUploadService,
     AnalyticsService,
-    ErrorService
+    ErrorService,
+    BusinessRegistrationService
 };
 use App\Helpers\ResponseHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\UploadedFileInterface;
+use App\Exceptions\BadRequestException;
 
 /**
  * @OA\Tag(
@@ -24,7 +27,8 @@ class BusinessController
         private BusinessService $businessService,
         private ImageUploadService $imageService,
         private AnalyticsService $analyticsService,
-        private ErrorService $errorService
+        private ErrorService $errorService,
+        private BusinessRegistrationService $registrationService
     ) {}
 
     /**
@@ -112,6 +116,55 @@ class BusinessController
             return ResponseHelper::success($response, $business);
         } catch (\Exception $e) {
             return $this->errorService->handle($e, $response, 'business.my');
+        }
+    }
+
+        /**
+     * @OA\Post(
+     *     path="/businesses/register",
+     *     tags={"Business"},
+     *     summary="Register a new business",
+     *     description="Create a new business with profile information and optional images",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="Mpumalanga Coffee Shop"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="category", type="string", example="Food & Beverage"),
+     *             @OA\Property(property="district", type="string", example="Ehlanzeni"),
+     *             @OA\Property(property="address", type="string"),
+     *             @OA\Property(property="contact_email", type="string"),
+     *             @OA\Property(property="contact_phone", type="string"),
+     *             @OA\Property(property="website", type="string"),
+     *             @OA\Property(property="social_media", type="object"),
+     *             @OA\Property(property="business_hours", type="object"),
+     *             @OA\Property(property="package_type", type="string", enum={"Basic", "Silver", "Gold"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Business registered successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input data"
+     *     )
+     * )
+     */
+    public function registerBusiness(Request $request, Response $response): Response
+    {
+        try {
+            // Delegate to the specialized service
+            $business = $this->registrationService->register(
+                $request->getAttribute('user'),
+                $request->getParsedBody(),
+                $request->getUploadedFiles()
+            );
+            
+            // Return success response with created business data
+            return ResponseHelper::success($response, $business, 201);
+        } catch (\Exception $e) {
+            return $this->errorService->handle($e, $response, 'business.register');
         }
     }
 
