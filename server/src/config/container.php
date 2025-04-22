@@ -92,8 +92,11 @@ return [
     },
     
     // Error Service
-    App\Services\ErrorService::class => function () {
-        return new App\Services\ErrorService();
+    App\Services\ErrorService::class => function (ContainerInterface $container) {
+        return new App\Services\ErrorService(
+            $container->get(PDO::class),
+            $container->get(Logger::class)
+        );
     },
     
     // Logger
@@ -122,7 +125,13 @@ return [
     AuthService::class => DI\autowire(),
     PaymentService::class => DI\autowire(),
     SearchService::class => DI\autowire(),
-    AnalyticsService::class => DI\autowire(),
+    AnalyticsService::class => function (ContainerInterface $container) {
+        return new AnalyticsService(
+            $container->get(PDO::class),
+            $container->get(ImageService::class),
+            null
+        );
+    },
     EmailService::class => DI\autowire(),
     ImageService::class => function (PDO $db) {
         return new ImageService($db);

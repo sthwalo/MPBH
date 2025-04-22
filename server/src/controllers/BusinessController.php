@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\{
-    ImageUploadService,
+    ImageService,
     AnalyticsService,
     ErrorService,
     BusinessRegistrationService
@@ -25,7 +25,7 @@ class BusinessController
 {
     public function __construct(
         private BusinessService $businessService,
-        private ImageUploadService $imageService,
+        private ImageService $imageService,
         private AnalyticsService $analyticsService,
         private ErrorService $errorService,
         private BusinessRegistrationService $registrationService

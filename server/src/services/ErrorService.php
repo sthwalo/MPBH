@@ -28,25 +28,27 @@ class ErrorService
         $this->logger = $logger;
         
         try {
-            // Initialize Sentry with proper error handling
-            $clientBuilder = ClientBuilder::create([
-                'dsn' => $_ENV['SENTRY_DSN'] ?? '',
-                'environment' => $_ENV['APP_ENV'] ?? 'development',
-                'release' => $_ENV['APP_VERSION'] ?? 'unknown',
-                'traces_sample_rate' => 1.0,
-            ]);
+            // Initialize Sentry with proper error handling if SENTRY_DSN is set
+            if (!empty($_ENV['SENTRY_DSN'])) {
+                $clientBuilder = ClientBuilder::create([
+                    'dsn' => $_ENV['SENTRY_DSN'],
+                    'environment' => $_ENV['APP_ENV'] ?? 'development',
+                    'release' => $_ENV['APP_VERSION'] ?? 'unknown',
+                    'traces_sample_rate' => 1.0,
+                ]);
 
-            // Add integrations
-            $clientBuilder->addIntegration(new TracingIntegration());
-            $clientBuilder->addIntegration(new UserFeedbackIntegration());
+                // Add integrations
+                $clientBuilder->addIntegration(new TracingIntegration());
+                $clientBuilder->addIntegration(new UserFeedbackIntegration());
 
-            // Initialize Sentry with client
-            SentrySdk::init($clientBuilder->getClient());
-            
-            $this->logger->info('Sentry initialized successfully');
+                // Initialize Sentry with client
+                SentrySdk::init($clientBuilder->getClient());
+                
+                $this->logger->info('Sentry initialized successfully');
+            }
         } catch (\Exception $e) {
             $this->logger->error('Failed to initialize Sentry: ' . $e->getMessage());
-            throw new ServiceException('Failed to initialize error service', $e);
+            throw new ServiceException('Failed to initialize error service', 0, $e);
         }
     }
 
@@ -116,7 +118,7 @@ class ErrorService
                 'original_context' => $context,
                 'original_exception' => $exception ? $exception->getMessage() : null
             ]);
-            throw new ServiceException('Failed to log error', $e);
+            throw new ServiceException('Failed to log error', 0, $e);
         }
     }
 
@@ -164,7 +166,7 @@ class ErrorService
                 'original_context' => $context,
                 'original_exception' => $exception ? $exception->getMessage() : null
             ]);
-            throw new ServiceException('Failed to store error in database', $e);
+            throw new ServiceException('Failed to store error in database', 0, $e);
         }
     }
 

@@ -8,18 +8,21 @@ use App\Models\Business;
 use App\Models\PageView;
 use App\Repositories\PageViewRepository;
 use App\Exceptions\AnalyticsException;
+use App\Services\ImageService;
 
 class AnalyticsService {
     private $db;
     private $statistic;
     private $business;
     private ?PageViewRepository $pageViewRepository = null;
+    private $imageService;
     
-    public function __construct(PDO $db, ?PageViewRepository $pageViewRepository = null) {
+    public function __construct(PDO $db, ImageService $imageService, ?PageViewRepository $pageViewRepository = null) {
         $this->db = $db;
         $this->statistic = new Statistic($db);
-        $this->business = new Business($db);
+        $this->business = new Business($db, $imageService);
         $this->pageViewRepository = $pageViewRepository;
+        $this->imageService = $imageService;
     }
     
     /**

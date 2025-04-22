@@ -4,6 +4,7 @@ namespace App\Repositories\Business;
 
 use App\Repositories\Interfaces\BusinessRepositoryInterface;
 use App\Models\Business;
+use PDO;
 
 class BusinessRepository implements BusinessRepositoryInterface
 {

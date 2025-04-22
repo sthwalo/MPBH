@@ -5,7 +5,7 @@ namespace App\Services\Business;
 use App\Exceptions\BadRequestException;
 use App\Services\ImageService;
 use App\Services\AnalyticsService;
-use App\DTO\Business\BusinessDataTransferObject as BusinessDTO;
+use App\DTO\Business\BusinessDataTransfer as BusinessDTO;
 
 /**
  * Service responsible for business registration process
@@ -54,7 +54,7 @@ class BusinessRegistrationService
         }
         
         // Create a DTO for business creation
-        $dto = new BusinessDataTransfer();
+        $dto = new BusinessDTO();
         $dto->name = $data['name'];
         $dto->category = $data['category'];
         $dto->district = $data['district'];
