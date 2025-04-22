@@ -49,7 +49,6 @@ class ErrorService
             throw new ServiceException('Failed to initialize error service', $e);
         }
     }
-    }
 
     public function startTransaction(string $name, string $operation): Transaction
     {
@@ -168,7 +167,6 @@ class ErrorService
             throw new ServiceException('Failed to store error in database', $e);
         }
     }
-    }
 
     public function captureException(\Exception $exception, array $context = []): void
     {
@@ -200,5 +198,4 @@ class ErrorService
             'type' => $type,
         ]);
     }
-}
 }

@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BadRequestException;
 
-class PaymentGatewayService {
+class PayFastService {
     private $merchantId;
     private $merchantKey;
     private $passphrase;

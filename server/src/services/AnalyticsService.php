@@ -5,16 +5,21 @@ namespace App\Services;
 use PDO;
 use App\Models\Statistic;
 use App\Models\Business;
+use App\Models\PageView;
+use App\Repositories\PageViewRepository;
+use App\Exceptions\AnalyticsException;
 
 class AnalyticsService {
     private $db;
     private $statistic;
     private $business;
+    private ?PageViewRepository $pageViewRepository = null;
     
-    public function __construct(PDO $db) {
+    public function __construct(PDO $db, ?PageViewRepository $pageViewRepository = null) {
         $this->db = $db;
         $this->statistic = new Statistic($db);
         $this->business = new Business($db);
+        $this->pageViewRepository = $pageViewRepository;
     }
     
     /**
@@ -192,5 +197,64 @@ class AnalyticsService {
             default:
                 return false;
         }
+    }
+    
+    /**
+     * Log a page view using repository pattern if available
+     * 
+     * @param int $businessId Business ID
+     * @param string $ip IP address of visitor
+     * @param string $userAgent User agent string
+     * @param string|null $referrer Referrer URL
+     * @throws AnalyticsException If logging fails
+     */
+    public function logPageView(int $businessId, string $ip, string $userAgent, ?string $referrer = null): void
+    {
+        // First try to use the repository pattern if available
+        if ($this->pageViewRepository !== null) {
+            try {
+                $view = new PageView();
+                $view->business_id = $businessId;
+                $view->ip_address = $ip;
+                $view->user_agent = $userAgent;
+                $view->referrer = $referrer;
+                
+                $this->pageViewRepository->create($view);
+            } catch (\Exception $e) {
+                throw new AnalyticsException('Failed to log page view through repository', $e);
+            }
+        } else {
+            // Fall back to the legacy statistic implementation
+            $success = $this->statistic->logPageView([
+                'business_id' => $businessId,
+                'ip_address' => $ip,
+                'user_agent' => $userAgent,
+                'referrer' => $referrer ?? ''
+            ]);
+            
+            if (!$success) {
+                throw new AnalyticsException('Failed to log page view');
+            }
+        }
+    }
+    
+    /**
+     * Get analytics stats using repository pattern if available
+     * 
+     * @param int $businessId Business ID
+     * @return array Statistics data
+     */
+    public function getViewStats(int $businessId): array
+    {
+        if ($this->pageViewRepository !== null) {
+            return $this->pageViewRepository->getStats($businessId);
+        }
+        
+        // Fall back to legacy implementation
+        return [
+            'total_views' => $this->statistic->getPageViews($businessId)['total'] ?? 0,
+            'unique_visitors' => $this->statistic->getUniqueVisitors($businessId)['total'] ?? 0,
+            'recent_views' => $this->statistic->getRecentPageViews($businessId, 30)['total'] ?? 0,
+        ];
     }
 }
