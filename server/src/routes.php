@@ -38,6 +38,9 @@ return function (App $app) {
             $group->get('/districts', [SearchController::class, 'getDistricts']);
         });
         
+        // Business registration route (public)
+        $group->post('/businesses/register', [BusinessController::class, 'registerBusiness']);
+        
         // Business routes (public)
         $group->group('/businesses', function (RouteCollectorProxy $group) {
             // Public routes
@@ -48,7 +51,6 @@ return function (App $app) {
             
             // Protected routes
             $group->group('', function (RouteCollectorProxy $group) {
-                $group->post('', [BusinessController::class, 'registerBusiness']);
                 $group->post('', [BusinessController::class, 'create']);
                 $group->put('/{id}', [BusinessController::class, 'update']);
                 $group->delete('/{id}', [BusinessController::class, 'delete']);
@@ -56,8 +58,6 @@ return function (App $app) {
                 $group->post('/{id}/image', [BusinessController::class, 'uploadImage']);
                 $group->get('/my', [BusinessController::class, 'getMyBusiness']);
                 $group->put('/my', [BusinessController::class, 'updateMyBusiness']);
-                // Business registration endpoint
-                $group->post('/businesses/register', [BusinessController::class, 'registerBusiness']);
             })->add(new AuthMiddleware());
         });
         

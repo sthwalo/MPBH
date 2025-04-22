@@ -211,8 +211,8 @@ function Register() {
       const loadingToast = toast.loading('Registering your business...');
       
       try {
-        // Use the enhanced debug API endpoint
-        const response = await fetch('/debug-api.php?action=register', {
+        // Use the proper API endpoint
+        const response = await fetch('/api/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ function Register() {
         }
         
         const data = await response.json();
-        console.log('Registration successful via debug-api:', data);
+        console.log('Registration successful:', data);
         toast.success('Registration successful!');
         
         // Handle the successful registration 
@@ -387,7 +387,7 @@ function Register() {
             {formData.description.length}/500
           </p>
         </div>
-        {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
+        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
       </div>
       
       <div className="mt-8">
