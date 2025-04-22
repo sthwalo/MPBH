@@ -40,13 +40,32 @@ class BusinessController
     public function getAllBusinesses(Request $request, Response $response): Response
     {
         try {
-            $result = $this->businessService->getPaginatedBusinesses(
-                $request->getQueryParams()
-            );
+            $queryParams = $request->getQueryParams();
+            $result = $this->businessService->getPaginatedBusinesses($queryParams);
             
-            return ResponseHelper::success($response, $result);
+            // Format response to match frontend expectations
+            $responseFormat = [
+                'businesses' => $result['total'],
+                'filtered' => $result['total'],
+                'error' => null,
+                'loading' => false,
+                'searchTerm' => $queryParams['search'] ?? '',
+                'selectedCategory' => $queryParams['category'] ?? '',
+                'selectedDistrict' => $queryParams['district'] ?? '',
+                'data' => $result['data']
+            ];
+            
+            return ResponseHelper::withJson($response, $responseFormat);
         } catch (\Exception $e) {
-            return $this->errorService->handle($e, $response, 'business.list');
+            return ResponseHelper::withJson($response, [
+                'businesses' => 0,
+                'filtered' => 0,
+                'error' => $e->getMessage(),
+                'loading' => false,
+                'searchTerm' => '',
+                'selectedCategory' => '',
+                'selectedDistrict' => ''
+            ], 500);
         }
     }
 
