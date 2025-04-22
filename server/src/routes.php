@@ -48,6 +48,7 @@ return function (App $app) {
             
             // Protected routes
             $group->group('', function (RouteCollectorProxy $group) {
+                $group->post('', [BusinessController::class, 'registerBusiness']);
                 $group->post('', [BusinessController::class, 'create']);
                 $group->put('/{id}', [BusinessController::class, 'update']);
                 $group->delete('/{id}', [BusinessController::class, 'delete']);
@@ -55,6 +56,8 @@ return function (App $app) {
                 $group->post('/{id}/image', [BusinessController::class, 'uploadImage']);
                 $group->get('/my', [BusinessController::class, 'getMyBusiness']);
                 $group->put('/my', [BusinessController::class, 'updateMyBusiness']);
+                // Business registration endpoint
+                $group->post('/businesses/register', [BusinessController::class, 'registerBusiness']);
             })->add(new AuthMiddleware());
         });
         
@@ -123,8 +126,5 @@ return function (App $app) {
         return $response
             ->withHeader('Location', $_ENV['FRONTEND_URL'])
             ->withStatus(302);
-                $yaml = file_get_contents($yamlFile);
-                return $response->withHeader('Content-Type', 'text/yaml')->write($yaml);
-            });
     });
 };

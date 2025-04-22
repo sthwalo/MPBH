@@ -7,3 +7,11 @@
 [19-Apr-2025 10:12:59 UTC] Retrying connection in 2 seconds...
 [19-Apr-2025 10:13:01 UTC] Database Connection Attempt 3 Failed: SQLSTATE[08006] [7] connection to server at "localhost" (::1), port 5432 failed: server does not support SSL, but SSL was required
 [19-Apr-2025 10:13:01 UTC] All connection attempts failed
+[22-Apr-2025 06:03:11 UTC] Environment variables loaded for development environment
+[22-Apr-2025 06:03:11 UTC] Database connection parameters: pgsql:host=localhost;port=5432;dbname=postgres
+[22-Apr-2025 06:03:11 UTC] Database Connection Attempt 1 Failed: SQLSTATE[08006] [7] connection to server at "localhost" (::1), port 5432 failed: server does not support SSL, but SSL was required
+[22-Apr-2025 06:03:11 UTC] Retrying connection in 2 seconds...
+[22-Apr-2025 06:03:13 UTC] Database Connection Attempt 2 Failed: SQLSTATE[08006] [7] connection to server at "localhost" (::1), port 5432 failed: server does not support SSL, but SSL was required
+[22-Apr-2025 06:03:13 UTC] Retrying connection in 2 seconds...
+[22-Apr-2025 06:03:15 UTC] Database Connection Attempt 3 Failed: SQLSTATE[08006] [7] connection to server at "localhost" (::1), port 5432 failed: server does not support SSL, but SSL was required
+[22-Apr-2025 06:03:15 UTC] All connection attempts failed
