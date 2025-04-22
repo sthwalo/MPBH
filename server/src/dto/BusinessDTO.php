@@ -4,6 +4,7 @@ namespace App\DTO;
 
 use DateTime;
 
+
 class BusinessDTO
 {
     public ?int $id = null;

@@ -212,7 +212,7 @@ function Register() {
       
       try {
         // Use the proper API endpoint
-        const response = await fetch('/api/register', {
+        const response = await fetch('/api/businesses/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

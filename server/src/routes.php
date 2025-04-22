@@ -45,6 +45,7 @@ return function (App $app) {
         $group->group('/businesses', function (RouteCollectorProxy $group) {
             // Public routes
             $group->get('', [BusinessController::class, 'getAllBusinesses']);
+            $group->get('/my', [BusinessController::class, 'getMyBusiness']);
             $group->get('/{id}', [BusinessController::class, 'getById']);
             $group->get('/{id}/stats', [BusinessController::class, 'getStats']);
             $group->get('/{id}/reviews', [BusinessController::class, 'getBusinessReviews']);
@@ -52,12 +53,11 @@ return function (App $app) {
             // Protected routes
             $group->group('', function (RouteCollectorProxy $group) {
                 $group->post('', [BusinessController::class, 'create']);
+                $group->put('/my', [BusinessController::class, 'updateMyBusiness']);
                 $group->put('/{id}', [BusinessController::class, 'update']);
                 $group->delete('/{id}', [BusinessController::class, 'delete']);
                 $group->post('/{id}/verify', [BusinessController::class, 'verify']);
                 $group->post('/{id}/image', [BusinessController::class, 'uploadImage']);
-                $group->get('/my', [BusinessController::class, 'getMyBusiness']);
-                $group->put('/my', [BusinessController::class, 'updateMyBusiness']);
             })->add(new AuthMiddleware());
         });
         

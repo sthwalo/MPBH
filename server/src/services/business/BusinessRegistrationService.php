@@ -5,6 +5,7 @@ namespace App\Services\Business;
 use App\Exceptions\BadRequestException;
 use App\Services\ImageService;
 use App\Services\AnalyticsService;
+use App\DTO\Business\BusinessDataTransferObject as BusinessDTO;
 
 /**
  * Service responsible for business registration process
@@ -52,17 +53,57 @@ class BusinessRegistrationService
             $processedFiles['cover_image'] = $files['cover_image'];
         }
         
+        // Create a DTO for business creation
+        $dto = new BusinessDataTransfer();
+        $dto->name = $data['name'];
+        $dto->category = $data['category'];
+        $dto->district = $data['district'];
+        $dto->description = $data['description'] ?? '';
+        $dto->address = $data['address'] ?? '';
+        $dto->phone = $data['contact_phone'] ?? '';
+        $dto->email = $data['contact_email'];
+        $dto->website = $data['website'] ?? '';
+        
+        // Handle images
+        if (!empty($processedFiles['logo'])) {
+            $logoPath = $this->imageService->uploadBusinessImage($processedFiles['logo'], 'logo');
+            $dto->logo = $logoPath;
+        }
+        
+        if (!empty($processedFiles['cover_image'])) {
+            $coverPath = $this->imageService->uploadBusinessImage($processedFiles['cover_image'], 'cover');
+            $dto->cover_image = $coverPath;
+        }
+        
+        // Set additional attributes
+        $dto->package_type = $data['package_type'] ?? 'Basic';
+        $dto->verification_status = 'pending';
+        $dto->social_media = $data['social_media'] ?? null;
+        $dto->business_hours = $data['business_hours'] ?? null;
+        
         // Create the business in the database
-        $business = $this->businessService->createBusiness($user->id, $data, $processedFiles);
+        $business = $this->businessService->create($dto);
+        
+        // Convert business object to array for API response
+        $businessArray = [
+            'id' => $business->id,
+            'name' => $business->name,
+            'category' => $business->category,
+            'district' => $business->district,
+            'package_type' => $business->package_type,
+            'verification_status' => $business->verification_status,
+            // Add other necessary fields
+        ];
         
         // Track the registration event
-        $this->analyticsService->logInteraction($business['id'], 'business_registration', [
-            'package_type' => $business['package_type']
-        ]);
+        $this->analyticsService->logInteraction(
+            $business->id, 
+            'business_registration', 
+            ['package_type' => $business->package_type]
+        );
         
-        return $business;
+        return $businessArray;
     }
-    
     /**
      * Upload a business image (logo or cover image)
      *

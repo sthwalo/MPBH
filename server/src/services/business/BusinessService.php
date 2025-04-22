@@ -33,7 +33,7 @@ class BusinessService implements BusinessServiceInterface
         return $this->repository->getById($id);
     }
     
-    public function create(BusinessDTO $dto): Business
+    public function create(BusinessDataTransfer $dto): Business
     {
         $this->validator->validate($dto);
         $business = new Business();
@@ -58,7 +58,7 @@ class BusinessService implements BusinessServiceInterface
         return $business;
     }
     
-    public function update(int $id, BusinessDTO $dto): Business
+    public function update(int $id, BusinessDataTransfer $dto): Business
     {
         $business = $this->repository->getById($id);
         if (!$business) {
@@ -105,7 +105,7 @@ class BusinessService implements BusinessServiceInterface
         ];
     }
     
-    public function verify(int $id): Business
+    public function verify(int $id): bool
     {
         $business = $this->repository->getById($id);
         if (!$business) {
@@ -115,7 +115,6 @@ class BusinessService implements BusinessServiceInterface
         $business->verification_status = 'verified';
         $business->verified_at = new DateTime();
         
-        $this->repository->update($business);
-        return $business;
+        return $this->repository->update($business);
     }
 }
