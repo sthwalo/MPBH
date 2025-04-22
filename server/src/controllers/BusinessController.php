@@ -3,12 +3,12 @@
 namespace App\Controllers;
 
 use App\Services\{
-    BusinessService,
     ImageUploadService,
     AnalyticsService,
     ErrorService,
     BusinessRegistrationService
 };
+use App\Services\Business\BusinessService;
 use App\Helpers\ResponseHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

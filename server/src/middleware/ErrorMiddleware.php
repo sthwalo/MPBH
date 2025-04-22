@@ -12,7 +12,7 @@ use App\Models\Business;
 use App\Models\Review;
 use App\Models\Product;
 use App\Models\Advert;
-use App\Services\BusinessService;
+use App\Services\Business\BusinessService;
 use App\Exceptions\CustomException;
 use App\Controllers\BusinessController;
 use App\Controllers\UserController;

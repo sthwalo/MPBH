@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Business;
 
-use PDO;
-use App\Models\User;
 use App\Exceptions\BadRequestException;
+use App\Services\ImageService;
+use App\Services\AnalyticsService;
 
 /**
  * Service responsible for business registration process

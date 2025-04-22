@@ -130,7 +130,4 @@ return [
     Business::class => function (PDO $db, ImageService $imageService) {
         return new Business($db, $imageService);
     },
-    BusinessService::class => function (PDO $db, ImageService $imageService, Business $business) {
-        return new BusinessService($db, $imageService, $business);
-    },
 ];

@@ -4,7 +4,7 @@ namespace App\WebSocket;
 
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
-use App\Services\BusinessService;
+use App\Services\Business\BusinessService;
 use App\Services\AnalyticsService;
 use App\Exceptions\Exception;
 
