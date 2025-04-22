@@ -198,4 +198,51 @@ class ErrorService
             'type' => $type,
         ]);
     }
+
+    /**
+     * Handle exceptions in controllers and return an appropriate error response
+     * 
+     * @param \Exception $exception The exception to handle
+     * @param \Psr\Http\Message\ResponseInterface $response The PSR-7 response
+     * @param string $context Error context identifier (e.g., 'business.view')
+     * @return \Psr\Http\Message\ResponseInterface Modified response with error details
+     */
+    public function handle(\Exception $exception, $response, string $context): mixed
+    {
+        // Log the exception with context
+        $this->captureException($exception, ['context' => $context]);
+        
+        // Determine status code based on exception type
+        $statusCode = 500;
+        if ($exception instanceof \App\Exceptions\NotFoundException) {
+            $statusCode = 404;
+        } elseif ($exception instanceof \App\Exceptions\BadRequestException) {
+            $statusCode = 400;
+        } elseif ($exception instanceof \App\Exceptions\UnauthorizedException) {
+            $statusCode = 401;
+        } elseif ($exception instanceof \App\Exceptions\ForbiddenException) {
+            $statusCode = 403;
+        }
+        
+        // Create error response
+        $error = [
+            'status' => 'error',
+            'message' => $exception->getMessage(),
+            'code' => $statusCode,
+            'context' => $context
+        ];
+        
+        // In development mode, include more details
+        if ($_ENV['APP_ENV'] === 'development') {
+            $error['trace'] = $exception->getTraceAsString();
+            $error['file'] = $exception->getFile();
+            $error['line'] = $exception->getLine();
+        }
+        
+        // Return JSON response
+        $response->getBody()->write(json_encode($error));
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($statusCode);
+    }
 }

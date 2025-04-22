@@ -6,7 +6,7 @@ use App\Services\{
     BusinessService,
     ImageUploadService,
     AnalyticsService,
-    ErrorHandlerService
+    ErrorService
 };
 use App\Helpers\ResponseHelper;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -24,7 +24,7 @@ class BusinessController
         private BusinessService $businessService,
         private ImageUploadService $imageService,
         private AnalyticsService $analyticsService,
-        private ErrorHandlerService $errorService
+        private ErrorService $errorService
     ) {}
 
     /**
